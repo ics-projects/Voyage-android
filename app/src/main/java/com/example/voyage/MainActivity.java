@@ -1,4 +1,4 @@
-package com.example.real_estate_app_prototype;
+package com.example.voyage;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;

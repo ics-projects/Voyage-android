@@ -1,4 +1,4 @@
-package com.example.real_estate_app_prototype;
+package com.example.voyage;
 
 import org.junit.Test;
 
