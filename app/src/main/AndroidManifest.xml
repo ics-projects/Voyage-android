@@ -8,6 +8,9 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name="com.example.voyage.BookActivity"></activity>
+        <activity android:name="com.example.voyage.AvailableBusActivity" />
+        <activity android:name="com.example.voyage.SearchActivity" />
         <activity android:name="com.example.voyage.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
