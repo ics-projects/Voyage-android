@@ -1,10 +1,11 @@
 <resources>
-    <string name="app_name">Voyage</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="app_name">voyagee</string>
     <string name="hint_username">Username</string>
     <string name="hint_password">Password</string>
-    <string name="button_next">Next</string>
-    <string name="button_cancel">Cancel</string>
-    <string name="error_password">Password must contain at least 8 characters.</string>
+    <string name="cancel_button">Cancel</string>
+    <string name="next_button">Next</string>
+    <string name="error_password">Password must contain at least 8 characters</string>
+    <string name="instruction">Please choose your stat point and your destination below</string>
+    <string name="search_info">Search for a bus</string>
+
 </resources>

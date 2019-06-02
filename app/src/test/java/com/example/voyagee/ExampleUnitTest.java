@@ -1,4 +1,4 @@
-package com.example.voyage;
+package com.example.voyagee;
 
 import org.junit.Test;
 
