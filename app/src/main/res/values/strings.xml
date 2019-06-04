@@ -1,4 +1,5 @@
 <resources>
+    <string name="appbar_scrolling_view_behavior" translatable="false">android.support.design.widget.AppBarLayout$ScrollingViewBehavior</string>
     <string name="app_name">Voyage</string>
     <string name="hint_username">Username</string>
     <string name="hint_password">Password</string>
@@ -26,5 +27,4 @@
     <string name="error_password">Password must contain at least 8 characters</string>
     <string name="instruction">Please choose your stat point and your destination below</string>
     <string name="search_info">Search for a bus</string>
-
 </resources>
