@@ -1,11 +1,30 @@
 <resources>
+    <string name="appbar_scrolling_view_behavior" translatable="false">android.support.design.widget.AppBarLayout$ScrollingViewBehavior</string>
     <string name="app_name">Voyage</string>
     <string name="hint_username">Username</string>
     <string name="hint_password">Password</string>
+    <string name="button_next">Next</string>
+    <string name="button_cancel">Cancel</string>
+    <string name="title_activity_home">HomeActivity</string>
+
+    <string name="start_prompt">Choose your Start point</string>
+    <string name="destination_prompt">Choose your Destination</string>
+    <string name="lbl_start_point">Start point</string>
+    <string name="lbl_end_point">End point</string>
+    <string name="choose_date">Choose date...</string>
+    <string name="departure_time">Departure time</string>
+    <string name="btn_submit">Submit</string>
+
+    <string-array name="city_points">
+        <item>Nairobi</item>
+        <item>Naivasha</item>
+        <item>Kisumu</item>
+        <item>Nakuru</item>
+        <item>Mombasa</item>
+    </string-array>
     <string name="cancel_button">Cancel</string>
     <string name="next_button">Next</string>
     <string name="error_password">Password must contain at least 8 characters</string>
     <string name="instruction">Please choose your stat point and your destination below</string>
     <string name="search_info">Search for a bus</string>
-
 </resources>
