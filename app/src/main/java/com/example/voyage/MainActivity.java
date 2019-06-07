@@ -23,8 +23,8 @@ import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
 
-    Button search_buses;
     Button toRegister;
+    Button toLogin;
     private EditText emailinput;
     private EditText pwdinput;
     private String token;
@@ -39,19 +39,20 @@ public class MainActivity extends AppCompatActivity {
         emailinput = findViewById(R.id.username_edit_text);
         pwdinput = findViewById(R.id.password_edit_text);
 
-        search_buses = findViewById(R.id.next_button);
-        search_buses.setOnClickListener(new View.OnClickListener() {
+        toLogin= findViewById(R.id.login_button);
+        toLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 userLogin();
             }
         });
 
-        toRegister = findViewById(R.id.register_button);
+        toRegister= findViewById(R.id.register_button);
         toRegister.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                openWebPage("http://188.166.89.126/register");
+            public void onClick(View view) {
+                Intent intent = new Intent(getApplicationContext(),RegisterActivity.class);
+                startActivity(intent);
             }
         });
     }

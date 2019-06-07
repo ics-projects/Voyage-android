@@ -27,4 +27,12 @@
     <string name="error_password">Password must contain at least 8 characters</string>
     <string name="instruction">Please choose your stat point and your destination below</string>
     <string name="search_info">Search for a bus</string>
+    <string name="register">Register</string>
+    <string name="first_name">First name</string>
+    <string name="last_name">Last name</string>
+    <string name="email_address">E-Mail Address</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="btn_cancel">Cancel</string>
+    <string name="btn_register">register</string>
+    <string name="log_in">Log in</string>
 </resources>
