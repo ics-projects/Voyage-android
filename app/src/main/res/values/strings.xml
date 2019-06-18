@@ -35,4 +35,6 @@
     <string name="btn_cancel">Cancel</string>
     <string name="btn_register">register</string>
     <string name="log_in">Log in</string>
+    <string name="error_email">Invalid Email</string>
+    <string name="error_name">Invalid name</string>
 </resources>
