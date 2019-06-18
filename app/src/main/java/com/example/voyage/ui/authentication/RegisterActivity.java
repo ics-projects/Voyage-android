@@ -1,5 +1,6 @@
 package com.example.voyage.ui.authentication;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
@@ -10,8 +11,11 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
+import com.example.voyage.MainActivity;
 import com.example.voyage.R;
+import com.example.voyage.SearchActivity;
 import com.example.voyage.auth.VoyageAuth;
 import com.example.voyage.auth.VoyageUser;
 
@@ -93,6 +97,12 @@ public class RegisterActivity extends AppCompatActivity {
         addOnKeyListeners();
     }
 
+    @Override
+    protected void onDestroy() {
+
+        super.onDestroy();
+    }
+
     private void registerUser(String firstName, String lastName, String email, String password,
                               String passwordConfirm) {
         auth.createUserWithCredentials(firstName, lastName, email, password, passwordConfirm)
@@ -107,6 +117,10 @@ public class RegisterActivity extends AppCompatActivity {
                     @Override
                     public void onNext(VoyageUser voyageUser) {
                         Log.d("User: " + voyageUser.toString(), LOG_TAG);
+                        Toast.makeText(RegisterActivity.this, "Registration Successful",
+                                Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(getApplicationContext(), SearchActivity.class);
+                        startActivity(intent);
                     }
 
                     @Override

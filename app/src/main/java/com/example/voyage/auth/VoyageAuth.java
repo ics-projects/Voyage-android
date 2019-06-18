@@ -2,14 +2,17 @@ package com.example.voyage.auth;
 
 import com.example.voyage.data.network.retrofit.VoyageClient;
 import com.example.voyage.data.network.retrofit.VoyageService;
+import com.example.voyage.util.ApplicationContextProvider;
+import com.example.voyage.util.PreferenceUtilities;
 import com.google.gson.JsonObject;
 
 import io.reactivex.Observable;
 
 public class VoyageAuth implements BaseAuth<VoyageUser> {
     private static VoyageAuth instance;
+    private static VoyageUser userInstance;
 
-    VoyageService voyageService = VoyageClient.getInstance().getVoyageService();
+    private VoyageService voyageService = VoyageClient.getInstance().getVoyageService();
 
     private VoyageAuth() {
     }
@@ -47,6 +50,14 @@ public class VoyageAuth implements BaseAuth<VoyageUser> {
 
     @Override
     public Observable<VoyageUser> currentUser() {
+        if (userInstance == null) {
+            String token = PreferenceUtilities.getUserToken(ApplicationContextProvider.getContext());
+            if (token != null) {
+                userInstance = new VoyageUser(token);
+                return Observable.just(userInstance);
+            }
+        } else return Observable.just(userInstance);
+
         return null;
     }
 
