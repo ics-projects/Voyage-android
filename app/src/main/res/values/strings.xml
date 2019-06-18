@@ -37,4 +37,5 @@
     <string name="log_in">Log in</string>
     <string name="error_email">Invalid Email</string>
     <string name="error_name">Invalid name</string>
+    <string name="error_password_confirm">Passwords don\'t match</string>
 </resources>

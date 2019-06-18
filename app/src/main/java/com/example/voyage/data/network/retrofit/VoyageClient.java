@@ -1,7 +1,7 @@
 package com.example.voyage.data.network.retrofit;
 
 import retrofit2.Retrofit;
-import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
+import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class VoyageClient {
@@ -13,7 +13,7 @@ public class VoyageClient {
     private VoyageClient() {
         final Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(VOYAGE_API_BASE_URL)
-                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 

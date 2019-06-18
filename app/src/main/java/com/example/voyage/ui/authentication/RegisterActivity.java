@@ -5,6 +5,7 @@ import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -105,17 +106,18 @@ public class RegisterActivity extends AppCompatActivity {
 
                     @Override
                     public void onNext(VoyageUser voyageUser) {
-                        Log.d("User: " + voyageUser.token, LOG_TAG);
+                        Log.d("User: " + voyageUser.toString(), LOG_TAG);
                     }
 
                     @Override
                     public void onError(Throwable e) {
-
+                        Log.e(LOG_TAG, "Error: " + e.toString());
+                        e.printStackTrace();
                     }
 
                     @Override
                     public void onComplete() {
-
+                        Log.d("Inside on complete", LOG_TAG);
                     }
                 });
     }
@@ -145,14 +147,14 @@ public class RegisterActivity extends AppCompatActivity {
         }
 
         if (!isPasswordValid(password)) {
-            passwordTextInput.setError(getString(R.string.error_email));
+            passwordTextInput.setError(getString(R.string.error_password));
             return false;
         } else {
             passwordTextInput.setError(null);
         }
 
         if (!isPasswordConfirmValid(passwordConfirm)) {
-            passwordConfirmTextInput.setError(getString(R.string.error_email));
+            passwordConfirmTextInput.setError(getString(R.string.error_password_confirm));
             return false;
         } else {
             passwordConfirmTextInput.setError(null);
@@ -214,18 +216,19 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private boolean isNameValid(Editable text) {
-        return false;
+        return !TextUtils.isEmpty(text);
     }
 
     private boolean isEmailValid(Editable text) {
-        return false;
+        return !TextUtils.isEmpty(text) && android.util.Patterns.EMAIL_ADDRESS.matcher(text).matches();
     }
 
     private boolean isPasswordValid(Editable text) {
-        return false;
+        return !TextUtils.isEmpty(text) && text.length() >= 8;
     }
 
     private boolean isPasswordConfirmValid(Editable passwordConfirm) {
-        return false;
+        return isPasswordValid(passwordConfirm) &&
+                passwordConfirm.toString().compareTo(passwordEditText.getText().toString()) == 0;
     }
 }

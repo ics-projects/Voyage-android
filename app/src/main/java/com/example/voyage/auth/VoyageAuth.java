@@ -2,6 +2,7 @@ package com.example.voyage.auth;
 
 import com.example.voyage.data.network.retrofit.VoyageClient;
 import com.example.voyage.data.network.retrofit.VoyageService;
+import com.google.gson.JsonObject;
 
 import io.reactivex.Observable;
 
@@ -29,7 +30,14 @@ public class VoyageAuth implements BaseAuth<VoyageUser> {
     public Observable<VoyageUser> createUserWithCredentials(String firstName, String lastName,
                                                             String email, String password,
                                                             String passwordConfirm) {
-        return voyageService.register(firstName, lastName, email, password, passwordConfirm);
+        JsonObject postParameters = new JsonObject();
+        postParameters.addProperty("first_name", firstName);
+        postParameters.addProperty("last_name", lastName);
+        postParameters.addProperty("email", email);
+        postParameters.addProperty("password", password);
+        postParameters.addProperty("password_confirmation", passwordConfirm);
+
+        return voyageService.register(postParameters);
     }
 
     @Override
