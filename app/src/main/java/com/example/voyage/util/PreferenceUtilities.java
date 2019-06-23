@@ -17,4 +17,18 @@ public class PreferenceUtilities {
 
         return sharedPrefs.getString(PREF_USER_TOKEN, null);
     }
+
+    public static void setUserToken(Context context, String token) {
+        String sharedPrefsFile = context.getResources().getString(
+                R.string.shared_preference_file);
+
+        String user_token_key = context.getResources().getString(R.string.user_token_key);
+
+        SharedPreferences sharedPref = context.getSharedPreferences(
+                sharedPrefsFile, Context.MODE_PRIVATE);
+
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putString(user_token_key, token);
+        editor.apply();
+    }
 }

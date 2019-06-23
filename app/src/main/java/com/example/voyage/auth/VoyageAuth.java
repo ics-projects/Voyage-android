@@ -32,15 +32,19 @@ public class VoyageAuth implements BaseAuth<VoyageUser> {
 
     @Override
     public Observable<Response<VoyageUser>> signInWithEmailAndPassword(String email, String password) {
+        if (currentUser() != null) {
+            return Observable.just(Response.success(userInstance));
+        }
+
         Observable<Response<VoyageUser>> user = voyageService.login(email, password);
-//        setUserInstance(Single.fromObservable(user));
+        setUserInstance(Single.fromObservable(user));
         return user;
     }
 
     @Override
     public Observable<Response<VoyageUser>> createUserWithCredentials(String firstName, String lastName,
-                                                            String email, String password,
-                                                            String passwordConfirm) {
+                                                                      String email, String password,
+                                                                      String passwordConfirm) {
         JsonObject postParameters = new JsonObject();
         postParameters.addProperty("first_name", firstName);
         postParameters.addProperty("last_name", lastName);
@@ -49,7 +53,7 @@ public class VoyageAuth implements BaseAuth<VoyageUser> {
         postParameters.addProperty("password_confirmation", passwordConfirm);
 
         Observable<Response<VoyageUser>> user = voyageService.register(postParameters);
-//        setUserInstance(Single.fromObservable(user));
+        setUserInstance(Single.fromObservable(user));
         return user;
     }
 
@@ -64,12 +68,14 @@ public class VoyageAuth implements BaseAuth<VoyageUser> {
     }
 
     public VoyageUser currentUser() {
-        if (userInstance == null) {
+        if (userInstance != null) {
+            return userInstance;
+        } else {
             String token = PreferenceUtilities.getUserToken(ApplicationContextProvider.getContext());
             if (token != null) {
                 Observable<Response<VoyageUser>> user = voyageService.getUser("Bearer ".concat(token));
                 setUserInstance(Single.fromObservable(user));
-            }
+            } else return null;
         }
 
         return userInstance;
@@ -88,6 +94,8 @@ public class VoyageAuth implements BaseAuth<VoyageUser> {
                     public void onSuccess(Response<VoyageUser> voyageUserResponse) {
                         if (voyageUserResponse.isSuccessful()) {
                             userInstance = voyageUserResponse.body();
+                            PreferenceUtilities.setUserToken(
+                                    ApplicationContextProvider.getContext(), userInstance.getToken());
                         }
                     }
 

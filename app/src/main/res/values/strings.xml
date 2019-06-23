@@ -39,4 +39,5 @@
     <string name="error_name">Invalid name</string>
     <string name="error_password_confirm">Passwords don\'t match</string>
     <string name="shared_preference_file">com.example.voyage</string>
+    <string name="user_token_key">USER_TOKEN</string>
 </resources>

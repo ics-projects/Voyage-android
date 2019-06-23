@@ -8,6 +8,8 @@ import android.util.Log;
 
 import com.example.voyage.auth.VoyageAuth;
 import com.example.voyage.auth.VoyageUser;
+import com.example.voyage.util.ApplicationContextProvider;
+import com.example.voyage.util.PreferenceUtilities;
 
 import java.io.IOException;
 
@@ -45,7 +47,7 @@ public class RegisterActivityViewModel extends AndroidViewModel {
                     @Override
                     public void onNext(Response<VoyageUser> voyageUserResponse) {
                         if (voyageUserResponse.isSuccessful()) {
-                            user.setValue(auth.currentUser());
+                            user.setValue(voyageUserResponse.body());
                             Log.d(LOG_TAG,
                                     "User: ".concat(voyageUserResponse.body().getToken()));
                         } else {
