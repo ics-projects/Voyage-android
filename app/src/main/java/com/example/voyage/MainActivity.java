@@ -2,7 +2,6 @@ package com.example.voyage;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -15,8 +14,7 @@ import android.widget.Toast;
 import com.example.voyage.api.GetData;
 import com.example.voyage.api.VoyageClient;
 import com.example.voyage.models.LoginResponse;
-
-import java.util.List;
+import com.example.voyage.ui.authentication.RegisterActivity;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -52,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
         toRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getApplicationContext(),RegisterActivity.class);
+                Intent intent = new Intent(getApplicationContext(), RegisterActivity.class);
                 startActivity(intent);
             }
         });
