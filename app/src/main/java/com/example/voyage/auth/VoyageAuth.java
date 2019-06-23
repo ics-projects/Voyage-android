@@ -7,6 +7,12 @@ import com.example.voyage.util.PreferenceUtilities;
 import com.google.gson.JsonObject;
 
 import io.reactivex.Observable;
+import io.reactivex.Single;
+import io.reactivex.SingleObserver;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
+import retrofit2.Response;
 
 public class VoyageAuth implements BaseAuth<VoyageUser> {
     private static VoyageAuth instance;
@@ -25,12 +31,14 @@ public class VoyageAuth implements BaseAuth<VoyageUser> {
     }
 
     @Override
-    public Observable<VoyageUser> signInWithEmailAndPassword(String email, String password) {
-        return voyageService.login(email, password);
+    public Observable<Response<VoyageUser>> signInWithEmailAndPassword(String email, String password) {
+        Observable<Response<VoyageUser>> user = voyageService.login(email, password);
+//        setUserInstance(Single.fromObservable(user));
+        return user;
     }
 
     @Override
-    public Observable<VoyageUser> createUserWithCredentials(String firstName, String lastName,
+    public Observable<Response<VoyageUser>> createUserWithCredentials(String firstName, String lastName,
                                                             String email, String password,
                                                             String passwordConfirm) {
         JsonObject postParameters = new JsonObject();
@@ -40,29 +48,53 @@ public class VoyageAuth implements BaseAuth<VoyageUser> {
         postParameters.addProperty("password", password);
         postParameters.addProperty("password_confirmation", passwordConfirm);
 
-        return voyageService.register(postParameters);
+        Observable<Response<VoyageUser>> user = voyageService.register(postParameters);
+//        setUserInstance(Single.fromObservable(user));
+        return user;
     }
 
     @Override
-    public Observable<VoyageUser> createUserWithEmailAndPassword(String email, String password) {
+    public Observable<Response<VoyageUser>> createUserWithEmailAndPassword(String email, String password) {
         return null;
     }
 
     @Override
-    public Observable<VoyageUser> currentUser() {
+    public Observable<Response<VoyageUser>> signOut() {
+        return null;
+    }
+
+    public VoyageUser currentUser() {
         if (userInstance == null) {
             String token = PreferenceUtilities.getUserToken(ApplicationContextProvider.getContext());
             if (token != null) {
-                userInstance = new VoyageUser(token);
-                return Observable.just(userInstance);
+                Observable<Response<VoyageUser>> user = voyageService.getUser("Bearer ".concat(token));
+                setUserInstance(Single.fromObservable(user));
             }
-        } else return Observable.just(userInstance);
+        }
 
-        return null;
+        return userInstance;
     }
 
-    @Override
-    public Observable<VoyageUser> signOut() {
-        return null;
+    private void setUserInstance(Single<Response<VoyageUser>> user) {
+        user.subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new SingleObserver<Response<VoyageUser>>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onSuccess(Response<VoyageUser> voyageUserResponse) {
+                        if (voyageUserResponse.isSuccessful()) {
+                            userInstance = voyageUserResponse.body();
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                    }
+                });
     }
 }

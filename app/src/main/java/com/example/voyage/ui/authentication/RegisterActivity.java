@@ -1,28 +1,23 @@
 package com.example.voyage.ui.authentication;
 
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
-import com.example.voyage.MainActivity;
 import com.example.voyage.R;
 import com.example.voyage.SearchActivity;
-import com.example.voyage.auth.VoyageAuth;
 import com.example.voyage.auth.VoyageUser;
-
-import io.reactivex.Observer;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.schedulers.Schedulers;
 
 public class RegisterActivity extends AppCompatActivity {
 
@@ -43,7 +38,7 @@ public class RegisterActivity extends AppCompatActivity {
     private TextInputEditText passwordConfirmEditText;
     private TextInputLayout passwordConfirmTextInput;
 
-    VoyageAuth auth;
+    RegisterActivityViewModel viewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,7 +62,8 @@ public class RegisterActivity extends AppCompatActivity {
         passwordConfirmEditText = findViewById(R.id.passwordConfirm_edit_text);
         passwordConfirmTextInput = findViewById(R.id.passwordConfirm_text_input);
 
-        auth = VoyageAuth.getInstance();
+        viewModel = ViewModelProviders.of(this).get(RegisterActivityViewModel.class);
+        viewModel.getUser().observe(this, userObserver);
 
         registerButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -105,35 +101,7 @@ public class RegisterActivity extends AppCompatActivity {
 
     private void registerUser(String firstName, String lastName, String email, String password,
                               String passwordConfirm) {
-        auth.createUserWithCredentials(firstName, lastName, email, password, passwordConfirm)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<VoyageUser>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-
-                    }
-
-                    @Override
-                    public void onNext(VoyageUser voyageUser) {
-                        Log.d("User: " + voyageUser.toString(), LOG_TAG);
-                        Toast.makeText(RegisterActivity.this, "Registration Successful",
-                                Toast.LENGTH_SHORT).show();
-                        Intent intent = new Intent(getApplicationContext(), SearchActivity.class);
-                        startActivity(intent);
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        Log.e(LOG_TAG, "Error: " + e.toString());
-                        e.printStackTrace();
-                    }
-
-                    @Override
-                    public void onComplete() {
-                        Log.d("Inside on complete", LOG_TAG);
-                    }
-                });
+        viewModel.registerUser(firstName, lastName, email, password, passwordConfirm);
     }
 
     private boolean isValidForm(Editable firstName, Editable lastName, Editable email,
@@ -245,4 +213,14 @@ public class RegisterActivity extends AppCompatActivity {
         return isPasswordValid(passwordConfirm) &&
                 passwordConfirm.toString().compareTo(passwordEditText.getText().toString()) == 0;
     }
+
+    private Observer<VoyageUser> userObserver = new Observer<VoyageUser>() {
+        @Override
+        public void onChanged(@Nullable VoyageUser voyageUser) {
+            Toast.makeText(RegisterActivity.this, "Registration Successful",
+                    Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(getApplicationContext(), SearchActivity.class);
+            startActivity(intent);
+        }
+    };
 }
