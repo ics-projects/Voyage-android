@@ -1,20 +1,25 @@
 package com.example.voyage.auth;
 
+import android.util.Log;
+
 import com.example.voyage.data.network.retrofit.VoyageClient;
 import com.example.voyage.data.network.retrofit.VoyageService;
 import com.example.voyage.util.ApplicationContextProvider;
 import com.example.voyage.util.PreferenceUtilities;
 import com.google.gson.JsonObject;
 
+import java.io.IOException;
+
 import io.reactivex.Observable;
+import io.reactivex.Observer;
 import io.reactivex.Single;
-import io.reactivex.SingleObserver;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import retrofit2.Response;
 
 public class VoyageAuth implements BaseAuth<VoyageUser> {
+    private static final String LOG_TAG = VoyageAuth.class.getSimpleName();
     private static VoyageAuth instance;
     private static VoyageUser userInstance;
 
@@ -36,8 +41,12 @@ public class VoyageAuth implements BaseAuth<VoyageUser> {
             return Observable.just(Response.success(userInstance));
         }
 
-        Observable<Response<VoyageUser>> user = voyageService.login(email, password);
-        setUserInstance(Single.fromObservable(user));
+        JsonObject postParameters = new JsonObject();
+        postParameters.addProperty("email", email);
+        postParameters.addProperty("password", password);
+
+        Observable<Response<VoyageUser>> user = voyageService.login(postParameters);
+        setUserInstance(user);
         return user;
     }
 
@@ -53,7 +62,7 @@ public class VoyageAuth implements BaseAuth<VoyageUser> {
         postParameters.addProperty("password_confirmation", passwordConfirm);
 
         Observable<Response<VoyageUser>> user = voyageService.register(postParameters);
-        setUserInstance(Single.fromObservable(user));
+        setUserInstance(user);
         return user;
     }
 
@@ -67,41 +76,53 @@ public class VoyageAuth implements BaseAuth<VoyageUser> {
         return null;
     }
 
-    public VoyageUser currentUser() {
+    public Observable<Response<VoyageUser>> currentUser() {
         if (userInstance != null) {
-            return userInstance;
+            return Observable.just(Response.success(userInstance));
         } else {
             String token = PreferenceUtilities.getUserToken(ApplicationContextProvider.getContext());
             if (token != null) {
-                Observable<Response<VoyageUser>> user = voyageService.getUser("Bearer ".concat(token));
-                setUserInstance(Single.fromObservable(user));
+                String authHeader = "Bearer ".concat(token);
+                Log.d(LOG_TAG, "auth header: " + authHeader);
+                Observable<Response<VoyageUser>> user = voyageService.getUser(authHeader);
+                setUserInstance(user);
+                return user;
             } else return null;
         }
-
-        return userInstance;
     }
 
-    private void setUserInstance(Single<Response<VoyageUser>> user) {
+    private void setUserInstance(final Observable<Response<VoyageUser>> user) {
         user.subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new SingleObserver<Response<VoyageUser>>() {
+                .subscribe(new Observer<Response<VoyageUser>>() {
                     @Override
                     public void onSubscribe(Disposable d) {
 
                     }
 
                     @Override
-                    public void onSuccess(Response<VoyageUser> voyageUserResponse) {
+                    public void onNext(Response<VoyageUser> voyageUserResponse) {
                         if (voyageUserResponse.isSuccessful()) {
                             userInstance = voyageUserResponse.body();
                             PreferenceUtilities.setUserToken(
                                     ApplicationContextProvider.getContext(), userInstance.getToken());
+                        } else {
+                            try {
+                                Log.d(LOG_TAG, "Error: " + voyageUserResponse.errorBody().string());
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
                         }
                     }
 
                     @Override
                     public void onError(Throwable e) {
                         e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onComplete() {
+
                     }
                 });
     }

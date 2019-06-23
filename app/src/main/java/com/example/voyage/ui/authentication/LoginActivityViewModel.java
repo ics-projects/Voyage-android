@@ -8,10 +8,6 @@ import android.util.Log;
 
 import com.example.voyage.auth.VoyageAuth;
 import com.example.voyage.auth.VoyageUser;
-import com.example.voyage.util.ApplicationContextProvider;
-import com.example.voyage.util.PreferenceUtilities;
-
-import java.io.IOException;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
@@ -19,14 +15,16 @@ import io.reactivex.observers.DisposableObserver;
 import io.reactivex.schedulers.Schedulers;
 import retrofit2.Response;
 
-public class RegisterActivityViewModel extends AndroidViewModel {
-    private static final String LOG_TAG = RegisterActivityViewModel.class.getSimpleName();
+class LoginActivityViewModel extends AndroidViewModel {
+
+    private static final String LOG_TAG = LoginActivityViewModel.class.getSimpleName();
 
     private CompositeDisposable disposable = new CompositeDisposable();
     private MutableLiveData<VoyageUser> user = new MutableLiveData<>();
+
     private VoyageAuth auth;
 
-    public RegisterActivityViewModel(@NonNull Application application) {
+    public LoginActivityViewModel(@NonNull Application application) {
         super(application);
         auth = VoyageAuth.getInstance();
     }
@@ -37,9 +35,12 @@ public class RegisterActivityViewModel extends AndroidViewModel {
         super.onCleared();
     }
 
-    public void registerUser(String firstName, String lastName, String email, String password,
-                             String passwordConfirm) {
-        disposable.add(auth.createUserWithCredentials(firstName, lastName, email, password, passwordConfirm)
+    public MutableLiveData<VoyageUser> getUser() {
+        return user;
+    }
+
+    public void loginUser(String email, String password) {
+        disposable.add(auth.signInWithEmailAndPassword(email, password)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeWith(new DisposableObserver<Response<VoyageUser>>() {
@@ -47,14 +48,7 @@ public class RegisterActivityViewModel extends AndroidViewModel {
                     public void onNext(Response<VoyageUser> voyageUserResponse) {
                         if (voyageUserResponse.isSuccessful()) {
                             user.setValue(voyageUserResponse.body());
-                            Log.d(LOG_TAG,
-                                    "User: ".concat(voyageUserResponse.body().getToken()));
-                        } else {
-                            try {
-                                Log.d(LOG_TAG, "Error: " + voyageUserResponse.errorBody().string());
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
+                            Log.d(LOG_TAG, "User logged in: " + voyageUserResponse.body().getToken());
                         }
                     }
 
@@ -68,10 +62,5 @@ public class RegisterActivityViewModel extends AndroidViewModel {
 
                     }
                 }));
-
-    }
-
-    public MutableLiveData<VoyageUser> getUser() {
-        return user;
     }
 }

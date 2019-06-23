@@ -9,7 +9,6 @@ import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
-import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
@@ -18,6 +17,7 @@ import android.widget.Toast;
 import com.example.voyage.R;
 import com.example.voyage.SearchActivity;
 import com.example.voyage.auth.VoyageUser;
+import com.example.voyage.util.FormValidators;
 
 public class RegisterActivity extends AppCompatActivity {
 
@@ -38,7 +38,7 @@ public class RegisterActivity extends AppCompatActivity {
     private TextInputEditText passwordConfirmEditText;
     private TextInputLayout passwordConfirmTextInput;
 
-    RegisterActivityViewModel viewModel;
+    private RegisterActivityViewModel viewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,12 +93,6 @@ public class RegisterActivity extends AppCompatActivity {
         addOnKeyListeners();
     }
 
-    @Override
-    protected void onDestroy() {
-
-        super.onDestroy();
-    }
-
     private void registerUser(String firstName, String lastName, String email, String password,
                               String passwordConfirm) {
         viewModel.registerUser(firstName, lastName, email, password, passwordConfirm);
@@ -107,35 +101,35 @@ public class RegisterActivity extends AppCompatActivity {
     private boolean isValidForm(Editable firstName, Editable lastName, Editable email,
                                 Editable password, Editable passwordConfirm) {
 
-        if (!isNameValid(firstName)) {
+        if (!FormValidators.isNameValid(firstName)) {
             firstNameTextInput.setError(getString(R.string.error_name));
             return false;
         } else {
             firstNameTextInput.setError(null);
         }
 
-        if (!isNameValid(lastName)) {
+        if (!FormValidators.isNameValid(lastName)) {
             lastNameTextInput.setError(getString(R.string.error_name));
             return false;
         } else {
             lastNameTextInput.setError(null);
         }
 
-        if (!isEmailValid(email)) {
+        if (!FormValidators.isEmailValid(email)) {
             emailTextInput.setError(getString(R.string.error_email));
             return false;
         } else {
             emailTextInput.setError(null);
         }
 
-        if (!isPasswordValid(password)) {
+        if (!FormValidators.isPasswordValid(password)) {
             passwordTextInput.setError(getString(R.string.error_password));
             return false;
         } else {
             passwordTextInput.setError(null);
         }
 
-        if (!isPasswordConfirmValid(passwordConfirm)) {
+        if (!FormValidators.isPasswordConfirmValid(password, passwordConfirm)) {
             passwordConfirmTextInput.setError(getString(R.string.error_password_confirm));
             return false;
         } else {
@@ -149,7 +143,7 @@ public class RegisterActivity extends AppCompatActivity {
         firstNameEditText.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
-                if (isNameValid(firstNameEditText.getText())) {
+                if (FormValidators.isNameValid(firstNameEditText.getText())) {
                     firstNameTextInput.setError(null);
                 }
                 return false;
@@ -159,7 +153,7 @@ public class RegisterActivity extends AppCompatActivity {
         lastNameEditText.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
-                if (isNameValid(lastNameEditText.getText())) {
+                if (FormValidators.isNameValid(lastNameEditText.getText())) {
                     lastNameTextInput.setError(null);
                 }
                 return false;
@@ -169,7 +163,7 @@ public class RegisterActivity extends AppCompatActivity {
         emailEditText.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
-                if (isEmailValid(emailEditText.getText())) {
+                if (FormValidators.isEmailValid(emailEditText.getText())) {
                     emailTextInput.setError(null);
                 }
                 return false;
@@ -179,7 +173,7 @@ public class RegisterActivity extends AppCompatActivity {
         passwordEditText.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
-                if (isPasswordValid(passwordEditText.getText())) {
+                if (FormValidators.isPasswordValid(passwordEditText.getText())) {
                     passwordTextInput.setError(null);
                 }
                 return false;
@@ -189,29 +183,13 @@ public class RegisterActivity extends AppCompatActivity {
         passwordConfirmEditText.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
-                if (isPasswordConfirmValid(passwordConfirmEditText.getText())) {
+                if (FormValidators.isPasswordConfirmValid(
+                        passwordEditText.getText(), passwordConfirmEditText.getText())) {
                     passwordConfirmTextInput.setError(null);
                 }
                 return false;
             }
         });
-    }
-
-    private boolean isNameValid(Editable text) {
-        return !TextUtils.isEmpty(text);
-    }
-
-    private boolean isEmailValid(Editable text) {
-        return !TextUtils.isEmpty(text) && android.util.Patterns.EMAIL_ADDRESS.matcher(text).matches();
-    }
-
-    private boolean isPasswordValid(Editable text) {
-        return !TextUtils.isEmpty(text) && text.length() >= 8;
-    }
-
-    private boolean isPasswordConfirmValid(Editable passwordConfirm) {
-        return isPasswordValid(passwordConfirm) &&
-                passwordConfirm.toString().compareTo(passwordEditText.getText().toString()) == 0;
     }
 
     private Observer<VoyageUser> userObserver = new Observer<VoyageUser>() {
