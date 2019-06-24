@@ -106,43 +106,55 @@
                         android:layout_marginBottom="16dp"
                         android:orientation="vertical">
 
-                        <android.support.design.widget.TextInputLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginBottom="8dp"
-                            android:textColorHint="#FF8A99AF">
+                        <!--<android.support.design.widget.TextInputLayout-->
+                            <!--android:layout_width="match_parent"-->
+                            <!--android:layout_height="wrap_content"-->
+                            <!--android:layout_marginBottom="8dp"-->
+                            <!--android:textColorHint="#FF8A99AF">-->
 
-                            <EditText
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:drawableStart="@drawable/ic_location_on_light_blue_24dp"
-                                android:drawablePadding="16dp"
-                                android:fontFamily="@font/calibri"
-                                android:hint="Destination"
-                                android:inputType="text"
-                                android:maxLines="1"
-                                android:textColor="@android:color/black"
-                                android:textSize="16sp" />
-                        </android.support.design.widget.TextInputLayout>
+                            <!--<EditText-->
+                                <!--android:layout_width="match_parent"-->
+                                <!--android:layout_height="match_parent"-->
+                                <!--android:drawablePadding="16dp"-->
+                                <!--android:drawableStart="@drawable/ic_location_on_light_blue_24dp"-->
+                                <!--android:fontFamily="@font/calibri"-->
+                                <!--android:hint="@string/destination"-->
+                                <!--android:inputType="text"-->
+                                <!--android:maxLines="1"-->
+                                <!--android:textColor="@android:color/black"-->
+                                <!--android:textSize="16sp" />-->
+                        <!--</android.support.design.widget.TextInputLayout>-->
 
-                        <android.support.design.widget.TextInputLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginBottom="8dp"
-                            android:textColorHint="#FF8A99AF">
+                        <Spinner
+                            android:id="@+id/destinationSpinner"
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content" />
 
-                            <EditText
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:drawableStart="@drawable/ic_location_on_light_blue_24dp"
-                                android:drawablePadding="16dp"
-                                android:fontFamily="@font/calibri"
-                                android:hint="From"
-                                android:inputType="text"
-                                android:maxLines="1"
-                                android:textColor="@android:color/black"
-                                android:textSize="16sp" />
-                        </android.support.design.widget.TextInputLayout>
+
+                        <!--<android.support.design.widget.TextInputLayout-->
+                            <!--android:layout_width="match_parent"-->
+                            <!--android:layout_height="wrap_content"-->
+                            <!--android:layout_marginBottom="8dp"-->
+                            <!--android:textColorHint="#FF8A99AF">-->
+
+                            <!--<EditText-->
+                                <!--android:layout_width="match_parent"-->
+                                <!--android:layout_height="match_parent"-->
+                                <!--android:drawablePadding="16dp"-->
+                                <!--android:drawableStart="@drawable/ic_location_on_light_blue_24dp"-->
+                                <!--android:fontFamily="@font/calibri"-->
+                                <!--android:hint="@string/from"-->
+                                <!--android:inputType="text"-->
+                                <!--android:maxLines="1"-->
+                                <!--android:textColor="@android:color/black"-->
+                                <!--android:textSize="16sp" />-->
+                        <!--</android.support.design.widget.TextInputLayout>-->
+
+                        <Spinner
+                            android:id="@+id/originSpinner"
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content" />
+
 
                         <android.support.design.widget.TextInputLayout
                             android:layout_width="match_parent"

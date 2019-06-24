@@ -2,6 +2,7 @@ package com.example.voyage.util;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
 
 import com.example.voyage.R;
 
@@ -26,7 +27,12 @@ public class PreferenceUtilities {
                 sharedPrefsFile, Context.MODE_PRIVATE);
 
         SharedPreferences.Editor editor = sharedPref.edit();
-        editor.putString(PREF_USER_TOKEN, token);
+        if (token == null) {
+            Log.d("TAG", "DELETING TOKEN");
+            editor.remove(PREF_USER_TOKEN);
+        } else {
+            editor.putString(PREF_USER_TOKEN, token);
+        }
         editor.apply();
     }
 }

@@ -15,7 +15,7 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.example.voyage.R;
-import com.example.voyage.SearchActivity;
+import com.example.voyage.ui.searchbus.SearchBusActivity;
 import com.example.voyage.auth.VoyageUser;
 import com.example.voyage.util.FormValidators;
 
@@ -124,7 +124,7 @@ public class LoginActivity extends AppCompatActivity {
         public void onChanged(@Nullable VoyageUser voyageUser) {
             Toast.makeText(LoginActivity.this, "Login Successful",
                     Toast.LENGTH_SHORT).show();
-            Intent intent = new Intent(getApplicationContext(), SearchActivity.class);
+            Intent intent = new Intent(getApplicationContext(), SearchBusActivity.class);
             startActivity(intent);
         }
     };

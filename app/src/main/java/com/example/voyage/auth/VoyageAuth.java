@@ -12,7 +12,6 @@ import java.io.IOException;
 
 import io.reactivex.Observable;
 import io.reactivex.Observer;
-import io.reactivex.Single;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
@@ -73,6 +72,16 @@ public class VoyageAuth implements BaseAuth<VoyageUser> {
 
     @Override
     public Observable<Response<VoyageUser>> signOut() {
+//        String token = PreferenceUtilities.getUserToken(ApplicationContextProvider.getContext());
+//        if (token != null) {
+//            String authHeader = "Bearer ".concat(token);
+//            userInstance = null;
+//            Observable<Response<VoyageUser>> logoutResponse = voyageService.logout(authHeader);
+//            return logoutResponse;
+//        }
+
+        userInstance = null;
+        PreferenceUtilities.setUserToken(ApplicationContextProvider.getContext(), null);
         return null;
     }
 
@@ -91,39 +100,59 @@ public class VoyageAuth implements BaseAuth<VoyageUser> {
         }
     }
 
+    public Observable<VoyageUser> getUserInstance() {
+        if (userInstance == null) {
+            if (currentUser() != null) {
+                return currentUser().map(Response::body);
+            }
+        } else {
+            return Observable.just(userInstance);
+        }
+        return null;
+    }
+
     private void setUserInstance(final Observable<Response<VoyageUser>> user) {
         user.subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<Response<VoyageUser>>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-
-                    }
-
-                    @Override
-                    public void onNext(Response<VoyageUser> voyageUserResponse) {
-                        if (voyageUserResponse.isSuccessful()) {
-                            userInstance = voyageUserResponse.body();
-                            PreferenceUtilities.setUserToken(
-                                    ApplicationContextProvider.getContext(), userInstance.getToken());
-                        } else {
-                            try {
-                                Log.d(LOG_TAG, "Error: " + voyageUserResponse.errorBody().string());
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        e.printStackTrace();
-                    }
-
-                    @Override
-                    public void onComplete() {
-
-                    }
-                });
+                .subscribe(userObserver);
     }
+
+    private Observer<Response<VoyageUser>> userObserver = new Observer<Response<VoyageUser>>() {
+        @Override
+        public void onSubscribe(Disposable d) {
+
+        }
+
+        @Override
+        public void onNext(Response<VoyageUser> voyageUserResponse) {
+            if (voyageUserResponse.isSuccessful()) {
+                userInstance = voyageUserResponse.body();
+                PreferenceUtilities.setUserToken(
+                        ApplicationContextProvider.getContext(), userInstance.getToken());
+            } else {
+                try {
+                    Log.d(LOG_TAG, "Error: "
+                            + voyageUserResponse.errorBody().string()
+                            + " Status Code: " + voyageUserResponse.code()
+                    );
+                    if (voyageUserResponse.code() == 401) {
+                        Log.d(LOG_TAG, "Token expired. Logging out user");
+                        signOut();
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        @Override
+        public void onError(Throwable e) {
+            e.printStackTrace();
+        }
+
+        @Override
+        public void onComplete() {
+
+        }
+    };
 }

@@ -8,6 +8,7 @@ import android.view.WindowManager;
 
 import com.example.voyage.auth.VoyageAuth;
 import com.example.voyage.ui.authentication.LoginActivity;
+import com.example.voyage.ui.searchbus.SearchBusActivity;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -24,7 +25,7 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = new Intent(this, LoginActivity.class);
             startActivity(intent);
         } else {
-            Intent intent = new Intent(getApplicationContext(), SearchActivity.class);
+            Intent intent = new Intent(getApplicationContext(), SearchBusActivity.class);
             startActivity(intent);
         }
     }
