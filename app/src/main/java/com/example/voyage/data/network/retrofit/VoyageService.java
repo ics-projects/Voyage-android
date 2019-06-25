@@ -2,6 +2,7 @@ package com.example.voyage.data.network.retrofit;
 
 import com.example.voyage.auth.VoyageUser;
 import com.example.voyage.data.models.Schedule;
+import com.example.voyage.data.models.Trip;
 import com.google.gson.JsonObject;
 
 import java.util.List;
@@ -35,4 +36,18 @@ public interface VoyageService {
     })
     @GET("schedule")
     Observable<Response<List<Schedule>>> schedules(@Header("Authorization") String authorization);
+
+    @Headers({
+            "Accept: application/json"
+    })
+    @GET("trip")
+    Observable<Response<List<Trip>>> trips(
+            @Header("Authorization") String authorization, @Body JsonObject object);
+
+    @Headers({
+            "Accept: application/json"
+    })
+    @GET("trip")
+    Observable<Response<List<Trip>>> trips(
+            @Header("Authorization") String authorization, @Body Schedule schedule);
 }

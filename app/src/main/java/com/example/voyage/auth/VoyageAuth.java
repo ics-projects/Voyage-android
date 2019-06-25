@@ -11,16 +11,18 @@ import com.google.gson.JsonObject;
 import java.io.IOException;
 
 import io.reactivex.Observable;
-import io.reactivex.Observer;
+import io.reactivex.Single;
+import io.reactivex.SingleObserver;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
+import io.reactivex.subjects.BehaviorSubject;
 import retrofit2.Response;
 
 public class VoyageAuth implements BaseAuth<VoyageUser> {
     private static final String LOG_TAG = VoyageAuth.class.getSimpleName();
     private static VoyageAuth instance;
-    private static VoyageUser userInstance;
+    private static BehaviorSubject<VoyageUser> userPublishSubject = BehaviorSubject.create();
 
     private VoyageService voyageService = VoyageClient.getInstance().getVoyageService();
 
@@ -35,24 +37,22 @@ public class VoyageAuth implements BaseAuth<VoyageUser> {
     }
 
     @Override
-    public Observable<Response<VoyageUser>> signInWithEmailAndPassword(String email, String password) {
-        if (currentUser() != null) {
-            return Observable.just(Response.success(userInstance));
-        }
-
+    public BehaviorSubject<VoyageUser> signInWithEmailAndPassword(String email, String password) {
         JsonObject postParameters = new JsonObject();
         postParameters.addProperty("email", email);
         postParameters.addProperty("password", password);
 
         Observable<Response<VoyageUser>> user = voyageService.login(postParameters);
-        setUserInstance(user);
-        return user;
+        Single.fromObservable(user).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(saveUserObserver);
+        return userPublishSubject;
     }
 
     @Override
-    public Observable<Response<VoyageUser>> createUserWithCredentials(String firstName, String lastName,
-                                                                      String email, String password,
-                                                                      String passwordConfirm) {
+    public BehaviorSubject<VoyageUser> createUserWithCredentials(String firstName, String lastName,
+                                                                 String email, String password,
+                                                                 String passwordConfirm) {
         JsonObject postParameters = new JsonObject();
         postParameters.addProperty("first_name", firstName);
         postParameters.addProperty("last_name", lastName);
@@ -61,8 +61,10 @@ public class VoyageAuth implements BaseAuth<VoyageUser> {
         postParameters.addProperty("password_confirmation", passwordConfirm);
 
         Observable<Response<VoyageUser>> user = voyageService.register(postParameters);
-        setUserInstance(user);
-        return user;
+        Single.fromObservable(user.subscribeOn(Schedulers.io()))
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(saveUserObserver);
+        return userPublishSubject;
     }
 
     @Override
@@ -72,63 +74,58 @@ public class VoyageAuth implements BaseAuth<VoyageUser> {
 
     @Override
     public Observable<Response<VoyageUser>> signOut() {
-//        String token = PreferenceUtilities.getUserToken(ApplicationContextProvider.getContext());
-//        if (token != null) {
-//            String authHeader = "Bearer ".concat(token);
-//            userInstance = null;
-//            Observable<Response<VoyageUser>> logoutResponse = voyageService.logout(authHeader);
-//            return logoutResponse;
-//        }
-
-        userInstance = null;
         PreferenceUtilities.setUserToken(ApplicationContextProvider.getContext(), null);
         return null;
     }
 
-    public Observable<Response<VoyageUser>> currentUser() {
-        if (userInstance != null) {
-            return Observable.just(Response.success(userInstance));
+    public BehaviorSubject<VoyageUser> currentUser() {
+        if (userPublishSubject.getValue() != null) {
+            return userPublishSubject;
         } else {
             String token = PreferenceUtilities.getUserToken(ApplicationContextProvider.getContext());
             if (token != null) {
                 String authHeader = "Bearer ".concat(token);
-                Log.d(LOG_TAG, "auth header: " + authHeader);
-                Observable<Response<VoyageUser>> user = voyageService.getUser(authHeader);
-                setUserInstance(user);
-                return user;
+                Log.d(LOG_TAG, "Stored token: " + token);
+                Single.fromObservable(voyageService.getUser(authHeader))
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(new SingleObserver<Response<VoyageUser>>() {
+                            @Override
+                            public void onSubscribe(Disposable d) {
+
+                            }
+
+                            @Override
+                            public void onSuccess(Response<VoyageUser> voyageUserResponse) {
+                                if (voyageUserResponse.isSuccessful()) {
+                                    voyageUserResponse.body().setToken(token);
+                                    userPublishSubject.onNext(voyageUserResponse.body());
+                                }
+                            }
+
+                            @Override
+                            public void onError(Throwable e) {
+
+                            }
+                        });
+                return userPublishSubject;
             } else return null;
         }
     }
 
-    public Observable<VoyageUser> getUserInstance() {
-        if (userInstance == null) {
-            if (currentUser() != null) {
-                return currentUser().map(Response::body);
-            }
-        } else {
-            return Observable.just(userInstance);
-        }
-        return null;
-    }
-
-    private void setUserInstance(final Observable<Response<VoyageUser>> user) {
-        user.subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(userObserver);
-    }
-
-    private Observer<Response<VoyageUser>> userObserver = new Observer<Response<VoyageUser>>() {
+    private SingleObserver<Response<VoyageUser>> saveUserObserver = new SingleObserver<Response<VoyageUser>>() {
         @Override
         public void onSubscribe(Disposable d) {
 
         }
 
         @Override
-        public void onNext(Response<VoyageUser> voyageUserResponse) {
+        public void onSuccess(Response<VoyageUser> voyageUserResponse) {
             if (voyageUserResponse.isSuccessful()) {
-                userInstance = voyageUserResponse.body();
+                Log.d(LOG_TAG, "User token: ".concat(voyageUserResponse.body().getToken()));
                 PreferenceUtilities.setUserToken(
-                        ApplicationContextProvider.getContext(), userInstance.getToken());
+                        ApplicationContextProvider.getContext(), voyageUserResponse.body().getToken());
+                userPublishSubject.onNext(voyageUserResponse.body());
             } else {
                 try {
                     Log.d(LOG_TAG, "Error: "
@@ -147,12 +144,8 @@ public class VoyageAuth implements BaseAuth<VoyageUser> {
 
         @Override
         public void onError(Throwable e) {
+            Log.e(LOG_TAG, "Error: ", e);
             e.printStackTrace();
-        }
-
-        @Override
-        public void onComplete() {
-
         }
     };
 }

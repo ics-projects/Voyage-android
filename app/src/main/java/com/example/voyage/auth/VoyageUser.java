@@ -3,7 +3,7 @@ package com.example.voyage.auth;
 import com.google.gson.annotations.SerializedName;
 
 public class VoyageUser {
-    private final String token;
+    private String token;
 
     @SerializedName("first_name")
     private final String firstName;
@@ -34,5 +34,9 @@ public class VoyageUser {
 
     public String getEmail() {
         return email;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 }
