@@ -173,7 +173,6 @@
                                 android:drawablePadding="16dp"
                                 android:focusableInTouchMode="false"
                                 android:fontFamily="@font/calibri"
-                                android:hint="@string/select_date"
                                 android:textColor="@android:color/black"
                                 android:textSize="16sp" />
                         </android.support.design.widget.TextInputLayout>
@@ -191,13 +190,12 @@
                     android:layout_margin="16dp"
                     android:background="@drawable/buttonshape"
                     android:fontFamily="@font/calibri"
-                    android:text="Search Buses"
+                    android:text="@string/search_buses"
                     android:textAllCaps="false"
                     android:textColor="#ffffff"
                     android:textSize="18sp"
                     android:textStyle="bold" />
             </LinearLayout>
-
 
         </ScrollView>
 

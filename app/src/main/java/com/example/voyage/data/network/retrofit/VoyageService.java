@@ -40,14 +40,14 @@ public interface VoyageService {
     @Headers({
             "Accept: application/json"
     })
-    @GET("trip")
+    @POST("trip")
     Observable<Response<List<Trip>>> trips(
             @Header("Authorization") String authorization, @Body JsonObject object);
 
     @Headers({
             "Accept: application/json"
     })
-    @GET("trip")
+    @POST("trip")
     Observable<Response<List<Trip>>> trips(
             @Header("Authorization") String authorization, @Body Schedule schedule);
 }

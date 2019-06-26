@@ -2,7 +2,9 @@ package com.example.voyage.ui.searchbus;
 
 import android.app.DatePickerDialog;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Window;
@@ -11,9 +13,11 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.example.voyage.R;
 import com.example.voyage.data.models.Schedule;
+import com.example.voyage.ui.trips.AvailableBusActivity;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -21,16 +25,14 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
-import static android.content.ContentValues.TAG;
-
 
 public class SearchBusActivity extends AppCompatActivity {
     private static final String LOG_TAG = SearchBusActivity.class.getSimpleName();
 
     private EditText dateEditText;
-
-    private DatePickerListener datePickerListener = new DatePickerListener();
     final private Calendar c = Calendar.getInstance();
+    private DatePickerListener datePickerListener = new DatePickerListener();
+
     private SearchBusActivityViewModel viewModel;
     private List<Schedule> schedules;
 
@@ -40,11 +42,15 @@ public class SearchBusActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        setContentView(R.layout.activity_search);
-        Button search_buses = findViewById(R.id.search_buses);
 
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
+        setContentView(R.layout.activity_search);
+
+        Button search_buses = findViewById(R.id.search_buses);
         originSpinner = findViewById(R.id.originSpinner);
         destinationSpinner = findViewById(R.id.destinationSpinner);
 
@@ -63,10 +69,28 @@ public class SearchBusActivity extends AppCompatActivity {
         });
 
         search_buses.setOnClickListener(view -> {
-//            Intent intent = new Intent(getApplicationContext(), AvailableBusActivity.class);
-//            startActivity(intent);
-//            viewModel
+            String origin = (String) originSpinner.getSelectedItem();
+            String destination = (String) destinationSpinner.getSelectedItem();
+
+            String selectedDate = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH)
+                    .format(c.getTime());
+
+            if (selectedDate != null) {
+                Intent intent = new Intent(this, AvailableBusActivity.class);
+                intent.putExtra("TRIP_ORIGIN", origin);
+                intent.putExtra("TRIP_DESTINATION", destination);
+                intent.putExtra("TRIP_DATE", selectedDate);
+                startActivityForResult(intent, 1);
+            }
         });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode != 2) {
+            Toast.makeText(this, "No trips found", Toast.LENGTH_LONG).show();
+        }
     }
 
     private void fetchSchedules() {
@@ -103,7 +127,6 @@ public class SearchBusActivity extends AppCompatActivity {
             c.set(Calendar.DAY_OF_MONTH, dayOfMonth);
             String selectedDate = new SimpleDateFormat("MM/dd/yyyy", Locale.ENGLISH).format(c.getTime());
 
-            Log.d(TAG, "onDateSet: " + selectedDate);
             dateEditText.setText(selectedDate);
         }
     }
