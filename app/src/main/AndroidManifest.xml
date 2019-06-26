@@ -15,8 +15,8 @@
         <activity android:name=".ui.authentication.LoginActivity" />
         <activity android:name=".ui.authentication.RegisterActivity" />
         <activity android:name=".BookActivity" />
-        <activity android:name=".AvailableBusActivity" />
-        <activity android:name=".SearchActivity" />
+        <activity android:name=".ui.trips.AvailableBusActivity" />
+        <activity android:name=".ui.searchbus.SearchBusActivity" />
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

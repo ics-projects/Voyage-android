@@ -11,7 +11,7 @@
     <string name="destination_prompt">Choose your Destination</string>
     <string name="lbl_start_point">Start point</string>
     <string name="lbl_end_point">End point</string>
-    <string name="choose_date">Choose date...</string>
+    <string name="choose_date">Choose date…</string>
     <string name="departure_time">Departure time</string>
     <string name="btn_submit">Submit</string>
 
@@ -40,5 +40,8 @@
     <string name="error_password_confirm">Passwords don\'t match</string>
     <string name="preference_file_key">com.example.voyage.PREFERENCE_FILE_KEY</string>
     <string name="user_token_key">USER_TOKEN</string>
+    <string name="destination">Destination</string>
+    <string name="from">From</string>
     <string name="select_date">Select Date</string>
+    <string name="search_buses">Search Buses</string>
 </resources>
