@@ -106,54 +106,43 @@
                         android:layout_marginBottom="16dp"
                         android:orientation="vertical">
 
-                        <!--<android.support.design.widget.TextInputLayout-->
-                        <!--android:layout_width="match_parent"-->
-                        <!--android:layout_height="wrap_content"-->
-                        <!--android:layout_marginBottom="8dp"-->
-                        <!--android:textColorHint="#FF8A99AF">-->
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:text="Destination"
+                            android:textAllCaps="true"
+                            android:textSize="12dp"
+                            android:textColor="@color/accent"/>
 
-                        <!--<EditText-->
-                        <!--android:layout_width="match_parent"-->
-                        <!--android:layout_height="match_parent"-->
-                        <!--android:drawablePadding="16dp"-->
-                        <!--android:drawableStart="@drawable/ic_location_on_light_blue_24dp"-->
-                        <!--android:fontFamily="@font/calibri"-->
-                        <!--android:hint="@string/destination"-->
-                        <!--android:inputType="text"-->
-                        <!--android:maxLines="1"-->
-                        <!--android:textColor="@android:color/black"-->
-                        <!--android:textSize="16sp" />-->
-                        <!--</android.support.design.widget.TextInputLayout>-->
 
                         <Spinner
                             android:id="@+id/destinationSpinner"
                             android:layout_width="fill_parent"
-                            android:layout_height="wrap_content" />
+                            android:layout_height="wrap_content"
+                            android:spinnerMode="dialog"
+                            android:dropDownWidth="match_parent"
+                            android:gravity="center"
+                            android:layout_margin="16dp"
+                            />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:text="From"
+                            android:textAllCaps="true"
+                            android:textSize="12dp"
+                            android:textColor="@color/accent"/>
 
 
-                        <!--<android.support.design.widget.TextInputLayout-->
-                        <!--android:layout_width="match_parent"-->
-                        <!--android:layout_height="wrap_content"-->
-                        <!--android:layout_marginBottom="8dp"-->
-                        <!--android:textColorHint="#FF8A99AF">-->
-
-                        <!--<EditText-->
-                        <!--android:layout_width="match_parent"-->
-                        <!--android:layout_height="match_parent"-->
-                        <!--android:drawablePadding="16dp"-->
-                        <!--android:drawableStart="@drawable/ic_location_on_light_blue_24dp"-->
-                        <!--android:fontFamily="@font/calibri"-->
-                        <!--android:hint="@string/from"-->
-                        <!--android:inputType="text"-->
-                        <!--android:maxLines="1"-->
-                        <!--android:textColor="@android:color/black"-->
-                        <!--android:textSize="16sp" />-->
-                        <!--</android.support.design.widget.TextInputLayout>-->
 
                         <Spinner
                             android:id="@+id/originSpinner"
                             android:layout_width="fill_parent"
-                            android:layout_height="wrap_content" />
+                            android:layout_height="wrap_content"
+                            android:spinnerMode="dialog"
+                            android:dropDownWidth="match_parent"
+                            android:gravity="center"
+                            android:layout_margin="16dp"/>
 
 
                         <android.support.design.widget.TextInputLayout
