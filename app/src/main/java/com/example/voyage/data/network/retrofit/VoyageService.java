@@ -46,7 +46,10 @@ public interface VoyageService {
     Observable<Response<List<Trip>>> trips(
             @Header("Authorization") String authorization, @Body JsonObject object);
 
-    @GET("trip/{id}")
+    @Headers({
+            "Accept: application/json"
+    })
+    @GET("seat/{busId}")
     Observable<Response<List<Seat>>> seats(@Header("Authorization") String authToken,
-                                           @Path("id") int tripId);
+                                           @Path("busId") int busId);
 }

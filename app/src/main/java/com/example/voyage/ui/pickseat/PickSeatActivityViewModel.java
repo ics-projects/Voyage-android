@@ -18,7 +18,7 @@ public class PickSeatActivityViewModel extends AndroidViewModel {
         this.voyageRepository = new VoyageRepository();
     }
 
-    LiveData<List<Seat>> getSeats(int tripId) {
-        return voyageRepository.getSeats(tripId);
+    LiveData<List<Seat>> getSeats(int busId) {
+        return voyageRepository.getSeats(busId);
     }
 }

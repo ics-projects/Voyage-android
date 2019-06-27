@@ -130,9 +130,6 @@ public class VoyageRepository {
                                         public void onSuccess(Response<List<Trip>> listResponse) {
                                             if (listResponse.isSuccessful()) {
                                                 assert listResponse.body() != null;
-                                                Log.d(LOG_TAG, "Length: " +
-                                                        listResponse.body().size());
-
                                                 trips.setValue(listResponse.body());
                                             } else {
                                                 try {
@@ -167,7 +164,7 @@ public class VoyageRepository {
         return trips;
     }
 
-    public LiveData<List<Seat>> getSeats(int tripId) {
+    public LiveData<List<Seat>> getSeats(int busId) {
         voyageUser
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -180,8 +177,7 @@ public class VoyageRepository {
                     public void onNext(VoyageUser voyageUser) {
                         if (voyageUser != null) {
                             String authToken = "Bearer ".concat(voyageUser.getToken());
-                            Log.d(LOG_TAG, "Retrieved token: " + voyageUser.getToken());
-                            Single.fromObservable(voyageService.seats(authToken, tripId))
+                            Single.fromObservable(voyageService.seats(authToken, busId))
                                     .subscribeOn(Schedulers.io())
                                     .observeOn(AndroidSchedulers.mainThread())
                                     .subscribe(new SingleObserver<Response<List<Seat>>>() {
@@ -193,13 +189,22 @@ public class VoyageRepository {
                                         @Override
                                         public void onSuccess(Response<List<Seat>> listResponse) {
                                             if (listResponse.isSuccessful()) {
+                                                Log.d(LOG_TAG, "Seats length: " + listResponse.body().size());
                                                 seats.setValue(listResponse.body());
+                                            } else {
+                                                try {
+                                                    assert listResponse.errorBody() != null;
+                                                    Log.d(LOG_TAG, "Error: " +
+                                                            listResponse.errorBody().string());
+                                                } catch (IOException e) {
+                                                    e.printStackTrace();
+                                                }
                                             }
                                         }
 
                                         @Override
                                         public void onError(Throwable e) {
-
+                                            e.printStackTrace();
                                         }
                                     });
                         }

@@ -12,8 +12,7 @@ import android.view.WindowManager;
 import com.example.voyage.R;
 import com.example.voyage.ui.pickseat.PickSeatActivity;
 
-public class AvailableBusActivity extends AppCompatActivity implements
-        AvailableBusAdapter.ItemClickListener {
+public class AvailableBusActivity extends AppCompatActivity implements AvailableBusAdapter.ItemClickListener {
 
     private static final String LOG_TAG = AvailableBusActivity.class.getSimpleName();
 
@@ -73,10 +72,13 @@ public class AvailableBusActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onItemClickListener(int tripId) {
+    public void onItemClickListener(int tripId, int pickPoint, int dropPoint, int busId) {
         // Launch PickSeatActivity adding the itemId as an extra in the intent
         Intent intent = new Intent(AvailableBusActivity.this, PickSeatActivity.class);
         intent.putExtra("TRIP_ID", tripId);
+        intent.putExtra("TRIP_PICK_POINT", pickPoint);
+        intent.putExtra("TRIP_DROP_POINT", dropPoint);
+        intent.putExtra("TRIP_BUS_ID", busId);
         startActivity(intent);
     }
 }
