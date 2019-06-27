@@ -50,96 +50,29 @@
         android:layout_height="wrap_content"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
+
         <RelativeLayout
+            android:id="@+id/image_layout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="-16dp">
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-            <RelativeLayout
-                android:id="@+id/image_layout"
+            <ImageView
+                android:id="@+id/bus"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <ImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="260dp"
-                    android:scaleType="centerCrop"
-                    android:src="@drawable/bus_image_2" />
-
-                <TextView
-                    android:id="@+id/textView"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentTop="true"
-                    android:layout_centerHorizontal="true"
-                    android:layout_marginTop="16dp"
-                    android:fontFamily="@font/print_clearly"
-                    android:text="Select your bus!"
-                    android:textAlignment="center"
-                    android:textColor="#FFFFFF"
-                    android:textSize="18sp" />
-
-                <LinearLayout
-                    android:id="@+id/linearLayout"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/textView"
-                    android:layout_marginTop="8dp"
-                    android:orientation="horizontal"
-                    android:weightSum="100">
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="45"
-                        android:fontFamily="@font/gotham"
-                        android:text="Pune"
-                        android:textAlignment="center"
-                        android:textColor="#FFFFFF"
-                        android:textSize="18sp" />
-
-                    <ImageView
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_gravity="center"
-                        android:layout_weight="10"
-                        android:src="@drawable/ic_swap_horiz_white_24dp" />
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="45"
-                        android:fontFamily="@font/gotham"
-                        android:text="Mumbai"
-                        android:textAlignment="center"
-                        android:textColor="#FFFFFF"
-                        android:textSize="18sp" />
-
-                </LinearLayout>
-
-
-                <TextView
-                    android:id="@+id/textView3"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/linearLayout"
-                    android:layout_marginTop="8dp"
-                    android:fontFamily="@font/print_clearly"
-                    android:text="12th - Feb - 2019 | Tuesday"
-                    android:textAlignment="center"
-                    android:textColor="#FFFFFF"
-                    android:textSize="18sp" />
-            </RelativeLayout>
+                android:layout_height="260dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/bus_image_2" />
 
             <android.support.v7.widget.RecyclerView
-                android:id="@+id/recyclerView_recentbookings"
+                android:id="@+id/recent_bookings_recycler_view"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_below="@+id/image_layout"
+                android:layout_below="@id/bus"
                 android:scrollbars="vertical" />
 
         </RelativeLayout>
+
 
     </android.support.v4.widget.NestedScrollView>
 
