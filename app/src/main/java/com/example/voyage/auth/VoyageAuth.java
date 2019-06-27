@@ -98,6 +98,7 @@ public class VoyageAuth implements BaseAuth<VoyageUser> {
                             @Override
                             public void onSuccess(Response<VoyageUser> voyageUserResponse) {
                                 if (voyageUserResponse.isSuccessful()) {
+                                    assert voyageUserResponse.body() != null;
                                     voyageUserResponse.body().setToken(token);
                                     userPublishSubject.onNext(voyageUserResponse.body());
                                 }
@@ -122,12 +123,14 @@ public class VoyageAuth implements BaseAuth<VoyageUser> {
         @Override
         public void onSuccess(Response<VoyageUser> voyageUserResponse) {
             if (voyageUserResponse.isSuccessful()) {
+                assert voyageUserResponse.body() != null;
                 Log.d(LOG_TAG, "User token: ".concat(voyageUserResponse.body().getToken()));
                 PreferenceUtilities.setUserToken(
                         ApplicationContextProvider.getContext(), voyageUserResponse.body().getToken());
                 userPublishSubject.onNext(voyageUserResponse.body());
             } else {
                 try {
+                    assert voyageUserResponse.errorBody() != null;
                     Log.d(LOG_TAG, "Error: "
                             + voyageUserResponse.errorBody().string()
                             + " Status Code: " + voyageUserResponse.code()

@@ -10,8 +10,10 @@ import android.view.Window;
 import android.view.WindowManager;
 
 import com.example.voyage.R;
+import com.example.voyage.ui.pickseat.PickSeatActivity;
 
-public class AvailableBusActivity extends AppCompatActivity {
+public class AvailableBusActivity extends AppCompatActivity implements
+        AvailableBusAdapter.ItemClickListener {
 
     private static final String LOG_TAG = AvailableBusActivity.class.getSimpleName();
 
@@ -19,8 +21,7 @@ public class AvailableBusActivity extends AppCompatActivity {
     private String intentStringDestination;
     private String intentStringDate;
 
-    private RecyclerView recyclerView;
-    private AvailableBusAdapter mAdapter;
+    private AvailableBusAdapter busAdapter;
 
 
     AvailableBusActivityViewModel viewModel;
@@ -37,7 +38,7 @@ public class AvailableBusActivity extends AppCompatActivity {
         setContentView(R.layout.activity_available_bus);
 
         // Recyclerview
-        recyclerView = findViewById(R.id.recyclerView_trips);
+        RecyclerView recyclerView = findViewById(R.id.recyclerView_trips);
         recyclerView.setHasFixedSize(true);
 
         // LinearLayoutManager
@@ -45,8 +46,8 @@ public class AvailableBusActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(layoutManager);
 
         // Adapter
-        mAdapter = new AvailableBusAdapter(this);
-        recyclerView.setAdapter(mAdapter);
+        busAdapter = new AvailableBusAdapter(this, this);
+        recyclerView.setAdapter(busAdapter);
 
         // retrieve intent data
         Intent intent = getIntent();
@@ -59,14 +60,6 @@ public class AvailableBusActivity extends AppCompatActivity {
 
         // fetch trips
         fetchTrips();
-
-//        // click listener for card
-//        CardView cardView = findViewById(R.id.cardView);
-//        cardView.setOnClickListener(view -> {
-//            Intent intent1 = new Intent(getApplicationContext(), BookActivity.class);
-//            startActivity(intent1);
-//
-//        });
     }
 
     private void fetchTrips() {
@@ -75,9 +68,15 @@ public class AvailableBusActivity extends AppCompatActivity {
                 intentStringDate != null
         ) {
             viewModel.getTrips(intentStringOrigin, intentStringDestination, intentStringDate)
-                    .observe(this, trips -> mAdapter.setTrips(trips));
+                    .observe(this, trips -> busAdapter.setTrips(trips));
         }
     }
 
-
+    @Override
+    public void onItemClickListener(int tripId) {
+        // Launch PickSeatActivity adding the itemId as an extra in the intent
+        Intent intent = new Intent(AvailableBusActivity.this, PickSeatActivity.class);
+        intent.putExtra("TRIP_ID", tripId);
+        startActivity(intent);
+    }
 }

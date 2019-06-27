@@ -4,6 +4,7 @@ import com.google.gson.annotations.SerializedName;
 
 public class Trip {
 
+    private final int id;
     private final String origin;
     private final String destination;
 
@@ -16,13 +17,18 @@ public class Trip {
     @SerializedName("prices")
     private SeatPrice seatPrice;
 
-    public Trip(String origin, String destination, String departureTime, String arrivalTime,
+    public Trip(int id, String origin, String destination, String departureTime, String arrivalTime,
                 SeatPrice seatPrice) {
+        this.id = id;
         this.origin = origin;
         this.destination = destination;
         this.departureTime = departureTime;
         this.arrivalTime = arrivalTime;
         this.seatPrice = seatPrice;
+    }
+
+    public int getId() {
+        return id;
     }
 
     public String getOrigin() {
@@ -41,7 +47,7 @@ public class Trip {
         return arrivalTime;
     }
 
-    public SeatPrice getSeatPrice() {
+    private SeatPrice getSeatPrice() {
         return seatPrice;
     }
 
@@ -51,5 +57,9 @@ public class Trip {
 
     public int getFirstClassPrice() {
         return getSeatPrice().getFirstClassSeatPrice();
+    }
+
+    public int getSecondClassPrice() {
+        return getSeatPrice().getSecondClassSeatPrice();
     }
 }

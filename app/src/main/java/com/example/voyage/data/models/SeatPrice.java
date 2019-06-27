@@ -8,9 +8,9 @@ public class SeatPrice {
     private final int firstClassSeatPrice;
 
     @SerializedName("Second class")
-    private final String secondClassSeatPrice;
+    private final int secondClassSeatPrice;
 
-    public SeatPrice(int firstClassSeatPrice, String secondClassSeatPrice) {
+    public SeatPrice(int firstClassSeatPrice, int secondClassSeatPrice) {
         this.firstClassSeatPrice = firstClassSeatPrice;
         this.secondClassSeatPrice = secondClassSeatPrice;
     }
@@ -19,7 +19,7 @@ public class SeatPrice {
         return firstClassSeatPrice;
     }
 
-    public String getSecondClassSeatPrice() {
+    public int getSecondClassSeatPrice() {
         return secondClassSeatPrice;
     }
 }

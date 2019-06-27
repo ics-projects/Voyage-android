@@ -2,6 +2,7 @@ package com.example.voyage.data.network.retrofit;
 
 import com.example.voyage.auth.VoyageUser;
 import com.example.voyage.data.models.Schedule;
+import com.example.voyage.data.models.Seat;
 import com.example.voyage.data.models.Trip;
 import com.google.gson.JsonObject;
 
@@ -14,6 +15,7 @@ import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.Headers;
 import retrofit2.http.POST;
+import retrofit2.http.Path;
 
 public interface VoyageService {
     @POST("login")
@@ -44,10 +46,7 @@ public interface VoyageService {
     Observable<Response<List<Trip>>> trips(
             @Header("Authorization") String authorization, @Body JsonObject object);
 
-    @Headers({
-            "Accept: application/json"
-    })
-    @POST("trip")
-    Observable<Response<List<Trip>>> trips(
-            @Header("Authorization") String authorization, @Body Schedule schedule);
+    @GET("trip/{id}")
+    Observable<Response<List<Seat>>> seats(@Header("Authorization") String authToken,
+                                           @Path("id") int tripId);
 }

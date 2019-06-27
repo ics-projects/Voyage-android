@@ -21,11 +21,15 @@ import java.util.Locale;
 class AvailableBusAdapter extends RecyclerView.Adapter<AvailableBusAdapter.ItemViewHolder> {
 
     private static final String LOG_TAG = AvailableBusAdapter.class.getSimpleName();
+
+    final private ItemClickListener itemClickListener;
+
     private Context context;
     private List<Trip> trips;
 
-    AvailableBusAdapter(Context context) {
+    AvailableBusAdapter(Context context, ItemClickListener itemClickListener) {
         this.context = context;
+        this.itemClickListener = itemClickListener;
     }
 
     @NonNull
@@ -84,7 +88,11 @@ class AvailableBusAdapter extends RecyclerView.Adapter<AvailableBusAdapter.ItemV
         notifyDataSetChanged();
     }
 
-    class ItemViewHolder extends RecyclerView.ViewHolder {
+    public interface ItemClickListener {
+        void onItemClickListener(int tripId);
+    }
+
+    class ItemViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private TextView priceTextView;
         private TextView timeTextView;
 
@@ -92,6 +100,12 @@ class AvailableBusAdapter extends RecyclerView.Adapter<AvailableBusAdapter.ItemV
             super(view);
             timeTextView = view.findViewById(R.id.time_text_view);
             priceTextView = view.findViewById(R.id.seat_price);
+        }
+
+        @Override
+        public void onClick(View v) {
+            int tripId = trips.get(getAdapterPosition()).getId();
+            itemClickListener.onItemClickListener(tripId);
         }
     }
 }
