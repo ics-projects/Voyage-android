@@ -8,20 +8,13 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.Button;
 
 import com.example.voyage.R;
 
 public class PickSeatActivity extends AppCompatActivity {
-    Button payment;
 
     private PickSeatViewModel viewModel;
     private PickSeatAdapter seatAdapter;
-
-    private int intentIntegerTripId;
-    private int intentIntegerPickPoint;
-    private int intentIntegerDropPoint;
-    private int intentIntegerBusId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,10 +41,10 @@ public class PickSeatActivity extends AppCompatActivity {
 
         // retrieve intent data
         Intent intent = getIntent();
-        intentIntegerTripId = intent.getIntExtra("TRIP_ID", 0);
-        intentIntegerPickPoint = intent.getIntExtra("TRIP_PICK_POINT", 0);
-        intentIntegerDropPoint = intent.getIntExtra("TRIP_DROP_POINT", 0);
-        intentIntegerBusId = intent.getIntExtra("TRIP_BUS_ID", 0);
+//        int intentIntegerTripId = intent.getIntExtra("TRIP_ID", 0);
+//        int intentIntegerPickPoint = intent.getIntExtra("TRIP_PICK_POINT", 0);
+//        int intentIntegerDropPoint = intent.getIntExtra("TRIP_DROP_POINT", 0);
+        int intentIntegerBusId = intent.getIntExtra("TRIP_BUS_ID", 0);
 
         // Set up view model
         PickSeatViewModelFactory factory = new PickSeatViewModelFactory(getApplication(), intentIntegerBusId);
@@ -59,12 +52,6 @@ public class PickSeatActivity extends AppCompatActivity {
 
         // fetch seats to be displayed
         fetchSeats();
-
-//        payment = findViewById(R.id.pay_seat);
-//        payment.setOnClickListener(view -> {
-//            Intent intent = new Intent(getApplicationContext(), MpesaActivity.class);
-//            startActivity(intent);
-//        });
     }
 
     private void fetchSeats() {

@@ -1,9 +1,14 @@
 package com.example.voyage.data.models;
 
-public class Seat {
+import java.io.Serializable;
+
+public class Seat implements Serializable {
 
     private final int id;
+
     private final int available;
+
+    private boolean isAvailable;
 
     public Seat(int id, int available) {
         this.id = id;
@@ -16,5 +21,13 @@ public class Seat {
 
     public int getAvailable() {
         return available;
+    }
+
+    public boolean isAvailable() {
+        return isAvailable;
+    }
+
+    public void setSeatAvailable(boolean b) {
+        isAvailable = b;
     }
 }

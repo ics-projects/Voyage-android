@@ -44,10 +44,7 @@ class PickSeatAdapter extends RecyclerView.Adapter<PickSeatAdapter.ItemViewHolde
         List<Seat> seatRow = seatRowCollection.getRowSeats().get(position);
 
         for (Seat seat : seatRow) {
-            Log.d(LOG_TAG, "Seat id: " + seat.getId());
-            int seatModulus = seat.getId() % 4;
-            int seatAvailable = seat.getAvailable();
-            setSeatDrawable(itemViewHolder, seatModulus, seatAvailable);
+            itemViewHolder.bind(seat);
         }
 
     }
@@ -58,65 +55,6 @@ class PickSeatAdapter extends RecyclerView.Adapter<PickSeatAdapter.ItemViewHolde
             return 0;
         }
         return seatRowCollection.getRowSeats().size();
-    }
-
-    void setSeatRowCollection(SeatRowCollection rowCollection) {
-        this.seatRowCollection = rowCollection;
-        notifyDataSetChanged();
-    }
-
-    private void setSeatDrawable(ItemViewHolder itemViewHolder, int seatModulus, int seatAvailable) {
-        Log.d(LOG_TAG, "Seat modulus: " + seatModulus);
-        switch (seatModulus) {
-            case 0:
-                // seat is at the end of the row i.e column d
-                if (seatAvailable == 1) {
-                    itemViewHolder.columnDImageView.setImageResource(R.drawable.available_img);
-                    itemViewHolder.columnDImageView.setContentDescription(
-                            context.getString(R.string.available_seat_drawable));
-                } else {
-                    itemViewHolder.columnDImageView.setImageResource(R.drawable.booked_img);
-                    itemViewHolder.columnDImageView.setContentDescription(
-                            context.getString(R.string.booked_seat_drawable));
-                }
-                break;
-            case 1:
-                // seat is at column a
-                if (seatAvailable == 1) {
-                    itemViewHolder.columnAImageView.setImageResource(R.drawable.available_img);
-                    itemViewHolder.columnAImageView.setContentDescription(
-                            context.getString(R.string.available_seat_drawable));
-                } else {
-                    itemViewHolder.columnAImageView.setImageResource(R.drawable.booked_img);
-                    itemViewHolder.columnAImageView.setContentDescription(
-                            context.getString(R.string.booked_seat_drawable));
-                }
-                break;
-            case 2:
-                // seat is at column b
-                if (seatAvailable == 1) {
-                    itemViewHolder.columnBImageView.setImageResource(R.drawable.available_img);
-                    itemViewHolder.columnBImageView.setContentDescription(
-                            context.getString(R.string.available_seat_drawable));
-                } else {
-                    itemViewHolder.columnBImageView.setImageResource(R.drawable.booked_img);
-                    itemViewHolder.columnBImageView.setContentDescription(
-                            context.getString(R.string.booked_seat_drawable));
-                }
-                break;
-            case 3:
-                // seat is at column c
-                if (seatAvailable == 1) {
-                    itemViewHolder.columnCImageView.setImageResource(R.drawable.available_img);
-                    itemViewHolder.columnCImageView.setContentDescription(
-                            context.getString(R.string.available_seat_drawable));
-                } else {
-                    itemViewHolder.columnCImageView.setImageResource(R.drawable.booked_img);
-                    itemViewHolder.columnCImageView.setContentDescription(
-                            context.getString(R.string.booked_seat_drawable));
-                }
-                break;
-        }
     }
 
     class ItemViewHolder extends RecyclerView.ViewHolder {
@@ -136,5 +74,59 @@ class PickSeatAdapter extends RecyclerView.Adapter<PickSeatAdapter.ItemViewHolde
             columnCImageView = itemView.findViewById(R.id.column_C_iv);
             columnDImageView = itemView.findViewById(R.id.column_D_iv);
         }
+
+        public void bind(Seat seat) {
+            int seatModulus = seat.getId() % 4;
+
+            ImageView currentImage = null;
+            switch (seatModulus) {
+                case 0:
+                    currentImage = columnDImageView;
+                    break;
+                case 1:
+                    currentImage = columnAImageView;
+                    break;
+                case 2:
+                    currentImage = columnBImageView;
+                    break;
+                case 3:
+                    currentImage = columnCImageView;
+                    break;
+            }
+
+            setSeatDrawable(currentImage, seat, getAdapterPosition());
+        }
+
+        private void setSeatDrawable(ImageView imageView, Seat seat, int position) {
+            if (seat.getAvailable() == 1) {
+                seat.setSeatAvailable(true);
+                imageView.setImageResource(R.drawable.available_img);
+            } else {
+                seat.setSeatAvailable(false);
+                imageView.setImageResource(R.drawable.booked_img);
+            }
+
+            imageView.setOnClickListener(v -> {
+                Log.d(LOG_TAG, "Selected seat id: " + seat.getId() +
+                        "\nSeat is available: " + seat.isAvailable());
+                seat.setSeatAvailable(!seat.isAvailable());
+
+                if (seat.isAvailable()) {
+                    imageView.setImageResource(R.drawable.available_img);
+                } else {
+                    imageView.setImageResource(R.drawable.your_seat_img);
+                }
+            });
+        }
+    }
+
+    void setSeatRowCollection(SeatRowCollection rowCollection) {
+        this.seatRowCollection = rowCollection;
+        notifyDataSetChanged();
+    }
+
+
+    public interface ItemClickListener {
+        void onItemClickListener(int seatId);
     }
 }

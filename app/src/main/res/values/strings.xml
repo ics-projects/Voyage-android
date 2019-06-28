@@ -49,4 +49,5 @@
     <string name="search_buses">Search Buses</string>
     <string name="available_seat_drawable">Available Seat drawable</string>
     <string name="booked_seat_drawable">Booked Seat drawable</string>
+    <string name="proceed_to_payment">Proceed to Payment</string>
 </resources>
