@@ -15,7 +15,7 @@ import com.example.voyage.R;
 public class PickSeatActivity extends AppCompatActivity {
     Button payment;
 
-    private PickSeatActivityViewModel viewModel;
+    private PickSeatViewModel viewModel;
     private PickSeatAdapter seatAdapter;
 
     private int intentIntegerTripId;
@@ -54,7 +54,8 @@ public class PickSeatActivity extends AppCompatActivity {
         intentIntegerBusId = intent.getIntExtra("TRIP_BUS_ID", 0);
 
         // Set up view model
-        viewModel = ViewModelProviders.of(this).get(PickSeatActivityViewModel.class);
+        PickSeatViewModelFactory factory = new PickSeatViewModelFactory(getApplication(), intentIntegerBusId);
+        viewModel = ViewModelProviders.of(this, factory).get(PickSeatViewModel.class);
 
         // fetch seats to be displayed
         fetchSeats();
@@ -67,7 +68,7 @@ public class PickSeatActivity extends AppCompatActivity {
     }
 
     private void fetchSeats() {
-        viewModel.getSeats(intentIntegerBusId).observe(this, seats ->
-                seatAdapter.setSeats(seats));
+        viewModel.getSeats().observe(this, seatRowCollection ->
+                seatAdapter.setSeatRowCollection(seatRowCollection));
     }
 }

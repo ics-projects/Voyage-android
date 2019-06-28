@@ -16,6 +16,7 @@ import com.google.gson.JsonObject;
 import java.io.IOException;
 import java.util.List;
 
+import io.reactivex.Observable;
 import io.reactivex.Observer;
 import io.reactivex.Single;
 import io.reactivex.SingleObserver;
@@ -33,7 +34,7 @@ public class VoyageRepository {
 
     private MutableLiveData<List<Schedule>> schedules = new MutableLiveData<>();
     private MutableLiveData<List<Trip>> trips = new MutableLiveData<>();
-    private MutableLiveData<List<Seat>> seats = new MutableLiveData<>();
+    private BehaviorSubject<List<Seat>> seats = BehaviorSubject.create();
 
     public VoyageRepository() {
         voyageService = VoyageClient.getInstance().getVoyageService();
@@ -164,9 +165,8 @@ public class VoyageRepository {
         return trips;
     }
 
-    public LiveData<List<Seat>> getSeats(int busId) {
-        voyageUser
-                .subscribeOn(Schedulers.io())
+    public Observable<List<Seat>> getSeats(int busId) {
+        voyageUser.subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<VoyageUser>() {
                     @Override
@@ -189,8 +189,9 @@ public class VoyageRepository {
                                         @Override
                                         public void onSuccess(Response<List<Seat>> listResponse) {
                                             if (listResponse.isSuccessful()) {
-                                                Log.d(LOG_TAG, "Seats length: " + listResponse.body().size());
-                                                seats.setValue(listResponse.body());
+                                                Log.d(LOG_TAG, "Seats length: " +
+                                                        listResponse.body().size());
+                                                seats.onNext(listResponse.body());
                                             } else {
                                                 try {
                                                     assert listResponse.errorBody() != null;

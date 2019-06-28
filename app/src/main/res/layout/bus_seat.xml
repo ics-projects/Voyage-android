@@ -33,16 +33,14 @@
                 android:layout_width="36dp"
                 android:layout_height="36dp"
                 android:layout_marginEnd="4dp"
-                android:contentDescription="@string/available_seat_drawable"
-                android:src="@drawable/available_img" />
+                tools:ignore="ContentDescription" />
 
             <ImageView
                 android:id="@+id/column_B_iv"
                 android:layout_width="36dp"
                 android:layout_height="36dp"
                 android:layout_marginStart="4dp"
-                android:contentDescription="@string/booked_seat_drawable"
-                android:src="@drawable/booked_img" />
+                tools:ignore="ContentDescription" />
 
         </LinearLayout>
 
@@ -57,16 +55,14 @@
                 android:layout_width="36dp"
                 android:layout_height="36dp"
                 android:layout_marginEnd="4dp"
-                android:contentDescription="@string/booked_seat_drawable"
-                android:src="@drawable/booked_img" />
+                tools:ignore="ContentDescription" />
 
             <ImageView
                 android:id="@+id/column_D_iv"
                 android:layout_width="36dp"
                 android:layout_height="36dp"
                 android:layout_marginStart="4dp"
-                android:contentDescription="@string/available_seat_drawable"
-                android:src="@drawable/available_img" />
+                tools:ignore="ContentDescription" />
 
         </LinearLayout>
 
