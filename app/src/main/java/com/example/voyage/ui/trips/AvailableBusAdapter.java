@@ -3,7 +3,6 @@ package com.example.voyage.ui.trips;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,11 +20,15 @@ import java.util.Locale;
 class AvailableBusAdapter extends RecyclerView.Adapter<AvailableBusAdapter.ItemViewHolder> {
 
     private static final String LOG_TAG = AvailableBusAdapter.class.getSimpleName();
+
+    final private ItemClickListener itemClickListener;
+
     private Context context;
     private List<Trip> trips;
 
-    AvailableBusAdapter(Context context) {
+    AvailableBusAdapter(Context context, ItemClickListener itemClickListener) {
         this.context = context;
+        this.itemClickListener = itemClickListener;
     }
 
     @NonNull
@@ -40,7 +43,6 @@ class AvailableBusAdapter extends RecyclerView.Adapter<AvailableBusAdapter.ItemV
 
     @Override
     public void onBindViewHolder(@NonNull ItemViewHolder viewHolder, int position) {
-        Log.d(LOG_TAG, "Adapter length: " + trips.get(0).getArrivalTime());
         Trip trip = trips.get(position);
 
         String departureTime = trip.getDepartureTime();
@@ -84,14 +86,31 @@ class AvailableBusAdapter extends RecyclerView.Adapter<AvailableBusAdapter.ItemV
         notifyDataSetChanged();
     }
 
-    class ItemViewHolder extends RecyclerView.ViewHolder {
+    public interface ItemClickListener {
+        void onItemClickListener(int tripId, int pickPoint, int dropPoint, int busId);
+    }
+
+    public class ItemViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private TextView priceTextView;
         private TextView timeTextView;
 
         ItemViewHolder(View view) {
             super(view);
+
             timeTextView = view.findViewById(R.id.time_text_view);
             priceTextView = view.findViewById(R.id.seat_price);
+            view.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View v) {
+            Trip trip = trips.get(getAdapterPosition());
+            int tripId = trip.getId();
+            int pickPointId = trip.getOriginStage().getId();
+            int dropPointId = trip.getDestinationStage().getId();
+            int busId = trip.getBusId();
+
+            itemClickListener.onItemClickListener(tripId, pickPointId, dropPointId, busId);
         }
     }
 }

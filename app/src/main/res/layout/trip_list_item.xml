@@ -11,8 +11,6 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
-        android:clickable="true"
-        android:focusable="true"
         android:foreground="?android:attr/selectableItemBackground"
         app:cardCornerRadius="4dp"
         app:cardUseCompatPadding="true"
@@ -47,17 +45,17 @@
                     android:layout_marginTop="4dp"
                     android:layout_marginBottom="4dp"
                     android:fontFamily="@font/calibri"
+                    android:text="Expo bus service"
                     android:textColor="#4b4b4b"
-                    android:textStyle="bold"
-                    android:text="Expo bus service" />
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/seat_type"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/calibri"
-                    android:textColor="#8a8a8a"
-                    android:text="A/C Sleeper (2+2)" />
+                    android:text="A/C Sleeper (2+2)"
+                    android:textColor="#8a8a8a" />
 
             </LinearLayout>
 
@@ -85,9 +83,9 @@
                     android:layout_marginTop="4dp"
                     android:layout_marginBottom="4dp"
                     android:fontFamily="@font/calibri"
+                    android:text="3.30 Hour"
                     android:textAlignment="textEnd"
-                    android:textColor="#b3b3b3"
-                    android:text="3.30 Hour" />
+                    android:textColor="#b3b3b3" />
             </LinearLayout>
         </LinearLayout>
 

@@ -7,6 +7,7 @@ import android.util.Log;
 import com.example.voyage.auth.VoyageAuth;
 import com.example.voyage.auth.VoyageUser;
 import com.example.voyage.data.models.Schedule;
+import com.example.voyage.data.models.Seat;
 import com.example.voyage.data.models.Trip;
 import com.example.voyage.data.network.retrofit.VoyageClient;
 import com.example.voyage.data.network.retrofit.VoyageService;
@@ -15,7 +16,10 @@ import com.google.gson.JsonObject;
 import java.io.IOException;
 import java.util.List;
 
+import io.reactivex.Observable;
 import io.reactivex.Observer;
+import io.reactivex.Single;
+import io.reactivex.SingleObserver;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
@@ -30,6 +34,7 @@ public class VoyageRepository {
 
     private MutableLiveData<List<Schedule>> schedules = new MutableLiveData<>();
     private MutableLiveData<List<Trip>> trips = new MutableLiveData<>();
+    private BehaviorSubject<List<Seat>> seats = BehaviorSubject.create();
 
     public VoyageRepository() {
         voyageService = VoyageClient.getInstance().getVoyageService();
@@ -41,7 +46,6 @@ public class VoyageRepository {
                 .subscribe(new Observer<VoyageUser>() {
                     @Override
                     public void onSubscribe(Disposable d) {
-
                     }
 
                     @Override
@@ -50,18 +54,18 @@ public class VoyageRepository {
                         if (voyageUser != null) {
                             assert voyageUser.getToken() != null;
                             Log.d(LOG_TAG, "Retrieved token: " + voyageUser.getToken());
-                            Log.d(LOG_TAG, "User: ".concat(voyageUser.getFirstName()));
                             String authToken = "Bearer ".concat(voyageUser.getToken());
-                            voyageService.schedules(authToken).subscribeOn(Schedulers.io())
+                            Single.fromObservable(voyageService.schedules(authToken))
+                                    .subscribeOn(Schedulers.io())
                                     .observeOn(AndroidSchedulers.mainThread())
-                                    .subscribe(new Observer<Response<List<Schedule>>>() {
+                                    .subscribe(new SingleObserver<Response<List<Schedule>>>() {
                                         @Override
                                         public void onSubscribe(Disposable d) {
 
                                         }
 
                                         @Override
-                                        public void onNext(Response<List<Schedule>> listResponse) {
+                                        public void onSuccess(Response<List<Schedule>> listResponse) {
                                             if (listResponse.isSuccessful()) {
                                                 schedules.setValue(listResponse.body());
                                             } else {
@@ -77,13 +81,7 @@ public class VoyageRepository {
 
                                         @Override
                                         public void onError(Throwable e) {
-                                            Log.e(LOG_TAG, "Error thrown", e);
-//                                        e.printStackTrace();
-                                        }
-
-                                        @Override
-                                        public void onComplete() {
-
+                                            e.printStackTrace();
                                         }
                                     });
                         }
@@ -91,19 +89,17 @@ public class VoyageRepository {
 
                     @Override
                     public void onError(Throwable e) {
-
+                        e.printStackTrace();
                     }
 
                     @Override
                     public void onComplete() {
-
                     }
                 });
         return schedules;
     }
 
     public LiveData<List<Trip>> getTrips(String origin, String destination, String date) {
-//        Schedule schedule = new Schedule(origin, destination, date);
         JsonObject jsonObject = new JsonObject();
         jsonObject.addProperty("departure", origin);
         jsonObject.addProperty("destination", destination);
@@ -114,7 +110,6 @@ public class VoyageRepository {
                 .subscribe(new Observer<VoyageUser>() {
                     @Override
                     public void onSubscribe(Disposable d) {
-
                     }
 
                     @Override
@@ -123,18 +118,19 @@ public class VoyageRepository {
                         if (voyageUser != null) {
                             String authToken = "Bearer ".concat(voyageUser.getToken());
 
-                            voyageService.trips(authToken, jsonObject).subscribeOn(Schedulers.io())
+                            Single.fromObservable(voyageService.trips(authToken, jsonObject))
+                                    .subscribeOn(Schedulers.io())
                                     .observeOn(AndroidSchedulers.mainThread())
-                                    .subscribe(new Observer<Response<List<Trip>>>() {
+                                    .subscribe(new SingleObserver<Response<List<Trip>>>() {
                                         @Override
                                         public void onSubscribe(Disposable d) {
 
                                         }
 
                                         @Override
-                                        public void onNext(Response<List<Trip>> listResponse) {
+                                        public void onSuccess(Response<List<Trip>> listResponse) {
                                             if (listResponse.isSuccessful()) {
-                                                Log.d(LOG_TAG, "Length: " + listResponse.body().size());
+                                                assert listResponse.body() != null;
                                                 trips.setValue(listResponse.body());
                                             } else {
                                                 try {
@@ -150,11 +146,6 @@ public class VoyageRepository {
                                         @Override
                                         public void onError(Throwable e) {
                                             e.printStackTrace();
-                                        }
-
-                                        @Override
-                                        public void onComplete() {
-
                                         }
                                     });
                         }
@@ -172,5 +163,63 @@ public class VoyageRepository {
                 });
 
         return trips;
+    }
+
+    public Observable<List<Seat>> getSeats(int busId) {
+        voyageUser.subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<VoyageUser>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+                    }
+
+                    @Override
+                    public void onNext(VoyageUser voyageUser) {
+                        if (voyageUser != null) {
+                            String authToken = "Bearer ".concat(voyageUser.getToken());
+                            Single.fromObservable(voyageService.seats(authToken, busId))
+                                    .subscribeOn(Schedulers.io())
+                                    .observeOn(AndroidSchedulers.mainThread())
+                                    .subscribe(new SingleObserver<Response<List<Seat>>>() {
+                                        @Override
+                                        public void onSubscribe(Disposable d) {
+
+                                        }
+
+                                        @Override
+                                        public void onSuccess(Response<List<Seat>> listResponse) {
+                                            if (listResponse.isSuccessful()) {
+                                                Log.d(LOG_TAG, "Seats length: " +
+                                                        listResponse.body().size());
+                                                seats.onNext(listResponse.body());
+                                            } else {
+                                                try {
+                                                    assert listResponse.errorBody() != null;
+                                                    Log.d(LOG_TAG, "Error: " +
+                                                            listResponse.errorBody().string());
+                                                } catch (IOException e) {
+                                                    e.printStackTrace();
+                                                }
+                                            }
+                                        }
+
+                                        @Override
+                                        public void onError(Throwable e) {
+                                            e.printStackTrace();
+                                        }
+                                    });
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onComplete() {
+                    }
+                });
+        return seats;
     }
 }

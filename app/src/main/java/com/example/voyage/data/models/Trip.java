@@ -4,8 +4,10 @@ import com.google.gson.annotations.SerializedName;
 
 public class Trip {
 
+    private final int id;
     private final String origin;
     private final String destination;
+    private final int busId;
 
     @SerializedName("dept_time")
     private final String departureTime;
@@ -16,13 +18,27 @@ public class Trip {
     @SerializedName("prices")
     private SeatPrice seatPrice;
 
-    public Trip(String origin, String destination, String departureTime, String arrivalTime,
-                SeatPrice seatPrice) {
+    @SerializedName("origins")
+    private final Stage originStage;
+
+    @SerializedName("destinations")
+    private final Stage destinationStage;
+
+    public Trip(int id, String origin, String destination, int busId, String departureTime, String arrivalTime,
+                SeatPrice seatPrice, Stage originStage, Stage destinationStage) {
+        this.id = id;
         this.origin = origin;
         this.destination = destination;
+        this.busId = busId;
         this.departureTime = departureTime;
         this.arrivalTime = arrivalTime;
         this.seatPrice = seatPrice;
+        this.originStage = originStage;
+        this.destinationStage = destinationStage;
+    }
+
+    public int getId() {
+        return id;
     }
 
     public String getOrigin() {
@@ -33,6 +49,10 @@ public class Trip {
         return destination;
     }
 
+    public int getBusId() {
+        return busId;
+    }
+
     public String getDepartureTime() {
         return departureTime;
     }
@@ -41,7 +61,7 @@ public class Trip {
         return arrivalTime;
     }
 
-    public SeatPrice getSeatPrice() {
+    private SeatPrice getSeatPrice() {
         return seatPrice;
     }
 
@@ -51,5 +71,17 @@ public class Trip {
 
     public int getFirstClassPrice() {
         return getSeatPrice().getFirstClassSeatPrice();
+    }
+
+    public int getSecondClassPrice() {
+        return getSeatPrice().getSecondClassSeatPrice();
+    }
+
+    public Stage getOriginStage() {
+        return originStage;
+    }
+
+    public Stage getDestinationStage() {
+        return destinationStage;
     }
 }
