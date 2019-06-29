@@ -10,10 +10,11 @@ import com.example.voyage.data.repositories.VoyageRepository;
 
 import java.util.List;
 
-public class AvailableBusActivityViewModel extends AndroidViewModel {
+public class TripsViewModel extends AndroidViewModel {
+
     private VoyageRepository voyageRepository;
 
-    public AvailableBusActivityViewModel(@NonNull Application application) {
+    public TripsViewModel(@NonNull Application application) {
         super(application);
         this.voyageRepository = new VoyageRepository();
     }

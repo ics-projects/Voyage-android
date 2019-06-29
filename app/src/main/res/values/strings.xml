@@ -50,4 +50,9 @@
     <string name="available_seat_drawable">Available Seat drawable</string>
     <string name="booked_seat_drawable">Booked Seat drawable</string>
     <string name="proceed_to_payment">Proceed to Payment</string>
+    <string name="phone_number_hint">Phone Number</string>
+    <string name="phone_number_ke_format">+254</string>
+    <string name="pay_page_trip_label">Trip:</string>
+    <string name="pay_page_pay_btn">Pay</string>
+    <string name="pay_page_cancel_btn">Cancel</string>
 </resources>

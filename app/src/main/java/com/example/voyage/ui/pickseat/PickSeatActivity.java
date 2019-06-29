@@ -11,8 +11,10 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 
-import com.example.voyage.MpesaActivity;
 import com.example.voyage.R;
+import com.example.voyage.data.models.Seat;
+import com.example.voyage.data.models.Trip;
+import com.example.voyage.ui.pay.PayActivity;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -20,10 +22,15 @@ import java.util.Arrays;
 public class PickSeatActivity extends AppCompatActivity implements PickSeatAdapter.ItemClickListener {
 
     private static final String LOG_TAG = PickSeatActivity.class.getSimpleName();
+
+    private ArrayList<Integer> pickedSeatIds = new ArrayList<>();
+
     private PickSeatViewModel viewModel;
     private PickSeatAdapter seatAdapter;
 
-    private ArrayList<Integer> pickedSeatIds = new ArrayList<>();
+    private int intentIntegerTripId;
+    private int intentIntegerPickPoint;
+    private int intentIntegerDropPoint;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,10 +57,10 @@ public class PickSeatActivity extends AppCompatActivity implements PickSeatAdapt
 
         // retrieve pickedSeatActivityIntent data
         Intent pickedSeatActivityIntent = getIntent();
-//        int intentIntegerTripId = pickedSeatActivityIntent.getIntExtra("TRIP_ID", 0);
-//        int intentIntegerPickPoint = pickedSeatActivityIntent.getIntExtra("TRIP_PICK_POINT", 0);
-//        int intentIntegerDropPoint = pickedSeatActivityIntent.getIntExtra("TRIP_DROP_POINT", 0);
-        int intentIntegerBusId = pickedSeatActivityIntent.getIntExtra("TRIP_BUS_ID", 0);
+        intentIntegerTripId = pickedSeatActivityIntent.getIntExtra(Trip.TRIP_ID_INTENT_EXTRA, 0);
+        intentIntegerPickPoint = pickedSeatActivityIntent.getIntExtra(Trip.TRIP_PICK_POINT_INTENT_EXTRA, 0);
+        intentIntegerDropPoint = pickedSeatActivityIntent.getIntExtra(Trip.TRIP_DROP_POINT_INTENT_EXTRA, 0);
+        int intentIntegerBusId = pickedSeatActivityIntent.getIntExtra(Trip.TRIP_BUS_ID_INTENT_EXTRA, 0);
 
         // Set up view model
         PickSeatViewModelFactory factory = new PickSeatViewModelFactory(getApplication(), intentIntegerBusId);
@@ -63,13 +70,25 @@ public class PickSeatActivity extends AppCompatActivity implements PickSeatAdapt
         fetchSeats();
 
         Button button = findViewById(R.id.proceed_to_payment_btn);
-        button.setOnClickListener(v -> {
-            Intent payActivityIntent = new Intent(PickSeatActivity.this,
-                    MpesaActivity.class);
-            payActivityIntent.putIntegerArrayListExtra("PICKED_SEATS", pickedSeatIds);
-            startActivity(payActivityIntent);
-        });
+        button.setOnClickListener(v -> payActivityIntent());
 
+    }
+
+    private void payActivityIntent() {
+        Intent payActivityIntent = new Intent(PickSeatActivity.this,
+                PayActivity.class);
+        payActivityIntent.putIntegerArrayListExtra(Seat.SEAT_SEAT_IDS_INTENT_EXTRA, pickedSeatIds);
+        payActivityIntent.putExtra(Trip.TRIP_ID_INTENT_EXTRA, intentIntegerTripId);
+        payActivityIntent.putExtra(Trip.TRIP_PICK_POINT_INTENT_EXTRA, intentIntegerPickPoint);
+        payActivityIntent.putExtra(Trip.TRIP_DROP_POINT_INTENT_EXTRA, intentIntegerDropPoint);
+
+        viewModel.navigateToPay(intentIntegerPickPoint, intentIntegerDropPoint, intentIntegerTripId,
+                pickedSeatIds).observe(this, payDetails -> {
+            if (payDetails != null) {
+                payActivityIntent.putExtra(PayActivity.PAY_URL_INTENT_EXTRA, payDetails.getPayUrl());
+                startActivity(payActivityIntent);
+            }
+        });
     }
 
     private void fetchSeats() {

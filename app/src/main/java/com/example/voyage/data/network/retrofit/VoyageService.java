@@ -1,6 +1,9 @@
 package com.example.voyage.data.network.retrofit;
 
 import com.example.voyage.auth.VoyageUser;
+import com.example.voyage.data.models.PayDetails;
+import com.example.voyage.data.models.PayRequestBody;
+import com.example.voyage.data.models.PickSeatBody;
 import com.example.voyage.data.models.Schedule;
 import com.example.voyage.data.models.Seat;
 import com.example.voyage.data.models.Trip;
@@ -16,6 +19,7 @@ import retrofit2.http.Header;
 import retrofit2.http.Headers;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
+import retrofit2.http.Url;
 
 public interface VoyageService {
     @POST("login")
@@ -52,4 +56,18 @@ public interface VoyageService {
     @GET("seat/{busId}")
     Observable<Response<List<Seat>>> seats(@Header("Authorization") String authToken,
                                            @Path("busId") int busId);
+
+    @Headers({
+            "Accept: application/json"
+    })
+    @POST("bookingPhase/pickSeat")
+    Observable<Response<PayDetails>> pickSeat(@Header("Authorization") String authToken,
+                                              @Body PickSeatBody body);
+
+    @Headers({
+            "Accept: application/json"
+    })
+    @POST
+    Observable<Response<String>> pay(@Url String url, @Header("Authorization") String authToken,
+                                     @Body PayRequestBody payRequestBody);
 }

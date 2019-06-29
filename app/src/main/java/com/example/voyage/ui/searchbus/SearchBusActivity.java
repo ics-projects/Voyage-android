@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ArrayAdapter;
@@ -16,10 +15,9 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.example.voyage.MpesaActivity;
 import com.example.voyage.R;
 import com.example.voyage.data.models.Schedule;
-import com.example.voyage.ui.trips.AvailableBusActivity;
+import com.example.voyage.ui.trips.TripsActivity;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -78,7 +76,7 @@ public class SearchBusActivity extends AppCompatActivity {
                     .format(c.getTime());
 
             if (selectedDate != null) {
-                Intent intent = new Intent(this, AvailableBusActivity.class);
+                Intent intent = new Intent(this, TripsActivity.class);
                 intent.putExtra("TRIP_ORIGIN", origin);
                 intent.putExtra("TRIP_DESTINATION", destination);
                 intent.putExtra("TRIP_DATE", selectedDate);
