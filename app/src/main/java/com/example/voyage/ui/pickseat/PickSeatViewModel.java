@@ -24,7 +24,7 @@ public class PickSeatViewModel extends AndroidViewModel {
     private CompositeDisposable disposables = new CompositeDisposable();
     private MutableLiveData<SeatRowCollection> seatRowCollectionLiveData = new MutableLiveData<>();
 
-    public PickSeatViewModel(@NonNull Application application, int busId) {
+    PickSeatViewModel(@NonNull Application application, int busId) {
         super(application);
         this.voyageRepository = new VoyageRepository();
         getSeatsFromRepository(busId);

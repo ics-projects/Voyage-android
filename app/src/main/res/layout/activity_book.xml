@@ -329,7 +329,7 @@
                 android:layout_below="@id/seat_card_view">
 
                 <Button
-                    android:id="@+id/pay_seat"
+                    android:id="@+id/proceed_to_payment_btn"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"

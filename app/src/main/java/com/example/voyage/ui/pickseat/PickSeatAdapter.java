@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +14,7 @@ import android.widget.TextView;
 import com.example.voyage.R;
 import com.example.voyage.data.models.Seat;
 
+import java.util.ArrayList;
 import java.util.List;
 
 class PickSeatAdapter extends RecyclerView.Adapter<PickSeatAdapter.ItemViewHolder> {
@@ -20,10 +22,15 @@ class PickSeatAdapter extends RecyclerView.Adapter<PickSeatAdapter.ItemViewHolde
     private static final String LOG_TAG = PickSeatAdapter.class.getSimpleName();
 
     private final Context context;
+    private final ItemClickListener itemClickListener;
     private SeatRowCollection seatRowCollection;
 
-    PickSeatAdapter(Context context) {
+    private SparseBooleanArray selectedItems;
+
+    PickSeatAdapter(Context context, ItemClickListener itemClickListener) {
         this.context = context;
+        this.itemClickListener = itemClickListener;
+        selectedItems = new SparseBooleanArray();
     }
 
     @NonNull
@@ -57,6 +64,22 @@ class PickSeatAdapter extends RecyclerView.Adapter<PickSeatAdapter.ItemViewHolde
         return seatRowCollection.getRowSeats().size();
     }
 
+    private void toggleSelection(int id) {
+        if (selectedItems.get(id)) {
+            selectedItems.delete(id);
+        } else {
+            selectedItems.put(id, true);
+        }
+    }
+
+    List<Integer> getSelectedItems() {
+        List<Integer> items = new ArrayList<>(selectedItems.size());
+        for (int i = 0; i < selectedItems.size(); ++i) {
+            items.add(selectedItems.keyAt(i));
+        }
+        return items;
+    }
+
     class ItemViewHolder extends RecyclerView.ViewHolder {
 
         TextView rowNumberTextView;
@@ -75,7 +98,7 @@ class PickSeatAdapter extends RecyclerView.Adapter<PickSeatAdapter.ItemViewHolde
             columnDImageView = itemView.findViewById(R.id.column_D_iv);
         }
 
-        public void bind(Seat seat) {
+        void bind(Seat seat) {
             int seatModulus = seat.getId() % 4;
 
             ImageView currentImage = null;
@@ -94,10 +117,10 @@ class PickSeatAdapter extends RecyclerView.Adapter<PickSeatAdapter.ItemViewHolde
                     break;
             }
 
-            setSeatDrawable(currentImage, seat, getAdapterPosition());
+            setSeatDrawable(currentImage, seat);
         }
 
-        private void setSeatDrawable(ImageView imageView, Seat seat, int position) {
+        private void setSeatDrawable(ImageView imageView, Seat seat) {
             if (seat.getAvailable() == 1) {
                 seat.setSeatAvailable(true);
                 imageView.setImageResource(R.drawable.available_img);
@@ -110,12 +133,15 @@ class PickSeatAdapter extends RecyclerView.Adapter<PickSeatAdapter.ItemViewHolde
                 Log.d(LOG_TAG, "Selected seat id: " + seat.getId() +
                         "\nSeat is available: " + seat.isAvailable());
                 seat.setSeatAvailable(!seat.isAvailable());
+                toggleSelection(seat.getId());
 
                 if (seat.isAvailable()) {
                     imageView.setImageResource(R.drawable.available_img);
                 } else {
                     imageView.setImageResource(R.drawable.your_seat_img);
                 }
+
+                itemClickListener.onItemClickListener();
             });
         }
     }
@@ -127,6 +153,6 @@ class PickSeatAdapter extends RecyclerView.Adapter<PickSeatAdapter.ItemViewHolde
 
 
     public interface ItemClickListener {
-        void onItemClickListener(int seatId);
+        void onItemClickListener();
     }
 }
