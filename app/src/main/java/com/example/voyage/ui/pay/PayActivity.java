@@ -6,9 +6,15 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
+import android.support.v4.app.NavUtils;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
+import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.voyage.R;
@@ -37,15 +43,25 @@ public class PayActivity extends AppCompatActivity {
 
     private ArrayList<Integer> intentSeatIds;
 
+    private View.OnClickListener navigationOnClickListener = (view) -> cancelAlertDialog();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
         setContentView(R.layout.activity_mpesa);
 
+        ImageView backButton = findViewById(R.id.pay_page_back_button);
+        Button cancelButton = findViewById(R.id.pay_page_cancel_button);
         TextView tripNameTextView = findViewById(R.id.trip_name_tv);
         TextView departureTimeTextView = findViewById(R.id.departure_time_tv);
         TextView totalPriceTextView = findViewById(R.id.total_price_tv);
-        Button pay = findViewById(R.id.pay_button);
+        Button pay = findViewById(R.id.pay_page_pay_button);
         phoneNumberTextInput = findViewById(R.id.phone_number_text_input);
         phoneNumberEditText = findViewById(R.id.phone_number_edit_Text);
 
@@ -67,6 +83,9 @@ public class PayActivity extends AppCompatActivity {
         setDepartureTimeTextView(departureTimeTextView, intentDepartureTime);
         totalPriceTextView.setText(String.valueOf(intentTotalPrice));
 
+        backButton.setOnClickListener(navigationOnClickListener);
+        cancelButton.setOnClickListener(navigationOnClickListener);
+
         pay.setOnClickListener(view -> {
             boolean validForm;
             Editable phoneNumber = phoneNumberEditText.getText();
@@ -80,6 +99,22 @@ public class PayActivity extends AppCompatActivity {
                         intentIntegerPickPoint, intentIntegerDropPoint, intentSeatIds);
             }
         });
+    }
+
+    @Override
+    public void onBackPressed() {
+        cancelAlertDialog();
+    }
+
+    private void cancelAlertDialog() {
+        new AlertDialog.Builder(PayActivity.this)
+                .setTitle(getString(R.string.cancel_payment_dialog_title))
+                .setMessage(getString(R.string.cancel_payment_confirmation_dialog))
+                .setPositiveButton(android.R.string.yes, (dialog, which) ->
+                        NavUtils.navigateUpFromSameTask(PayActivity.this))
+                .setNegativeButton(android.R.string.no, null)
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .show();
     }
 
     private void setDepartureTimeTextView(TextView departureTimeTextView, String intentDepartureTime) {

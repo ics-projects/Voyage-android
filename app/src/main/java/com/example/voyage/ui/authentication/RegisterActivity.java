@@ -41,7 +41,7 @@ public class RegisterActivity extends AppCompatActivity {
         setContentView(R.layout.activity_register);
 
         Button registerButton = findViewById(R.id.register_button);
-        Button cancelButton = findViewById(R.id.cancel_button);
+        Button cancelButton = findViewById(R.id.pay_page_cancel_button);
 
         firstNameEditText = findViewById(R.id.firstName_edit_text);
         firstNameTextInput = findViewById(R.id.firstName_text_input);

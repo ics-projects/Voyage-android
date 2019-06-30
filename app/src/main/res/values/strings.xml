@@ -60,4 +60,8 @@
     <string name="pay_page_total_price_label">Total Price:</string>
     <string name="back_button_description">Back button</string>
     <string name="available_bus_call_to_action_text_view">Select your bus!</string>
+    <string name="cancel_payment_dialog_title">Cancel Payment</string>
+    <string name="cancel_payment_confirmation_dialog">Are you sure you want to cancel payment?</string>
+    <string name="bus_stop_image">Bus stop image</string>
+    <string name="hey_traveller_greeting">Hey Traveller!</string>
 </resources>
