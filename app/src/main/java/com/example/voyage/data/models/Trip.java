@@ -4,6 +4,11 @@ import com.google.gson.annotations.SerializedName;
 
 public class Trip {
 
+    public static final String TRIP_PICK_POINT_INTENT_EXTRA = "TRIP_PICK_POINT";
+    public static final String TRIP_ID_INTENT_EXTRA = "TRIP_ID";
+    public static final String TRIP_DROP_POINT_INTENT_EXTRA = "TRIP_DROP_POINT";
+    public static final String TRIP_BUS_ID_INTENT_EXTRA = "TRIP_BUS_ID";
+
     private final int id;
     private final String origin;
     private final String destination;

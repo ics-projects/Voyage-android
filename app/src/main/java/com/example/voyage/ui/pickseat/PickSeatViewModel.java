@@ -6,6 +6,7 @@ import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.support.annotation.NonNull;
 
+import com.example.voyage.data.models.PayDetails;
 import com.example.voyage.data.models.Seat;
 import com.example.voyage.data.repositories.VoyageRepository;
 
@@ -69,5 +70,10 @@ public class PickSeatViewModel extends AndroidViewModel {
 
     LiveData<SeatRowCollection> getSeats() {
         return seatRowCollectionLiveData;
+    }
+
+
+    LiveData<PayDetails> navigateToPay(int pickPoint, int dropPoint, int tripId, ArrayList<Integer> seats) {
+        return voyageRepository.pickSeat(pickPoint, dropPoint, tripId, seats);
     }
 }

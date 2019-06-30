@@ -17,16 +17,16 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-class AvailableBusAdapter extends RecyclerView.Adapter<AvailableBusAdapter.ItemViewHolder> {
+class TripsAdapter extends RecyclerView.Adapter<TripsAdapter.ItemViewHolder> {
 
-    private static final String LOG_TAG = AvailableBusAdapter.class.getSimpleName();
+    private static final String LOG_TAG = TripsAdapter.class.getSimpleName();
 
     final private ItemClickListener itemClickListener;
 
     private Context context;
     private List<Trip> trips;
 
-    AvailableBusAdapter(Context context, ItemClickListener itemClickListener) {
+    TripsAdapter(Context context, ItemClickListener itemClickListener) {
         this.context = context;
         this.itemClickListener = itemClickListener;
     }
