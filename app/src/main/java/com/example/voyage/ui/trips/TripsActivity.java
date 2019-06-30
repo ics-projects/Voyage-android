@@ -3,14 +3,16 @@ package com.example.voyage.ui.trips;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.ImageView;
 
 import com.example.voyage.R;
-import com.example.voyage.data.models.Trip;
+import com.example.voyage.data.Constants;
 import com.example.voyage.ui.pickseat.PickSeatActivity;
 
 public class TripsActivity extends AppCompatActivity implements TripsAdapter.ItemClickListener {
@@ -37,6 +39,8 @@ public class TripsActivity extends AppCompatActivity implements TripsAdapter.Ite
 
         setContentView(R.layout.activity_available_bus);
 
+        ImageView backButton = findViewById(R.id.back_button);
+
         // Recyclerview
         RecyclerView recyclerView = findViewById(R.id.recyclerView_trips);
         recyclerView.setHasFixedSize(true);
@@ -45,15 +49,18 @@ public class TripsActivity extends AppCompatActivity implements TripsAdapter.Ite
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
 
+        // back navigation
+        backButton.setOnClickListener(view -> NavUtils.navigateUpFromSameTask(this));
+
         // Adapter
         busAdapter = new TripsAdapter(this, this);
         recyclerView.setAdapter(busAdapter);
 
         // retrieve intent data
         Intent intent = getIntent();
-        intentStringOrigin = intent.getStringExtra("TRIP_ORIGIN");
-        intentStringDestination = intent.getStringExtra("TRIP_DESTINATION");
-        intentStringDate = intent.getStringExtra("TRIP_DATE");
+        intentStringOrigin = intent.getStringExtra(Constants.TRIP_PICK_POINT_INTENT_EXTRA);
+        intentStringDestination = intent.getStringExtra(Constants.TRIP_DROP_POINT_INTENT_EXTRA);
+        intentStringDate = intent.getStringExtra(Constants.TRIP_DATE_INTENT_EXTRA);
 
         // Set up view model
         viewModel = ViewModelProviders.of(this).get(TripsViewModel.class);
@@ -76,10 +83,10 @@ public class TripsActivity extends AppCompatActivity implements TripsAdapter.Ite
     public void onItemClickListener(int tripId, int pickPoint, int dropPoint, int busId) {
         // Launch PickSeatActivity adding the itemId as an extra in the intent
         Intent intent = new Intent(TripsActivity.this, PickSeatActivity.class);
-        intent.putExtra(Trip.TRIP_ID_INTENT_EXTRA, tripId);
-        intent.putExtra(Trip.TRIP_PICK_POINT_INTENT_EXTRA, pickPoint);
-        intent.putExtra(Trip.TRIP_DROP_POINT_INTENT_EXTRA, dropPoint);
-        intent.putExtra(Trip.TRIP_BUS_ID_INTENT_EXTRA, busId);
+        intent.putExtra(Constants.TRIP_ID_INTENT_EXTRA, tripId);
+        intent.putExtra(Constants.TRIP_PICK_POINT_INTENT_EXTRA, pickPoint);
+        intent.putExtra(Constants.TRIP_DROP_POINT_INTENT_EXTRA, dropPoint);
+        intent.putExtra(Constants.TRIP_BUS_ID_INTENT_EXTRA, busId);
         startActivity(intent);
     }
 }

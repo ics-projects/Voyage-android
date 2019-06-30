@@ -12,8 +12,8 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.example.voyage.R;
+import com.example.voyage.data.Constants;
 import com.example.voyage.data.models.Seat;
-import com.example.voyage.data.models.Trip;
 import com.example.voyage.ui.bookings.RecentBookingActivity;
 import com.example.voyage.util.FormValidators;
 
@@ -24,10 +24,6 @@ import java.util.Date;
 import java.util.Locale;
 
 public class PayActivity extends AppCompatActivity {
-    public static final String PAY_URL_INTENT_EXTRA = "PAY_URL";
-    public static final String PAY_TRIP_NAME_INTENT_EXTRA = "PAY_TRIP_NAME";
-    public static final String PAY_DEPARTURE_TIME_INTENT_EXTRA = "PAY_DEPARTURE_TIME";
-    public static final String PAY_TOTAL_PRICE_INTENT_EXTRA = "PAY_TOTAL_PRICE";
 
     private TextInputLayout phoneNumberTextInput;
     private TextInputEditText phoneNumberEditText;
@@ -55,14 +51,14 @@ public class PayActivity extends AppCompatActivity {
 
         // retrieve PActivityIntent data
         Intent payActivityIntent = getIntent();
-        intentIntegerTripId = payActivityIntent.getIntExtra(Trip.TRIP_ID_INTENT_EXTRA, 0);
-        intentIntegerPickPoint = payActivityIntent.getIntExtra(Trip.TRIP_PICK_POINT_INTENT_EXTRA, 0);
-        intentIntegerDropPoint = payActivityIntent.getIntExtra(Trip.TRIP_DROP_POINT_INTENT_EXTRA, 0);
+        intentIntegerTripId = payActivityIntent.getIntExtra(Constants.TRIP_ID_INTENT_EXTRA, 0);
+        intentIntegerPickPoint = payActivityIntent.getIntExtra(Constants.TRIP_PICK_POINT_INTENT_EXTRA, 0);
+        intentIntegerDropPoint = payActivityIntent.getIntExtra(Constants.TRIP_DROP_POINT_INTENT_EXTRA, 0);
         intentSeatIds = payActivityIntent.getIntegerArrayListExtra(Seat.SEAT_SEAT_IDS_INTENT_EXTRA);
-        intentPayUrl = payActivityIntent.getStringExtra(PayActivity.PAY_URL_INTENT_EXTRA);
-        String intentTripName = payActivityIntent.getStringExtra(PayActivity.PAY_TRIP_NAME_INTENT_EXTRA);
-        String intentDepartureTime = payActivityIntent.getStringExtra(PayActivity.PAY_DEPARTURE_TIME_INTENT_EXTRA);
-        int intentTotalPrice = payActivityIntent.getIntExtra(PayActivity.PAY_TOTAL_PRICE_INTENT_EXTRA, 0);
+        intentPayUrl = payActivityIntent.getStringExtra(Constants.PAY_URL_INTENT_EXTRA);
+        String intentTripName = payActivityIntent.getStringExtra(Constants.PAY_TRIP_NAME_INTENT_EXTRA);
+        String intentDepartureTime = payActivityIntent.getStringExtra(Constants.PAY_DEPARTURE_TIME_INTENT_EXTRA);
+        int intentTotalPrice = payActivityIntent.getIntExtra(Constants.PAY_TOTAL_PRICE_INTENT_EXTRA, 0);
 
         viewModel = ViewModelProviders.of(this).get(PayViewModel.class);
         viewModel.payRequestStatus().observe(this, payRequestObserver);

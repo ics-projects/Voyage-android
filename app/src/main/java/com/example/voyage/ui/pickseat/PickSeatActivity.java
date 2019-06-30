@@ -12,8 +12,8 @@ import android.view.WindowManager;
 import android.widget.Button;
 
 import com.example.voyage.R;
+import com.example.voyage.data.Constants;
 import com.example.voyage.data.models.Seat;
-import com.example.voyage.data.models.Trip;
 import com.example.voyage.ui.pay.PayActivity;
 
 import java.util.ArrayList;
@@ -57,10 +57,10 @@ public class PickSeatActivity extends AppCompatActivity implements PickSeatAdapt
 
         // retrieve pickedSeatActivityIntent data
         Intent pickedSeatActivityIntent = getIntent();
-        intentIntegerTripId = pickedSeatActivityIntent.getIntExtra(Trip.TRIP_ID_INTENT_EXTRA, 0);
-        intentIntegerPickPoint = pickedSeatActivityIntent.getIntExtra(Trip.TRIP_PICK_POINT_INTENT_EXTRA, 0);
-        intentIntegerDropPoint = pickedSeatActivityIntent.getIntExtra(Trip.TRIP_DROP_POINT_INTENT_EXTRA, 0);
-        int intentIntegerBusId = pickedSeatActivityIntent.getIntExtra(Trip.TRIP_BUS_ID_INTENT_EXTRA, 0);
+        intentIntegerTripId = pickedSeatActivityIntent.getIntExtra(Constants.TRIP_ID_INTENT_EXTRA, 0);
+        intentIntegerPickPoint = pickedSeatActivityIntent.getIntExtra(Constants.TRIP_PICK_POINT_INTENT_EXTRA, 0);
+        intentIntegerDropPoint = pickedSeatActivityIntent.getIntExtra(Constants.TRIP_DROP_POINT_INTENT_EXTRA, 0);
+        int intentIntegerBusId = pickedSeatActivityIntent.getIntExtra(Constants.TRIP_BUS_ID_INTENT_EXTRA, 0);
 
         // Set up view model
         PickSeatViewModelFactory factory = new PickSeatViewModelFactory(getApplication(), intentIntegerBusId);
@@ -78,9 +78,9 @@ public class PickSeatActivity extends AppCompatActivity implements PickSeatAdapt
         Intent payActivityIntent = new Intent(PickSeatActivity.this,
                 PayActivity.class);
         payActivityIntent.putIntegerArrayListExtra(Seat.SEAT_SEAT_IDS_INTENT_EXTRA, pickedSeatIds);
-        payActivityIntent.putExtra(Trip.TRIP_ID_INTENT_EXTRA, intentIntegerTripId);
-        payActivityIntent.putExtra(Trip.TRIP_PICK_POINT_INTENT_EXTRA, intentIntegerPickPoint);
-        payActivityIntent.putExtra(Trip.TRIP_DROP_POINT_INTENT_EXTRA, intentIntegerDropPoint);
+        payActivityIntent.putExtra(Constants.TRIP_ID_INTENT_EXTRA, intentIntegerTripId);
+        payActivityIntent.putExtra(Constants.TRIP_PICK_POINT_INTENT_EXTRA, intentIntegerPickPoint);
+        payActivityIntent.putExtra(Constants.TRIP_DROP_POINT_INTENT_EXTRA, intentIntegerDropPoint);
 
         viewModel.navigateToPay(intentIntegerPickPoint, intentIntegerDropPoint, intentIntegerTripId,
                 pickedSeatIds).observe(this, payDetails -> {
@@ -93,10 +93,10 @@ public class PickSeatActivity extends AppCompatActivity implements PickSeatAdapt
                 Log.d(LOG_TAG, "Time:    " + time);
                 int totalPrice = payDetails.getTotalPrice();
 
-                payActivityIntent.putExtra(PayActivity.PAY_URL_INTENT_EXTRA, payUrl);
-                payActivityIntent.putExtra(PayActivity.PAY_TRIP_NAME_INTENT_EXTRA, tripName);
-                payActivityIntent.putExtra(PayActivity.PAY_DEPARTURE_TIME_INTENT_EXTRA, time);
-                payActivityIntent.putExtra(PayActivity.PAY_TOTAL_PRICE_INTENT_EXTRA, totalPrice);
+                payActivityIntent.putExtra(Constants.PAY_URL_INTENT_EXTRA, payUrl);
+                payActivityIntent.putExtra(Constants.PAY_TRIP_NAME_INTENT_EXTRA, tripName);
+                payActivityIntent.putExtra(Constants.PAY_DEPARTURE_TIME_INTENT_EXTRA, time);
+                payActivityIntent.putExtra(Constants.PAY_TOTAL_PRICE_INTENT_EXTRA, totalPrice);
                 startActivity(payActivityIntent);
             }
         });

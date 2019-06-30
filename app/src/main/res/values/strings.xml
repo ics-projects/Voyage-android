@@ -58,4 +58,6 @@
     <string name="pay_page_payment_statement">Payment made easy through M-Pesa</string>
     <string name="pay_page_departure_label">Departure:</string>
     <string name="pay_page_total_price_label">Total Price:</string>
+    <string name="available_bus_back_button_description">Back button</string>
+    <string name="available_bus_call_to_action_text_view">Select your bus!</string>
 </resources>

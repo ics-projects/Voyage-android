@@ -4,7 +4,6 @@ import android.app.DatePickerDialog;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Window;
@@ -13,9 +12,9 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
-import android.widget.Toast;
 
 import com.example.voyage.R;
+import com.example.voyage.data.Constants;
 import com.example.voyage.data.models.Schedule;
 import com.example.voyage.ui.trips.TripsActivity;
 
@@ -53,12 +52,11 @@ public class SearchBusActivity extends AppCompatActivity {
         Button search_buses = findViewById(R.id.search_buses);
         originSpinner = findViewById(R.id.originSpinner);
         destinationSpinner = findViewById(R.id.destinationSpinner);
+        dateEditText = findViewById(R.id.select_date);
 
         viewModel = ViewModelProviders.of(this).get(SearchBusActivityViewModel.class);
 
         fetchSchedules();
-
-        dateEditText = findViewById(R.id.select_date);
 
         dateEditText.setOnClickListener(view -> {
             Log.d(LOG_TAG, "Datepicker selected");
@@ -77,20 +75,13 @@ public class SearchBusActivity extends AppCompatActivity {
 
             if (selectedDate != null) {
                 Intent intent = new Intent(this, TripsActivity.class);
-                intent.putExtra("TRIP_ORIGIN", origin);
-                intent.putExtra("TRIP_DESTINATION", destination);
-                intent.putExtra("TRIP_DATE", selectedDate);
-                startActivityForResult(intent, 1);
+                intent.putExtra(Constants.TRIP_PICK_POINT_INTENT_EXTRA, origin);
+                intent.putExtra(Constants.TRIP_DROP_POINT_INTENT_EXTRA, destination);
+                intent.putExtra(Constants.TRIP_DATE_INTENT_EXTRA, selectedDate);
+
+                startActivity(intent);
             }
         });
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode != 2) {
-            Toast.makeText(this, "No trips found", Toast.LENGTH_LONG).show();
-        }
     }
 
     private void fetchSchedules() {
