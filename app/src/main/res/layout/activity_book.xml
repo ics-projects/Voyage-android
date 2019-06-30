@@ -24,13 +24,15 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="16dp">
+                android:layout_marginEnd="16dp">
 
                 <ImageView
+                    android:id="@+id/book_seat_back_button"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentStart="true"
                     android:layout_alignParentTop="true"
+                    android:contentDescription="@string/back_button_description"
                     android:src="@drawable/ic_arrow_back_white_24dp" />
 
                 <ImageView

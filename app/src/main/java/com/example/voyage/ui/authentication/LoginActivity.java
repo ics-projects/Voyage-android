@@ -109,5 +109,7 @@ public class LoginActivity extends AppCompatActivity {
                 Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(getApplicationContext(), SearchBusActivity.class);
         startActivity(intent);
+
+        finish();
     };
 }
