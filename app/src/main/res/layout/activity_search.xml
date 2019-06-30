@@ -134,7 +134,6 @@
                             android:textColor="@color/accent"/>
 
 
-
                         <Spinner
                             android:id="@+id/originSpinner"
                             android:layout_width="fill_parent"
