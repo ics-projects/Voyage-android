@@ -12,11 +12,11 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".ui.bookings.RecentBookingActivity"></activity>
-        <activity android:name=".MpesaActivity" />
+        <activity android:name=".ui.pay.PayActivity" />
         <activity android:name=".ui.authentication.LoginActivity" />
         <activity android:name=".ui.authentication.RegisterActivity" />
         <activity android:name=".ui.pickseat.PickSeatActivity" />
-        <activity android:name=".ui.trips.AvailableBusActivity" />
+        <activity android:name=".ui.trips.TripsActivity" />
         <activity android:name=".ui.searchbus.SearchBusActivity" />
         <activity android:name=".MainActivity">
             <intent-filter>

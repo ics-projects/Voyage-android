@@ -129,20 +129,22 @@ class PickSeatAdapter extends RecyclerView.Adapter<PickSeatAdapter.ItemViewHolde
                 imageView.setImageResource(R.drawable.booked_img);
             }
 
-            imageView.setOnClickListener(v -> {
-                Log.d(LOG_TAG, "Selected seat id: " + seat.getId() +
-                        "\nSeat is available: " + seat.isAvailable());
-                seat.setSeatAvailable(!seat.isAvailable());
-                toggleSelection(seat.getId());
+            if (seat.isAvailable()) {
+                imageView.setOnClickListener(v -> {
+                    Log.d(LOG_TAG, "Selected seat id: " + seat.getId() +
+                            "\nSeat is available: " + seat.isAvailable());
+                    seat.setSeatAvailable(!seat.isAvailable());
+                    toggleSelection(seat.getId());
 
-                if (seat.isAvailable()) {
-                    imageView.setImageResource(R.drawable.available_img);
-                } else {
-                    imageView.setImageResource(R.drawable.your_seat_img);
-                }
+                    if (seat.isAvailable()) {
+                        imageView.setImageResource(R.drawable.available_img);
+                    } else {
+                        imageView.setImageResource(R.drawable.your_seat_img);
+                    }
 
-                itemClickListener.onItemClickListener();
-            });
+                    itemClickListener.onItemClickListener();
+                });
+            }
         }
     }
 

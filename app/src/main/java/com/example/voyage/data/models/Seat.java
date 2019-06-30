@@ -4,6 +4,8 @@ import java.io.Serializable;
 
 public class Seat implements Serializable {
 
+    public static final String SEAT_SEAT_IDS_INTENT_EXTRA = "PICKED_SEATS";
+
     private final int id;
 
     private final int available;

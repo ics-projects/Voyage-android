@@ -10,20 +10,21 @@ import android.view.Window;
 import android.view.WindowManager;
 
 import com.example.voyage.R;
+import com.example.voyage.data.models.Trip;
 import com.example.voyage.ui.pickseat.PickSeatActivity;
 
-public class AvailableBusActivity extends AppCompatActivity implements AvailableBusAdapter.ItemClickListener {
+public class TripsActivity extends AppCompatActivity implements TripsAdapter.ItemClickListener {
 
-    private static final String LOG_TAG = AvailableBusActivity.class.getSimpleName();
+    private static final String LOG_TAG = TripsActivity.class.getSimpleName();
 
     private String intentStringOrigin;
     private String intentStringDestination;
     private String intentStringDate;
 
-    private AvailableBusAdapter busAdapter;
+    private TripsAdapter busAdapter;
 
 
-    AvailableBusActivityViewModel viewModel;
+    TripsViewModel viewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,7 +46,7 @@ public class AvailableBusActivity extends AppCompatActivity implements Available
         recyclerView.setLayoutManager(layoutManager);
 
         // Adapter
-        busAdapter = new AvailableBusAdapter(this, this);
+        busAdapter = new TripsAdapter(this, this);
         recyclerView.setAdapter(busAdapter);
 
         // retrieve intent data
@@ -55,7 +56,7 @@ public class AvailableBusActivity extends AppCompatActivity implements Available
         intentStringDate = intent.getStringExtra("TRIP_DATE");
 
         // Set up view model
-        viewModel = ViewModelProviders.of(this).get(AvailableBusActivityViewModel.class);
+        viewModel = ViewModelProviders.of(this).get(TripsViewModel.class);
 
         // fetch trips
         fetchTrips();
@@ -74,11 +75,11 @@ public class AvailableBusActivity extends AppCompatActivity implements Available
     @Override
     public void onItemClickListener(int tripId, int pickPoint, int dropPoint, int busId) {
         // Launch PickSeatActivity adding the itemId as an extra in the intent
-        Intent intent = new Intent(AvailableBusActivity.this, PickSeatActivity.class);
-        intent.putExtra("TRIP_ID", tripId);
-        intent.putExtra("TRIP_PICK_POINT", pickPoint);
-        intent.putExtra("TRIP_DROP_POINT", dropPoint);
-        intent.putExtra("TRIP_BUS_ID", busId);
+        Intent intent = new Intent(TripsActivity.this, PickSeatActivity.class);
+        intent.putExtra(Trip.TRIP_ID_INTENT_EXTRA, tripId);
+        intent.putExtra(Trip.TRIP_PICK_POINT_INTENT_EXTRA, pickPoint);
+        intent.putExtra(Trip.TRIP_DROP_POINT_INTENT_EXTRA, dropPoint);
+        intent.putExtra(Trip.TRIP_BUS_ID_INTENT_EXTRA, busId);
         startActivity(intent);
     }
 }
