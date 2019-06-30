@@ -1,5 +1,6 @@
 package com.example.voyage.ui.pickseat;
 
+import android.app.Activity;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,11 +11,13 @@ import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.ImageView;
 
 import com.example.voyage.R;
 import com.example.voyage.data.Constants;
 import com.example.voyage.data.models.Seat;
 import com.example.voyage.ui.pay.PayActivity;
+import com.example.voyage.ui.trips.TripsActivity;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -31,6 +34,7 @@ public class PickSeatActivity extends AppCompatActivity implements PickSeatAdapt
     private int intentIntegerTripId;
     private int intentIntegerPickPoint;
     private int intentIntegerDropPoint;
+    private String intentStringDate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +64,7 @@ public class PickSeatActivity extends AppCompatActivity implements PickSeatAdapt
         intentIntegerTripId = pickedSeatActivityIntent.getIntExtra(Constants.TRIP_ID_INTENT_EXTRA, 0);
         intentIntegerPickPoint = pickedSeatActivityIntent.getIntExtra(Constants.TRIP_PICK_POINT_INTENT_EXTRA, 0);
         intentIntegerDropPoint = pickedSeatActivityIntent.getIntExtra(Constants.TRIP_DROP_POINT_INTENT_EXTRA, 0);
+        intentStringDate = pickedSeatActivityIntent.getStringExtra(Constants.TRIP_DATE_INTENT_EXTRA);
         int intentIntegerBusId = pickedSeatActivityIntent.getIntExtra(Constants.TRIP_BUS_ID_INTENT_EXTRA, 0);
 
         // Set up view model
@@ -69,8 +74,17 @@ public class PickSeatActivity extends AppCompatActivity implements PickSeatAdapt
         // fetch seats to be displayed
         fetchSeats();
 
-        Button button = findViewById(R.id.proceed_to_payment_btn);
-        button.setOnClickListener(v -> payActivityIntent());
+        Button proceedToPaymentBtn = findViewById(R.id.proceed_to_payment_btn);
+        proceedToPaymentBtn.setOnClickListener(v -> payActivityIntent());
+
+        // back navigation
+        Intent resultIntent = new Intent(this, TripsActivity.class);
+        resultIntent.putExtra(Constants.TRIP_PICK_POINT_INTENT_EXTRA, String.valueOf(intentIntegerPickPoint));
+        resultIntent.putExtra(Constants.TRIP_DROP_POINT_INTENT_EXTRA, String.valueOf(intentIntegerDropPoint));
+        resultIntent.putExtra(Constants.TRIP_DATE_INTENT_EXTRA, intentStringDate);
+        setResult(Activity.RESULT_OK, resultIntent);
+        ImageView backButton = findViewById(R.id.book_seat_back_button);
+        backButton.setOnClickListener(view -> finish());
 
     }
 

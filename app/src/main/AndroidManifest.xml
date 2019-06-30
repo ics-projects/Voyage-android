@@ -34,12 +34,15 @@
                 android:value=".ui.searchbus.SearchBusActivity" />
         </activity>
 
+        <activity android:name=".ui.pickseat.PickSeatActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ui.trips.TripsActivity" />
+        </activity>
+
         <activity android:name=".ui.bookings.RecentBookingActivity" />
 
         <activity android:name=".ui.pay.PayActivity" />
-
-
-        <activity android:name=".ui.pickseat.PickSeatActivity" />
 
 
     </application>
