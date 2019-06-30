@@ -4,24 +4,19 @@ import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
-import android.view.KeyEvent;
-import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
 import com.example.voyage.R;
-import com.example.voyage.ui.searchbus.SearchBusActivity;
 import com.example.voyage.auth.VoyageUser;
+import com.example.voyage.ui.searchbus.SearchBusActivity;
 import com.example.voyage.util.FormValidators;
 
 public class RegisterActivity extends AppCompatActivity {
-
-    private static final String LOG_TAG = RegisterActivity.class.getSimpleName();
 
     private TextInputEditText firstNameEditText;
     private TextInputLayout firstNameTextInput;
@@ -46,6 +41,7 @@ public class RegisterActivity extends AppCompatActivity {
         setContentView(R.layout.activity_register);
 
         Button registerButton = findViewById(R.id.register_button);
+        Button cancelButton = findViewById(R.id.cancel_button);
 
         firstNameEditText = findViewById(R.id.firstName_edit_text);
         firstNameTextInput = findViewById(R.id.firstName_text_input);
@@ -65,30 +61,29 @@ public class RegisterActivity extends AppCompatActivity {
         viewModel = ViewModelProviders.of(this).get(RegisterActivityViewModel.class);
         viewModel.getUser().observe(this, userObserver);
 
-        registerButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                boolean validForm;
+        registerButton.setOnClickListener(v -> {
+            boolean validForm;
 
-                Editable firstName = firstNameEditText.getText();
-                Editable lastName = lastNameEditText.getText();
-                Editable email = emailEditText.getText();
-                Editable password = passwordEditText.getText();
-                Editable passwordConfirm = passwordConfirmEditText.getText();
+            Editable firstName = firstNameEditText.getText();
+            Editable lastName = lastNameEditText.getText();
+            Editable email = emailEditText.getText();
+            Editable password = passwordEditText.getText();
+            Editable passwordConfirm = passwordConfirmEditText.getText();
 
-                validForm = isValidForm(firstName, lastName, email, password, passwordConfirm);
+            validForm = isValidForm(firstName, lastName, email, password, passwordConfirm);
 
-                if (validForm) {
-                    assert firstName != null;
-                    assert lastName != null;
-                    assert email != null;
-                    assert password != null;
-                    assert passwordConfirm != null;
-                    registerUser(firstName.toString(), lastName.toString(), email.toString(),
-                            password.toString(), passwordConfirm.toString());
-                }
+            if (validForm) {
+                assert firstName != null;
+                assert lastName != null;
+                assert email != null;
+                assert password != null;
+                assert passwordConfirm != null;
+                registerUser(firstName.toString(), lastName.toString(), email.toString(),
+                        password.toString(), passwordConfirm.toString());
             }
         });
+
+        cancelButton.setOnClickListener(v -> finish());
 
         addOnKeyListeners();
     }
@@ -140,65 +135,47 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private void addOnKeyListeners() {
-        firstNameEditText.setOnKeyListener(new View.OnKeyListener() {
-            @Override
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
-                if (FormValidators.isNameValid(firstNameEditText.getText())) {
-                    firstNameTextInput.setError(null);
-                }
-                return false;
+        firstNameEditText.setOnKeyListener((v, keyCode, event) -> {
+            if (FormValidators.isNameValid(firstNameEditText.getText())) {
+                firstNameTextInput.setError(null);
             }
+            return false;
         });
 
-        lastNameEditText.setOnKeyListener(new View.OnKeyListener() {
-            @Override
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
-                if (FormValidators.isNameValid(lastNameEditText.getText())) {
-                    lastNameTextInput.setError(null);
-                }
-                return false;
+        lastNameEditText.setOnKeyListener((v, keyCode, event) -> {
+            if (FormValidators.isNameValid(lastNameEditText.getText())) {
+                lastNameTextInput.setError(null);
             }
+            return false;
         });
 
-        emailEditText.setOnKeyListener(new View.OnKeyListener() {
-            @Override
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
-                if (FormValidators.isEmailValid(emailEditText.getText())) {
-                    emailTextInput.setError(null);
-                }
-                return false;
+        emailEditText.setOnKeyListener((v, keyCode, event) -> {
+            if (FormValidators.isEmailValid(emailEditText.getText())) {
+                emailTextInput.setError(null);
             }
+            return false;
         });
 
-        passwordEditText.setOnKeyListener(new View.OnKeyListener() {
-            @Override
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
-                if (FormValidators.isPasswordValid(passwordEditText.getText())) {
-                    passwordTextInput.setError(null);
-                }
-                return false;
+        passwordEditText.setOnKeyListener((v, keyCode, event) -> {
+            if (FormValidators.isPasswordValid(passwordEditText.getText())) {
+                passwordTextInput.setError(null);
             }
+            return false;
         });
 
-        passwordConfirmEditText.setOnKeyListener(new View.OnKeyListener() {
-            @Override
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
-                if (FormValidators.isPasswordConfirmValid(
-                        passwordEditText.getText(), passwordConfirmEditText.getText())) {
-                    passwordConfirmTextInput.setError(null);
-                }
-                return false;
+        passwordConfirmEditText.setOnKeyListener((v, keyCode, event) -> {
+            if (FormValidators.isPasswordConfirmValid(
+                    passwordEditText.getText(), passwordConfirmEditText.getText())) {
+                passwordConfirmTextInput.setError(null);
             }
+            return false;
         });
     }
 
-    private Observer<VoyageUser> userObserver = new Observer<VoyageUser>() {
-        @Override
-        public void onChanged(@Nullable VoyageUser voyageUser) {
-            Toast.makeText(RegisterActivity.this, "Registration Successful",
-                    Toast.LENGTH_SHORT).show();
-            Intent intent = new Intent(getApplicationContext(), SearchBusActivity.class);
-            startActivity(intent);
-        }
+    private Observer<VoyageUser> userObserver = voyageUser -> {
+        Toast.makeText(RegisterActivity.this, "Registration Successful",
+                Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(getApplicationContext(), SearchBusActivity.class);
+        startActivity(intent);
     };
 }
