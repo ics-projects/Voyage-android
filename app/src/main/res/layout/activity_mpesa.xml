@@ -82,7 +82,7 @@
                         android:layout_below="@+id/textView"
                         android:layout_marginTop="8dp"
                         android:fontFamily="@font/gotham"
-                        android:text="Payment made easy through M-Pesa"
+                        android:text="@string/pay_page_payment_statement"
                         android:textAlignment="center"
                         android:textColor="#FFFFFF"
                         android:textSize="18sp" />
@@ -116,20 +116,22 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="8dp"
+                                android:layout_marginEnd="4dp"
                                 android:fontFamily="@font/calibri"
                                 android:text="@string/pay_page_trip_label"
                                 android:textColor="@color/primary_text"
                                 android:textSize="24sp" />
 
                             <TextView
+                                android:id="@+id/trip_name_tv"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="8dp"
                                 android:fontFamily="@font/calibri"
-                                android:text="NAIROBI-MOMBASA"
                                 android:textAlignment="textStart"
                                 android:textColor="@color/primary_text"
-                                android:textSize="24sp" />
+                                android:textSize="24sp"
+                                tools:text="NAIROBI - MOMBASA" />
 
                         </LinearLayout>
 
@@ -145,21 +147,23 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="8dp"
+                                android:layout_marginEnd="4dp"
                                 android:fontFamily="@font/calibri"
-                                android:text="Departure:"
+                                android:text="@string/pay_page_departure_label"
                                 android:textAlignment="center"
                                 android:textColor="@color/primary_text"
                                 android:textSize="24sp" />
 
                             <TextView
+                                android:id="@+id/departure_time_tv"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="8dp"
                                 android:fontFamily="@font/calibri"
-                                android:text="10:00pm"
                                 android:textAlignment="textStart"
                                 android:textColor="@color/primary_text"
-                                android:textSize="24sp" />
+                                android:textSize="24sp"
+                                tools:text="2019/06/12 at 10:00pm" />
 
                         </LinearLayout>
 
@@ -175,21 +179,23 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="8dp"
+                                android:layout_marginEnd="4dp"
                                 android:fontFamily="@font/calibri"
-                                android:text="Amount:"
+                                android:text="@string/pay_page_total_price_label"
                                 android:textAlignment="center"
                                 android:textColor="@color/primary_text"
                                 android:textSize="24sp" />
 
                             <TextView
+                                android:id="@+id/total_price_tv"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="8dp"
                                 android:fontFamily="@font/calibri"
-                                android:text="1000"
                                 android:textAlignment="textStart"
                                 android:textColor="@color/primary_text"
-                                android:textSize="24sp" />
+                                android:textSize="24sp"
+                                tools:text="1000" />
 
                         </LinearLayout>
 
@@ -210,8 +216,8 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:gravity="center"
                         android:layout_marginBottom="8dp"
+                        android:gravity="center"
                         android:orientation="horizontal"
                         android:weightSum="3">
 

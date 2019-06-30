@@ -85,7 +85,18 @@ public class PickSeatActivity extends AppCompatActivity implements PickSeatAdapt
         viewModel.navigateToPay(intentIntegerPickPoint, intentIntegerDropPoint, intentIntegerTripId,
                 pickedSeatIds).observe(this, payDetails -> {
             if (payDetails != null) {
-                payActivityIntent.putExtra(PayActivity.PAY_URL_INTENT_EXTRA, payDetails.getPayUrl());
+                String payUrl = payDetails.getPayUrl();
+                String originName = payDetails.getStages().get(0).getName();
+                String destinationName = payDetails.getStages().get(1).getName();
+                String tripName = originName.concat(" - ").concat(destinationName);
+                String time = payDetails.getTime();
+                Log.d(LOG_TAG, "Time:    " + time);
+                int totalPrice = payDetails.getTotalPrice();
+
+                payActivityIntent.putExtra(PayActivity.PAY_URL_INTENT_EXTRA, payUrl);
+                payActivityIntent.putExtra(PayActivity.PAY_TRIP_NAME_INTENT_EXTRA, tripName);
+                payActivityIntent.putExtra(PayActivity.PAY_DEPARTURE_TIME_INTENT_EXTRA, time);
+                payActivityIntent.putExtra(PayActivity.PAY_TOTAL_PRICE_INTENT_EXTRA, totalPrice);
                 startActivity(payActivityIntent);
             }
         });

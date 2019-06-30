@@ -9,6 +9,8 @@ public class PayDetails {
     @SerializedName("trip_id")
     private int tripId;
 
+    private String time;
+
     private List<Stage> stages;
 
     private List<Seat> seats;
@@ -19,8 +21,9 @@ public class PayDetails {
     @SerializedName("pay_URL")
     private String payUrl;
 
-    public PayDetails(int tripId, List<Stage> stages, List<Seat> seats, int totalPrice, String payUrl) {
+    public PayDetails(int tripId, String time, List<Stage> stages, List<Seat> seats, int totalPrice, String payUrl) {
         this.tripId = tripId;
+        this.time = time;
         this.stages = stages;
         this.seats = seats;
         this.totalPrice = totalPrice;
@@ -65,5 +68,9 @@ public class PayDetails {
 
     public void setPayUrl(String payUrl) {
         this.payUrl = payUrl;
+    }
+
+    public String getTime() {
+        return time;
     }
 }

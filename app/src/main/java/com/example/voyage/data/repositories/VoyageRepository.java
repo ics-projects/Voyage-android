@@ -35,7 +35,7 @@ import retrofit2.Response;
 public class VoyageRepository {
     private static final String LOG_TAG = VoyageRepository.class.getSimpleName();
 
-    CompositeDisposable compositeDisposable = new CompositeDisposable();
+    private CompositeDisposable compositeDisposable = new CompositeDisposable();
     private VoyageService voyageService;
     private BehaviorSubject<VoyageUser> voyageUser = VoyageAuth.getInstance().currentUser();
 
@@ -119,6 +119,7 @@ public class VoyageRepository {
                 .subscribe(new Observer<VoyageUser>() {
                     @Override
                     public void onSubscribe(Disposable d) {
+                        compositeDisposable.add(d);
                     }
 
                     @Override
@@ -126,14 +127,12 @@ public class VoyageRepository {
                         Log.d(LOG_TAG, "Trips called----------------------");
                         if (voyageUser != null) {
                             String authToken = "Bearer ".concat(voyageUser.getToken());
-
                             Single.fromObservable(voyageService.trips(authToken, jsonObject))
                                     .subscribeOn(Schedulers.io())
                                     .observeOn(AndroidSchedulers.mainThread())
                                     .subscribe(new SingleObserver<Response<List<Trip>>>() {
                                         @Override
                                         public void onSubscribe(Disposable d) {
-
                                         }
 
                                         @Override
@@ -162,12 +161,13 @@ public class VoyageRepository {
 
                     @Override
                     public void onError(Throwable e) {
-
+                        e.printStackTrace();
+                        compositeDisposable.dispose();
                     }
 
                     @Override
                     public void onComplete() {
-
+                        compositeDisposable.dispose();
                     }
                 });
 
@@ -180,6 +180,7 @@ public class VoyageRepository {
                 .subscribe(new Observer<VoyageUser>() {
                     @Override
                     public void onSubscribe(Disposable d) {
+                        compositeDisposable.add(d);
                     }
 
                     @Override
@@ -192,7 +193,6 @@ public class VoyageRepository {
                                     .subscribe(new SingleObserver<Response<List<Seat>>>() {
                                         @Override
                                         public void onSubscribe(Disposable d) {
-
                                         }
 
                                         @Override
@@ -223,10 +223,12 @@ public class VoyageRepository {
                     @Override
                     public void onError(Throwable e) {
                         e.printStackTrace();
+                        compositeDisposable.dispose();
                     }
 
                     @Override
                     public void onComplete() {
+                        compositeDisposable.dispose();
                     }
                 });
         return seats;
@@ -236,7 +238,7 @@ public class VoyageRepository {
                                          ArrayList<Integer> seats) {
         PickSeatBody seatBody = new PickSeatBody(pickPoint, dropPoint, tripId, seats);
 
-        Disposable disposable = voyageUser.subscribeOn(Schedulers.io())
+        compositeDisposable.add(voyageUser.subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeWith(new DisposableObserver<VoyageUser>() {
                     @Override
@@ -277,14 +279,15 @@ public class VoyageRepository {
                     @Override
                     public void onError(Throwable e) {
                         e.printStackTrace();
+                        compositeDisposable.dispose();
                     }
 
                     @Override
                     public void onComplete() {
-//                        this.dispose();
+                        compositeDisposable.dispose();
                         Log.d(LOG_TAG, "Completed: " + this.isDisposed());
                     }
-                });
+                }));
 
         return payDetails;
     }
@@ -296,7 +299,7 @@ public class VoyageRepository {
                 .subscribe(new Observer<VoyageUser>() {
                     @Override
                     public void onSubscribe(Disposable d) {
-
+                        compositeDisposable.add(d);
                     }
 
                     @Override
@@ -311,7 +314,6 @@ public class VoyageRepository {
                                     .subscribe(new SingleObserver<Response<String>>() {
                                         @Override
                                         public void onSubscribe(Disposable d) {
-
                                         }
 
                                         @Override
@@ -341,12 +343,13 @@ public class VoyageRepository {
 
                     @Override
                     public void onError(Throwable e) {
-
+                        e.printStackTrace();
+                        compositeDisposable.dispose();
                     }
 
                     @Override
                     public void onComplete() {
-
+                        compositeDisposable.dispose();
                     }
                 });
         return payStatus;
