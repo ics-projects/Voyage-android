@@ -36,7 +36,7 @@
     <string name="email_address">Barua pepe</string>
     <string name="confirm_password">Thibitisha nenosiri</string>
     <string name="btn_cancel">Futa</string>
-    <string name="btn_register">kujiandikisha</string>
+    <string name="btn_register">Kujiandikisha</string>
     <string name="log_in">Ingia</string>
     <string name="error_email">Barua batili</string>
     <string name="error_name">Jina la mtumiaji batili</string>
@@ -44,8 +44,8 @@
     <string name="preference_file_key">com.example.voyage.PREFERENCE_FILE_KEY</string>
     <string name="user_token_key">USER_TOKEN</string>
     <string name="destination">Kwenda</string>
-    <string name="select_date">chagua tarehe</string>
-    <string name="search_buses">tafuta mabasi</string>
+    <string name="select_date">Chagua tarehe</string>
+    <string name="search_buses">Tafuta mabasi</string>
     <string name="available_seat_drawable">Kiti kinachopatikana kinaweza kugeuka</string>
     <string name="booked_seat_drawable">Kiti kilichopangwa kinachovuliwa</string>
     <string name="proceed_to_payment">Endelea kwa Malipo</string>
@@ -63,4 +63,10 @@
     <string name="hey_traveller">Hey Traveller!</string>
     <string name="where_you_want_to_go">Ambapo unataka kwenda.</string>
     <string name="select_your_bus">chagua basi yako</string>
+    <string name="back_button_description">Kitufe cha nyuma</string>
+    <string name="cancel_payment_dialog_title">Futa Malipo</string>
+    <string name="cancel_payment_confirmation_dialog">Je, una uhakika unataka kufuta malipo?</string>
+    <string name="bus_stop_image">Picha ya kuacha basi</string>
+    <string name="hey_traveller_greeting">Hey Traveller!</string>
+    <string name="available_bus_call_to_action_text_view">Chagua basi yako</string>
 </resources>

@@ -63,9 +63,11 @@
     <string name="bus_stop_image">Bus stop image</string>
     <string name="your_seat">Your Seat</string>
     <string name="available">Available</string>
+    <string name="hey_traveller">Hey Traveller!</string>
     <string name="booked">Booked</string>
     <string name="hey_traveller_greeting">Hey Traveller!</string>
     <string name="where_you_want_to_go">Where you want to go.</string>
     <string name="from">From</string>
+    <string name="select_your_bus">chagua basi yako</string>
     <string name="available_bus_call_to_action_text_view">select your bus</string>
 </resources>
