@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="appbar_scrolling_view_behavior" translatable="false">
         android.support.design.widget.AppBarLayout$ScrollingViewBehavior
@@ -28,7 +29,7 @@
     <string name="cancel_button">Cancel</string>
     <string name="next_button">Next</string>
     <string name="error_password">Password must contain at least 8 characters</string>
-    <string name="instruction">Please choose your stat point and your destination below</string>
+    <string name="instruction">Please choose your start point and your destination below</string>
     <string name="search_info">Search for a bus</string>
     <string name="register">Register</string>
     <string name="first_name">First name</string>
@@ -57,17 +58,17 @@
     <string name="pay_page_payment_statement">Payment made easy through M-Pesa</string>
     <string name="pay_page_departure_label">Departure:</string>
     <string name="pay_page_total_price_label">Total Price:</string>
+    <string name="your_seat">Your Seat</string>
+    <string name="available">Available</string>
+    <string name="booked">Booked</string>
+    <string name="hey_traveller">Hey Traveller!</string>
+    <string name="where_you_want_to_go">Where you want to go.</string>
+    <string name="from">From</string>
+    <string name="select_your_bus">select your bus</string>
     <string name="back_button_description">Back button</string>
     <string name="cancel_payment_dialog_title">Cancel Payment</string>
     <string name="cancel_payment_confirmation_dialog">Are you sure you want to cancel payment?</string>
     <string name="bus_stop_image">Bus stop image</string>
-    <string name="your_seat">Your Seat</string>
-    <string name="available">Available</string>
-    <string name="hey_traveller">Hey Traveller!</string>
-    <string name="booked">Booked</string>
     <string name="hey_traveller_greeting">Hey Traveller!</string>
-    <string name="where_you_want_to_go">Where you want to go.</string>
-    <string name="from">From</string>
-    <string name="select_your_bus">chagua basi yako</string>
-    <string name="available_bus_call_to_action_text_view">select your bus</string>
+    <string name="available_bus_call_to_action_text_view">Select your bus</string>
 </resources>

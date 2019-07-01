@@ -77,10 +77,7 @@
                     android:layout_centerHorizontal="true"
                     android:layout_marginTop="16dp"
                     android:fontFamily="@font/print_clearly"
-                    android:text="@string/available_bus_call_to_action_text_view"
-                    android:textAlignment="center"
-                    android:textColor="#FFFFFF"
-                    android:textSize="18sp" />
+                    android:text="@string/available_bus_call_to_action_text_view" />
 
                 <LinearLayout
                     android:id="@+id/linearLayout"
