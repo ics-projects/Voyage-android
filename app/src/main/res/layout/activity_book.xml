@@ -78,7 +78,7 @@
                     android:layout_centerHorizontal="true"
                     android:layout_marginTop="16dp"
                     android:fontFamily="@font/print_clearly"
-                    android:text="Select your bus!"
+                    android:text="@string/select_your_bus"
                     android:textAlignment="center"
                     android:textColor="#FFFFFF"
                     android:textSize="18sp" />
@@ -264,7 +264,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:fontFamily="@font/calibri"
-                                android:text="Booked"
+                                android:text="@string/booked"
                                 android:textAlignment="center"
                                 android:textColor="#b2b2b2" />
 
@@ -280,14 +280,14 @@
                             <ImageView
                                 android:layout_width="16dp"
                                 android:layout_height="16dp"
-                                android:layout_marginRight="4dp"
+                                android:layout_marginEnd="4dp"
                                 android:src="@drawable/available_img" />
 
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:fontFamily="@font/calibri"
-                                android:text="Available"
+                                android:text="@string/available"
                                 android:textAlignment="center"
                                 android:textColor="#b2b2b2" />
                         </LinearLayout>
@@ -301,14 +301,14 @@
                             <ImageView
                                 android:layout_width="16dp"
                                 android:layout_height="16dp"
-                                android:layout_marginRight="4dp"
+                                android:layout_marginEnd="4dp"
                                 android:src="@drawable/your_seat_img" />
 
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:fontFamily="@font/calibri"
-                                android:text="Your Seat"
+                                android:text="@string/your_seat"
                                 android:textAlignment="center"
                                 android:textColor="#b2b2b2" />
                         </LinearLayout>

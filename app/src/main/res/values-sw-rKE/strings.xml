@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Voyage</string>
+    <string name="hint_username">Jina la Mtumiaji</string>
+    <string name="hint_password">Neno Siri</string>
+    <string name="button_next">Ijayo</string>
+    <string name="button_cancel">Kufuta</string>
+    <string name="title_activity_home">HomeActivity</string>
+
+    <string name="start_prompt">Chagua hatua yako ya Mwanzo</string>
+    <string name="destination_prompt">Chagua hatua yako ya Mwisho</string>
+    <string name="lbl_start_point">Hatua mwanzo</string>
+    <string name="lbl_end_point">Hatua mwisho</string>
+    <string name="choose_date">Chagua tarehe…</string>
+    <string name="departure_time">Kuondoka Wakati</string>
+    <string name="btn_submit">Tuma</string>
+
+
+    <string-array name="city_points">
+        <item>Nairobi</item>
+        <item>Naivasha</item>
+        <item>Kisumu</item>
+        <item>Nakuru</item>
+        <item>Mombasa</item>
+    </string-array>
+
+    <string name="cancel_button">Futa</string>
+    <string name="next_button">Ifuatayo</string>
+    <string name="error_password">Neno siri lazima iwe na angalau wahusika 8</string>
+    <string name="instruction">Tafadhali chagua hatua yako ya kuanza na marudio yako chini</string>
+    <string name="search_info">Tafuta basi</string>
+    <string name="register">Jisajili</string>
+    <string name="first_name">Jina la kwanza</string>
+    <string name="last_name">Jina la mwisho</string>
+    <string name="from">Kutoka wapi</string>
+    <string name="email_address">Barua pepe</string>
+    <string name="confirm_password">Thibitisha nenosiri</string>
+    <string name="btn_cancel">Futa</string>
+    <string name="btn_register">kujiandikisha</string>
+    <string name="log_in">Ingia</string>
+    <string name="error_email">Barua batili</string>
+    <string name="error_name">Jina la mtumiaji batili</string>
+    <string name="error_password_confirm">Nywila haifani</string>
+    <string name="preference_file_key">com.example.voyage.PREFERENCE_FILE_KEY</string>
+    <string name="user_token_key">USER_TOKEN</string>
+    <string name="destination">Kwenda</string>
+    <string name="select_date">chagua tarehe</string>
+    <string name="search_buses">tafuta mabasi</string>
+    <string name="available_seat_drawable">Kiti kinachopatikana kinaweza kugeuka</string>
+    <string name="booked_seat_drawable">Kiti kilichopangwa kinachovuliwa</string>
+    <string name="proceed_to_payment">Endelea kwa Malipo</string>
+    <string name="phone_number_hint">Nambari ya simu</string>
+    <string name="phone_number_ke_format">+254</string>
+    <string name="pay_page_trip_label">Safari:</string>
+    <string name="pay_page_pay_btn">Lipa</string>
+    <string name="pay_page_cancel_btn">Futa</string>
+    <string name="pay_page_payment_statement">Malipo yamefanywa rahisi kupitia M-Pesa</string>
+    <string name="pay_page_departure_label">Kuondoka:</string>
+    <string name="pay_page_total_price_label">Bei jumla:</string>
+    <string name="your_seat">Kiti chako</string>
+    <string name="available">Linapatikana</string>
+    <string name="booked">Limeandaliwa</string>
+    <string name="hey_traveller">Hey Traveller!</string>
+    <string name="where_you_want_to_go">Ambapo unataka kwenda.</string>
+    <string name="select_your_bus">chagua basi yako</string>
+</resources>
