@@ -68,7 +68,7 @@ public class PickSeatActivity extends AppCompatActivity implements PickSeatAdapt
         int intentIntegerBusId = pickedSeatActivityIntent.getIntExtra(Constants.TRIP_BUS_ID_INTENT_EXTRA, 0);
 
         // Set up view model
-        PickSeatViewModelFactory factory = new PickSeatViewModelFactory(getApplication(), intentIntegerBusId);
+        PickSeatViewModelFactory factory = new PickSeatViewModelFactory(intentIntegerBusId);
         viewModel = ViewModelProviders.of(this, factory).get(PickSeatViewModel.class);
 
         // fetch seats to be displayed

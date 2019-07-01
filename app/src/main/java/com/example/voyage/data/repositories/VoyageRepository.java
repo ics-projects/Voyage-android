@@ -21,23 +21,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.reactivex.Observable;
-import io.reactivex.Observer;
 import io.reactivex.Single;
-import io.reactivex.SingleObserver;
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.observers.DisposableObserver;
 import io.reactivex.schedulers.Schedulers;
 import io.reactivex.subjects.BehaviorSubject;
-import retrofit2.Response;
 
 public class VoyageRepository {
     private static final String LOG_TAG = VoyageRepository.class.getSimpleName();
+    private static VoyageRepository instance;
 
-    private CompositeDisposable compositeDisposable = new CompositeDisposable();
     private VoyageService voyageService;
-    private BehaviorSubject<VoyageUser> voyageUser = VoyageAuth.getInstance().currentUser();
+    private Single<VoyageUser> voyageUser;
 
     private MutableLiveData<List<Schedule>> schedules = new MutableLiveData<>();
     private MutableLiveData<List<Trip>> trips = new MutableLiveData<>();
@@ -45,66 +40,44 @@ public class VoyageRepository {
     private MutableLiveData<PayDetails> payDetails = new MutableLiveData<>();
     private BehaviorSubject<Integer> payStatus = BehaviorSubject.create();
 
-    public VoyageRepository() {
+    private VoyageRepository() {
         voyageService = VoyageClient.getInstance().getVoyageService();
+        voyageUser = Single.fromObservable(VoyageAuth.getInstance().currentUser());
+    }
+
+    public static VoyageRepository getInstance() {
+        if (instance == null) {
+            instance = new VoyageRepository();
+        }
+        return instance;
     }
 
     public LiveData<List<Schedule>> getSchedules() {
-        voyageUser.subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<VoyageUser>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-                    }
 
-                    @Override
-                    public void onNext(VoyageUser voyageUser) {
-                        Log.d(LOG_TAG, "Schedules called----------------------");
-                        if (voyageUser != null) {
-                            assert voyageUser.getToken() != null;
-                            Log.d(LOG_TAG, "Retrieved token: " + voyageUser.getToken());
-                            String authToken = "Bearer ".concat(voyageUser.getToken());
-                            Single.fromObservable(voyageService.schedules(authToken))
+        Disposable disposable = voyageUser.subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .flatMap((user) -> {
+                    String authToken = "Bearer ".concat(user.getToken());
+                    return Single.fromObservable(
+                            voyageService.schedules(authToken)
                                     .subscribeOn(Schedulers.io())
                                     .observeOn(AndroidSchedulers.mainThread())
-                                    .subscribe(new SingleObserver<Response<List<Schedule>>>() {
-                                        @Override
-                                        public void onSubscribe(Disposable d) {
-
-                                        }
-
-                                        @Override
-                                        public void onSuccess(Response<List<Schedule>> listResponse) {
-                                            if (listResponse.isSuccessful()) {
-                                                schedules.setValue(listResponse.body());
-                                            } else {
-                                                try {
-                                                    assert listResponse.errorBody() != null;
-                                                    Log.d(LOG_TAG, "Error: " +
-                                                            listResponse.errorBody().string());
-                                                } catch (IOException e) {
-                                                    e.printStackTrace();
-                                                }
-                                            }
-                                        }
-
-                                        @Override
-                                        public void onError(Throwable e) {
-                                            e.printStackTrace();
-                                        }
-                                    });
+                    );
+                })
+                .subscribe((response) -> {
+                    if (response.isSuccessful()) {
+                        schedules.postValue(response.body());
+                    } else {
+                        try {
+                            assert response.errorBody() != null;
+                            Log.d(LOG_TAG, "Error: " +
+                                    response.errorBody().string());
+                        } catch (IOException e) {
+                            e.printStackTrace();
                         }
                     }
+                }, Throwable::printStackTrace);
 
-                    @Override
-                    public void onError(Throwable e) {
-                        e.printStackTrace();
-                    }
-
-                    @Override
-                    public void onComplete() {
-                    }
-                });
         return schedules;
     }
 
@@ -114,123 +87,59 @@ public class VoyageRepository {
         jsonObject.addProperty("destination", destination);
         jsonObject.addProperty("date", date);
 
-        voyageUser.subscribeOn(Schedulers.io())
+        Disposable disposable = voyageUser.subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<VoyageUser>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-                        compositeDisposable.add(d);
-                    }
-
-                    @Override
-                    public void onNext(VoyageUser voyageUser) {
-                        Log.d(LOG_TAG, "Trips called----------------------");
-                        if (voyageUser != null) {
-                            String authToken = "Bearer ".concat(voyageUser.getToken());
-                            Single.fromObservable(voyageService.trips(authToken, jsonObject))
+                .flatMap((user) -> {
+                    String authToken = "Bearer ".concat(user.getToken());
+                    return Single.fromObservable(
+                            voyageService.trips(authToken, jsonObject)
                                     .subscribeOn(Schedulers.io())
-                                    .observeOn(AndroidSchedulers.mainThread())
-                                    .subscribe(new SingleObserver<Response<List<Trip>>>() {
-                                        @Override
-                                        public void onSubscribe(Disposable d) {
-                                        }
-
-                                        @Override
-                                        public void onSuccess(Response<List<Trip>> listResponse) {
-                                            if (listResponse.isSuccessful()) {
-                                                assert listResponse.body() != null;
-                                                trips.setValue(listResponse.body());
-                                            } else {
-                                                try {
-                                                    assert listResponse.errorBody() != null;
-                                                    Log.d(LOG_TAG, "Error: " +
-                                                            listResponse.errorBody().string());
-                                                } catch (IOException e) {
-                                                    e.printStackTrace();
-                                                }
-                                            }
-                                        }
-
-                                        @Override
-                                        public void onError(Throwable e) {
-                                            e.printStackTrace();
-                                        }
-                                    });
+                                    .observeOn(AndroidSchedulers.mainThread()));
+                })
+                .subscribe((response) -> {
+                    if (response.isSuccessful()) {
+                        trips.postValue(response.body());
+                    } else {
+                        try {
+                            assert response.errorBody() != null;
+                            Log.d(LOG_TAG, "Error: " +
+                                    response.errorBody().string());
+                        } catch (IOException e) {
+                            e.printStackTrace();
                         }
                     }
+                }, Throwable::printStackTrace);
 
-                    @Override
-                    public void onError(Throwable e) {
-                        e.printStackTrace();
-                        compositeDisposable.dispose();
-                    }
-
-                    @Override
-                    public void onComplete() {
-                        compositeDisposable.dispose();
-                    }
-                });
 
         return trips;
     }
 
     public Observable<List<Seat>> getSeats(int busId) {
-        voyageUser.subscribeOn(Schedulers.io())
+
+        Disposable disposable = voyageUser.subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<VoyageUser>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-                        compositeDisposable.add(d);
-                    }
-
-                    @Override
-                    public void onNext(VoyageUser voyageUser) {
-                        if (voyageUser != null) {
-                            String authToken = "Bearer ".concat(voyageUser.getToken());
-                            Single.fromObservable(voyageService.seats(authToken, busId))
+                .flatMap((user) -> {
+                    String authToken = "Bearer ".concat(user.getToken());
+                    return Single.fromObservable(
+                            voyageService.seats(authToken, busId)
                                     .subscribeOn(Schedulers.io())
-                                    .observeOn(AndroidSchedulers.mainThread())
-                                    .subscribe(new SingleObserver<Response<List<Seat>>>() {
-                                        @Override
-                                        public void onSubscribe(Disposable d) {
-                                        }
-
-                                        @Override
-                                        public void onSuccess(Response<List<Seat>> listResponse) {
-                                            if (listResponse.isSuccessful()) {
-                                                Log.d(LOG_TAG, "Seats length: " +
-                                                        listResponse.body().size());
-                                                seats.onNext(listResponse.body());
-                                            } else {
-                                                try {
-                                                    assert listResponse.errorBody() != null;
-                                                    Log.d(LOG_TAG, "Error: " +
-                                                            listResponse.errorBody().string());
-                                                } catch (IOException e) {
-                                                    e.printStackTrace();
-                                                }
-                                            }
-                                        }
-
-                                        @Override
-                                        public void onError(Throwable e) {
-                                            e.printStackTrace();
-                                        }
-                                    });
+                                    .observeOn(AndroidSchedulers.mainThread()));
+                })
+                .subscribe((response) -> {
+                    if (response.isSuccessful()) {
+                        assert response.body() != null;
+                        seats.onNext(response.body());
+                    } else {
+                        try {
+                            assert response.errorBody() != null;
+                            Log.d(LOG_TAG, "Error: " +
+                                    response.errorBody().string());
+                        } catch (IOException e) {
+                            e.printStackTrace();
                         }
                     }
+                }, Throwable::printStackTrace);
 
-                    @Override
-                    public void onError(Throwable e) {
-                        e.printStackTrace();
-                        compositeDisposable.dispose();
-                    }
-
-                    @Override
-                    public void onComplete() {
-                        compositeDisposable.dispose();
-                    }
-                });
         return seats;
     }
 
@@ -238,120 +147,62 @@ public class VoyageRepository {
                                          ArrayList<Integer> seats) {
         PickSeatBody seatBody = new PickSeatBody(pickPoint, dropPoint, tripId, seats);
 
-        compositeDisposable.add(voyageUser.subscribeOn(Schedulers.io())
+        Disposable disposable = voyageUser.subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribeWith(new DisposableObserver<VoyageUser>() {
-                    @Override
-                    public void onNext(VoyageUser voyageUser) {
-                        if (voyageUser != null) {
-                            String authToken = "Bearer ".concat(voyageUser.getToken());
-                            Single.fromObservable(voyageService.pickSeat(authToken, seatBody))
+                .flatMap((user) -> {
+                    String authToken = "Bearer ".concat(user.getToken());
+                    return Single.fromObservable(
+                            voyageService.pickSeat(authToken, seatBody)
                                     .subscribeOn(Schedulers.io())
-                                    .observeOn(AndroidSchedulers.mainThread())
-                                    .subscribe(new SingleObserver<Response<PayDetails>>() {
-                                        @Override
-                                        public void onSubscribe(Disposable d) {
-                                        }
-
-                                        @Override
-                                        public void onSuccess(Response<PayDetails> payDetailsResponse) {
-                                            if (payDetailsResponse.isSuccessful()) {
-                                                payDetails.setValue(payDetailsResponse.body());
-                                            } else {
-                                                try {
-                                                    assert payDetailsResponse.errorBody() != null;
-                                                    Log.d(LOG_TAG, "Error: " +
-                                                            payDetailsResponse.errorBody().string());
-                                                } catch (IOException e) {
-                                                    e.printStackTrace();
-                                                }
-                                            }
-                                        }
-
-                                        @Override
-                                        public void onError(Throwable e) {
-
-                                        }
-                                    });
+                                    .observeOn(AndroidSchedulers.mainThread()));
+                })
+                .subscribe((response) -> {
+                    if (response.isSuccessful()) {
+                        payDetails.postValue(response.body());
+                    } else {
+                        try {
+                            assert response.errorBody() != null;
+                            Log.d(LOG_TAG, "Error: " +
+                                    response.errorBody().string());
+                        } catch (IOException e) {
+                            e.printStackTrace();
                         }
                     }
+                }, Throwable::printStackTrace);
 
-                    @Override
-                    public void onError(Throwable e) {
-                        e.printStackTrace();
-                        compositeDisposable.dispose();
-                    }
-
-                    @Override
-                    public void onComplete() {
-                        compositeDisposable.dispose();
-                        Log.d(LOG_TAG, "Completed: " + this.isDisposed());
-                    }
-                }));
 
         return payDetails;
     }
 
     public Observable<Integer> pay(String url, String phoneNumber, int tripId, int pickPoint,
                                    int dropPoint, ArrayList<Integer> intentSeatIds) {
-        voyageUser.subscribeOn(Schedulers.io())
+        PayRequestBody payRequestBody = new PayRequestBody(phoneNumber,
+                pickPoint, dropPoint, tripId, intentSeatIds);
+        Disposable disposable = voyageUser.subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<VoyageUser>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-                        compositeDisposable.add(d);
-                    }
+                .flatMap((user) -> {
+                    String authToken = "Bearer ".concat(user.getToken());
 
-                    @Override
-                    public void onNext(VoyageUser voyageUser) {
-                        if (voyageUser != null) {
-                            PayRequestBody payRequestBody = new PayRequestBody(phoneNumber,
-                                    pickPoint, dropPoint, tripId, intentSeatIds);
-                            String authToken = "Bearer ".concat(voyageUser.getToken());
-                            Single.fromObservable(voyageService.pay(url, authToken, payRequestBody))
+                    return Single.fromObservable(
+                            voyageService.pay(url, authToken, payRequestBody)
                                     .subscribeOn(Schedulers.io())
-                                    .observeOn(AndroidSchedulers.mainThread())
-                                    .subscribe(new SingleObserver<Response<String>>() {
-                                        @Override
-                                        public void onSubscribe(Disposable d) {
-                                        }
-
-                                        @Override
-                                        public void onSuccess(Response<String> stringResponse) {
-                                            if (stringResponse.isSuccessful()) {
-                                                if (stringResponse.code() == 200) {
-                                                    payStatus.onNext(0);
-                                                } else {
-                                                    try {
-                                                        assert stringResponse.errorBody() != null;
-                                                        Log.d(LOG_TAG, "Error: " +
-                                                                stringResponse.errorBody().string());
-                                                    } catch (IOException e) {
-                                                        e.printStackTrace();
-                                                    }
-                                                }
-                                            }
-                                        }
-
-                                        @Override
-                                        public void onError(Throwable e) {
-                                            e.printStackTrace();
-                                        }
-                                    });
+                                    .observeOn(AndroidSchedulers.mainThread()));
+                })
+                .subscribe((response) -> {
+                    if (response.isSuccessful()) {
+                        if (response.code() == 200)
+                            payStatus.onNext(0);
+                    } else {
+                        try {
+                            assert response.errorBody() != null;
+                            Log.d(LOG_TAG, "Error: " +
+                                    response.errorBody().string());
+                        } catch (IOException e) {
+                            e.printStackTrace();
                         }
                     }
+                }, Throwable::printStackTrace);
 
-                    @Override
-                    public void onError(Throwable e) {
-                        e.printStackTrace();
-                        compositeDisposable.dispose();
-                    }
-
-                    @Override
-                    public void onComplete() {
-                        compositeDisposable.dispose();
-                    }
-                });
         return payStatus;
     }
 }

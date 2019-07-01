@@ -1,21 +1,18 @@
 package com.example.voyage.ui.authentication;
 
-import android.app.Application;
-import android.arch.lifecycle.AndroidViewModel;
+import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
-import android.support.annotation.NonNull;
+import android.arch.lifecycle.ViewModel;
 import android.util.Log;
 
 import com.example.voyage.auth.VoyageAuth;
 import com.example.voyage.auth.VoyageUser;
 
-import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
-class LoginActivityViewModel extends AndroidViewModel {
+class LoginActivityViewModel extends ViewModel {
 
     private static final String LOG_TAG = LoginActivityViewModel.class.getSimpleName();
 
@@ -24,8 +21,7 @@ class LoginActivityViewModel extends AndroidViewModel {
 
     private VoyageAuth auth;
 
-    public LoginActivityViewModel(@NonNull Application application) {
-        super(application);
+    public LoginActivityViewModel() {
         auth = VoyageAuth.getInstance();
     }
 
@@ -35,37 +31,21 @@ class LoginActivityViewModel extends AndroidViewModel {
         super.onCleared();
     }
 
-    MutableLiveData<VoyageUser> getUser() {
+    LiveData<VoyageUser> getUser() {
         return user;
     }
 
     void loginUser(String email, String password) {
-        auth.signInWithEmailAndPassword(email, password)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<VoyageUser>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-                        disposables.add(d);
-                    }
-
-                    @Override
-                    public void onNext(VoyageUser voyageUser) {
-                        if (voyageUser != null) {
-                            Log.d(LOG_TAG, "User token: ".concat(voyageUser.getToken()));
-                            user.setValue(voyageUser);
-                        }
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-
-                    }
-
-                    @Override
-                    public void onComplete() {
-
-                    }
-                });
+        disposables.add(
+                auth.signInWithEmailAndPassword(email, password)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe((voyageUser) -> {
+                            if (voyageUser != null) {
+                                Log.d(LOG_TAG, "User token: ".concat(voyageUser.getToken()));
+                                user.setValue(voyageUser);
+                            }
+                        }, Throwable::printStackTrace)
+        );
     }
 }
