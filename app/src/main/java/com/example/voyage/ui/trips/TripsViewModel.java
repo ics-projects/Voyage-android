@@ -1,22 +1,19 @@
 package com.example.voyage.ui.trips;
 
-import android.app.Application;
-import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
-import android.support.annotation.NonNull;
+import android.arch.lifecycle.ViewModel;
 
 import com.example.voyage.data.models.Trip;
 import com.example.voyage.data.repositories.VoyageRepository;
 
 import java.util.List;
 
-public class TripsViewModel extends AndroidViewModel {
+public class TripsViewModel extends ViewModel {
 
     private VoyageRepository voyageRepository;
 
-    public TripsViewModel(@NonNull Application application) {
-        super(application);
-        this.voyageRepository = new VoyageRepository();
+    public TripsViewModel() {
+        this.voyageRepository = VoyageRepository.getInstance();
     }
 
     LiveData<List<Trip>> getTrips(String origin, String destination, String date) {
