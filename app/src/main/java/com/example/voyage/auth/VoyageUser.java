@@ -15,7 +15,7 @@ public class VoyageUser {
 
     private Throwable throwable;
 
-    private VoyageUser(String token, String firstName, String lastName, String email) {
+    public VoyageUser(String token, String firstName, String lastName, String email) {
         this.token = token;
         this.firstName = firstName;
         this.lastName = lastName;

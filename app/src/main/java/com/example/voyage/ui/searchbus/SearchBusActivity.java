@@ -31,6 +31,7 @@ import com.example.voyage.R;
 import com.example.voyage.data.Constants;
 import com.example.voyage.data.models.Schedule;
 import com.example.voyage.ui.bookings.RecentBookingActivity;
+import com.example.voyage.ui.authentication.LoginActivity;
 import com.example.voyage.ui.trips.TripsActivity;
 
 import java.text.SimpleDateFormat;
@@ -80,10 +81,14 @@ public class SearchBusActivity extends AppCompatActivity {
         originSpinner = findViewById(R.id.originSpinner);
         destinationSpinner = findViewById(R.id.destinationSpinner);
         dateEditText = findViewById(R.id.select_date);
+        userNameTextView = findViewById(R.id.user_name_tv);
 
         viewModel = ViewModelProviders.of(this).get(SearchBusActivityViewModel.class);
 
         fetchSchedules();
+        observeUser();
+
+        signOutIcon.setOnClickListener(view -> viewModel.signOut());
 
         dateEditText.setOnClickListener(view -> {
             int year = c.get(Calendar.YEAR);

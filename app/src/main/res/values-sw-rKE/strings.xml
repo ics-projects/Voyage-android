@@ -73,4 +73,7 @@
     <string name="open_nav_drawer">open drawer</string>
     <string name="close_nav_drawer">close drawer</string>
     <string name="please_book_your_bus_now">Tafadhali, Hifadhi Bus yako Sasa!</string>
+    <string name="sign_out_button_content_description">sign out button</string>
+    <string name="person_outline_image_content_description">person outline image</string>
+    <string name="greeting">Hello, %1s!</string>
 </resources>

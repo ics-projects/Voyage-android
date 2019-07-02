@@ -42,7 +42,7 @@ public class VoyageRepository {
     private static VoyageRepository instance;
 
     private VoyageService voyageService;
-    private Single<VoyageUser> voyageUser;
+    private BehaviorSubject<VoyageUser> voyageUser;
 
     private MutableLiveData<List<Schedule>> schedules = new MutableLiveData<>();
     private MutableLiveData<List<Trip>> trips = new MutableLiveData<>();
@@ -54,7 +54,7 @@ public class VoyageRepository {
 
     private VoyageRepository() {
         voyageService = VoyageClient.getInstance().getVoyageService();
-        voyageUser = Single.fromObservable(VoyageAuth.getInstance().currentUser());
+        voyageUser = VoyageAuth.getInstance().currentUser();
     }
 
     public static VoyageRepository getInstance() {

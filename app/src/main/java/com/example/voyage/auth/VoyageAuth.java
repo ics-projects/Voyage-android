@@ -10,22 +10,23 @@ import com.google.gson.JsonObject;
 
 import java.io.IOException;
 
+import io.reactivex.Completable;
 import io.reactivex.Observable;
 import io.reactivex.Single;
 import io.reactivex.SingleObserver;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
-import io.reactivex.subjects.AsyncSubject;
+import io.reactivex.subjects.BehaviorSubject;
 import retrofit2.Response;
 
 public class VoyageAuth implements BaseAuth<VoyageUser> {
     private static final String LOG_TAG = VoyageAuth.class.getSimpleName();
     private static VoyageAuth instance;
 
-    private static AsyncSubject<VoyageUser> userSubject = AsyncSubject.create();
-
     private VoyageService voyageService = VoyageClient.getInstance().getVoyageService();
+
+    private BehaviorSubject<VoyageUser> userSubject = BehaviorSubject.create();
 
     private VoyageAuth() {
     }
@@ -47,6 +48,7 @@ public class VoyageAuth implements BaseAuth<VoyageUser> {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(saveUserObserver);
+
         return userSubject;
     }
 
@@ -75,13 +77,23 @@ public class VoyageAuth implements BaseAuth<VoyageUser> {
     }
 
     @Override
-    public Observable<Response<VoyageUser>> signOut() {
+    public void signOut() {
+        String token = PreferenceUtilities.getUserToken(ApplicationContextProvider.getContext());
         PreferenceUtilities.setUserToken(ApplicationContextProvider.getContext(), null);
-        return null;
+        if (token != null) {
+            String authHeader = "Bearer ".concat(token);
+            Completable completable = Completable.fromObservable(voyageService.logout(authHeader));
+            Disposable d = completable.subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(() -> {
+                        Log.d(LOG_TAG, "Logged out successfully");
+                        userSubject.onComplete();
+                    }, Throwable::printStackTrace);
+        }
     }
 
-    public Observable<VoyageUser> currentUser() {
-        if (userSubject.hasComplete()) {
+    public BehaviorSubject<VoyageUser> currentUser() {
+        if (userSubject.hasValue()) {
             return userSubject;
         } else {
             String token = PreferenceUtilities.getUserToken(ApplicationContextProvider.getContext());
@@ -102,9 +114,6 @@ public class VoyageAuth implements BaseAuth<VoyageUser> {
                             }
                         }, throwable -> userSubject.onNext(new VoyageUser(throwable)));
 
-                return userSubject;
-            } else return null;
-        }
     }
 
     private SingleObserver<Response<VoyageUser>> saveUserObserver =
@@ -122,7 +131,6 @@ public class VoyageAuth implements BaseAuth<VoyageUser> {
                                 ApplicationContextProvider.getContext(),
                                 voyageUserResponse.body().getToken());
                         userSubject.onNext(voyageUserResponse.body());
-                        userSubject.onComplete();
                     } else {
                         try {
                             assert voyageUserResponse.errorBody() != null;

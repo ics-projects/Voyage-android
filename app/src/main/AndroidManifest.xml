@@ -24,7 +24,13 @@
         </activity>
         <activity android:name=".ui.authentication.LoginActivity" />
         <activity android:name=".ui.authentication.RegisterActivity" />
-        <activity android:name=".ui.searchbus.SearchBusActivity" />
+
+        <activity android:name=".ui.searchbus.SearchBusActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MainActivity" />
+        </activity>
+
         <activity android:name=".ui.trips.TripsActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
