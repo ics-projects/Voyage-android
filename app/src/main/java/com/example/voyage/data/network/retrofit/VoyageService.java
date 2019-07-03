@@ -16,7 +16,6 @@ import retrofit2.Response;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
-import retrofit2.http.Headers;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
 import retrofit2.http.Url;
@@ -31,42 +30,24 @@ public interface VoyageService {
     @POST("register")
     Observable<Response<VoyageUser>> register(@Body JsonObject object);
 
-    @Headers({
-            "Accept: application/json"
-    })
     @GET("user")
     Observable<Response<VoyageUser>> getUser(@Header("Authorization") String authorization);
 
-    @Headers({
-            "Accept: application/json"
-    })
     @GET("schedule")
     Observable<Response<List<Schedule>>> schedules(@Header("Authorization") String authorization);
 
-    @Headers({
-            "Accept: application/json"
-    })
     @POST("trip")
     Observable<Response<List<Trip>>> trips(
             @Header("Authorization") String authorization, @Body JsonObject object);
 
-    @Headers({
-            "Accept: application/json"
-    })
     @GET("seat/{busId}")
     Observable<Response<List<Seat>>> seats(@Header("Authorization") String authToken,
                                            @Path("busId") int busId);
 
-    @Headers({
-            "Accept: application/json"
-    })
     @POST("bookingPhase/pickSeat")
     Observable<Response<PayDetails>> pickSeat(@Header("Authorization") String authToken,
                                               @Body PickSeatBody body);
 
-    @Headers({
-            "Accept: application/json"
-    })
     @POST
     Observable<Response<String>> pay(@Url String url, @Header("Authorization") String authToken,
                                      @Body PayRequestBody payRequestBody);
