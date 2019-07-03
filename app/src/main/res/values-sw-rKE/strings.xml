@@ -88,4 +88,7 @@
     <string name="hey_traveller_greeting">Hey Traveller!</string>
     <string name="available_bus_call_to_action_text_view">Chagua basi yako</string>
     <string name="no_trips_found">No Trips Found with those values</string>
+    <string name="open_nav_drawer">open drawer</string>
+    <string name="close_nav_drawer">close drawer</string>
+    <string name="please_book_your_bus_now">Tafadhali, Hifadhi Bus yako Sasa!</string>
 </resources>

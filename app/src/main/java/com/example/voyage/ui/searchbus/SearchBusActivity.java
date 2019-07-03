@@ -9,9 +9,19 @@ import android.net.Network;
 import android.net.NetworkCapabilities;
 import android.net.NetworkRequest;
 import android.os.Bundle;
+<<<<<<< HEAD
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+=======
+import android.support.design.widget.NavigationView;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.view.MenuItem;
+>>>>>>> add navigation drawer
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ArrayAdapter;
@@ -45,10 +55,14 @@ public class SearchBusActivity extends AppCompatActivity {
 
     private Spinner originSpinner;
     private Spinner destinationSpinner;
+<<<<<<< HEAD
     private ProgressBar progressBar;
     private ScrollView scrollView;
     private Button searchBuses;
     private ConnectivityManager connectivityManager;
+=======
+    private DrawerLayout drawer;
+>>>>>>> add navigation drawer
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,6 +114,14 @@ public class SearchBusActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        drawer=findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle toggle=
+                new ActionBarDrawerToggle(this, drawer, toolbar ,R.string.open_nav_drawer, R.string.close_nav_drawer);
+        drawer.addDrawerListener(toggle);
+        toggle.syncState();
+
     }
 
     @Override
@@ -113,6 +135,34 @@ public class SearchBusActivity extends AppCompatActivity {
         super.onPause();
         connectivityManager.unregisterNetworkCallback(networkCallback);
     }
+
+    public void initNavigationDrawer() {
+
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(MenuItem menuItem) {
+
+                int id = menuItem.getItemId();
+
+                switch (id) {
+                    case R.id.home:
+                        Intent intentHome = new Intent(SearchBusActivity.this, SearchBusActivity.class);
+                        startActivity(intentHome);
+                        break;
+                    case R.id.trips:
+                        Intent intentTrip = new Intent(SearchBusActivity.this, TripsActivity.class);
+                        startActivity(intentTrip);
+
+                        break;
+                    default:
+                        break;
+                }
+                return true;
+            }
+        });
+    }
+
 
     private void fetchSchedules() {
         viewModel.getSchedules().observe(this, returnedSchedules -> {
