@@ -1,6 +1,7 @@
 package com.example.voyage.ui.searchbus;
 
 import android.app.DatePickerDialog;
+import android.app.ProgressDialog;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.os.Bundle;
@@ -37,6 +38,7 @@ public class SearchBusActivity extends AppCompatActivity {
 
     private Spinner originSpinner;
     private Spinner destinationSpinner;
+    private ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +50,8 @@ public class SearchBusActivity extends AppCompatActivity {
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         setContentView(R.layout.activity_search);
+
+        setProgressDialog();
 
         Button search_buses = findViewById(R.id.search_buses);
         originSpinner = findViewById(R.id.originSpinner);
@@ -84,10 +88,20 @@ public class SearchBusActivity extends AppCompatActivity {
         });
     }
 
+    private void setProgressDialog() {
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setCancelable(false);
+        progressDialog.setMessage("Please wait...");
+        progressDialog.show();
+    }
+
     private void fetchSchedules() {
         viewModel.getSchedules().observe(this, returnedSchedules -> {
-            schedules = returnedSchedules;
-            setSpinnerData();
+            if (returnedSchedules != null) {
+                schedules = returnedSchedules;
+                setSpinnerData();
+            }
+            progressDialog.dismiss();
         });
     }
 
