@@ -15,6 +15,7 @@ import com.example.voyage.data.models.Seat;
 import com.example.voyage.data.models.Trip;
 import com.example.voyage.data.network.retrofit.VoyageClient;
 import com.example.voyage.data.network.retrofit.VoyageService;
+import com.example.voyage.ui.pickseat.SeatRowCollection;
 import com.example.voyage.util.ApplicationContextProvider;
 import com.google.gson.JsonObject;
 
@@ -33,7 +34,6 @@ import io.reactivex.functions.BiFunction;
 import io.reactivex.functions.Function;
 import io.reactivex.functions.Function3;
 import io.reactivex.schedulers.Schedulers;
-import io.reactivex.subjects.BehaviorSubject;
 import retrofit2.HttpException;
 import retrofit2.Response;
 
@@ -46,9 +46,10 @@ public class VoyageRepository {
 
     private MutableLiveData<List<Schedule>> schedules = new MutableLiveData<>();
     private MutableLiveData<List<Trip>> trips = new MutableLiveData<>();
-    private BehaviorSubject<List<Seat>> seats = BehaviorSubject.create();
+    private MutableLiveData<SeatRowCollection> seats = new MutableLiveData<>();
     private MutableLiveData<PayDetails> payDetails = new MutableLiveData<>();
-    private BehaviorSubject<Integer> payStatus = BehaviorSubject.create();
+    private MutableLiveData<Integer> payStatus = new MutableLiveData<>();
+
     private AtomicReference<String> authToken = new AtomicReference<>("");
 
     private VoyageRepository() {
@@ -113,20 +114,31 @@ public class VoyageRepository {
                             e.printStackTrace();
                         }
                     }
-                }, this::handleError);
+                }, throwable -> {
+                    handleError(throwable);
+                    trips.setValue(null);
+                });
 
 
         return trips;
     }
 
-    public Observable<List<Seat>> getSeats(int busId) {
+    public LiveData<SeatRowCollection> getSeats(int busId) {
 
         Disposable disposable = getUserResponseSingle(
                 getSingleSourceFunctionWithBody(voyageService::seats, busId))
                 .subscribe((response) -> {
                     if (response.isSuccessful()) {
                         assert response.body() != null;
-                        seats.onNext(response.body());
+
+                        // Push seats to row collection
+                        SeatRowCollection rowCollection = new SeatRowCollection();
+                        for (int i = 0; i < response.body().size(); i += 4) {
+                            List<Seat> seatRow = new ArrayList<>(response.body().subList(i, i + 4));
+                            rowCollection.add(seatRow);
+                            seats.setValue(rowCollection);
+                        }
+
                     } else {
                         if (response.code() == 401) {
                             voyageService.logout(authToken.get());
@@ -139,7 +151,10 @@ public class VoyageRepository {
                             e.printStackTrace();
                         }
                     }
-                }, this::handleError);
+                }, throwable -> {
+                    handleError(throwable);
+                    seats.setValue(null);
+                });
 
         return seats;
     }
@@ -165,14 +180,17 @@ public class VoyageRepository {
                             e.printStackTrace();
                         }
                     }
-                }, this::handleError);
+                }, throwable -> {
+                    handleError(throwable);
+                    payDetails.setValue(null);
+                });
 
 
         return payDetails;
     }
 
-    public Observable<Integer> pay(String url, String phoneNumber, int tripId, int pickPoint,
-                                   int dropPoint, ArrayList<Integer> intentSeatIds) {
+    public LiveData<Integer> pay(String url, String phoneNumber, int tripId, int pickPoint,
+                                 int dropPoint, ArrayList<Integer> intentSeatIds) {
 
         PayRequestBody payRequestBody = new PayRequestBody(phoneNumber,
                 pickPoint, dropPoint, tripId, intentSeatIds);
@@ -182,7 +200,7 @@ public class VoyageRepository {
                 .subscribe((response) -> {
                     if (response.isSuccessful()) {
                         if (response.code() == 200)
-                            payStatus.onNext(0);
+                            payStatus.setValue(0);
                     } else {
                         if (response.code() == 401) {
                             voyageService.logout(authToken.get());
@@ -195,7 +213,10 @@ public class VoyageRepository {
                             e.printStackTrace();
                         }
                     }
-                }, this::handleError);
+                }, throwable -> {
+                    handleError(throwable);
+                    payStatus.setValue(null);
+                });
 
         return payStatus;
     }

@@ -1,18 +1,26 @@
 package com.example.voyage.ui.searchbus;
 
 import android.app.DatePickerDialog;
-import android.app.ProgressDialog;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.Network;
+import android.net.NetworkCapabilities;
+import android.net.NetworkRequest;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
+import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
+import android.widget.ScrollView;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.example.voyage.R;
 import com.example.voyage.data.Constants;
@@ -27,7 +35,6 @@ import java.util.Locale;
 
 
 public class SearchBusActivity extends AppCompatActivity {
-    private static final String LOG_TAG = SearchBusActivity.class.getSimpleName();
 
     private EditText dateEditText;
     final private Calendar c = Calendar.getInstance();
@@ -38,7 +45,10 @@ public class SearchBusActivity extends AppCompatActivity {
 
     private Spinner originSpinner;
     private Spinner destinationSpinner;
-    private ProgressDialog progressDialog;
+    private ProgressBar progressBar;
+    private ScrollView scrollView;
+    private Button searchBuses;
+    private ConnectivityManager connectivityManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,9 +61,13 @@ public class SearchBusActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_search);
 
-        setProgressDialog();
+        // initiate the progress bar
+        progressBar = findViewById(R.id.search_activity_indeterminate_bar);
 
-        Button search_buses = findViewById(R.id.search_buses);
+        scrollView = findViewById(R.id.screen_scroll_view);
+//        scrollView.setVisibility(View.GONE);
+
+        searchBuses = findViewById(R.id.search_buses);
         originSpinner = findViewById(R.id.originSpinner);
         destinationSpinner = findViewById(R.id.destinationSpinner);
         dateEditText = findViewById(R.id.select_date);
@@ -63,14 +77,14 @@ public class SearchBusActivity extends AppCompatActivity {
         fetchSchedules();
 
         dateEditText.setOnClickListener(view -> {
-            Log.d(LOG_TAG, "Datepicker selected");
             int year = c.get(Calendar.YEAR);
             int month = c.get(Calendar.MONTH);
             int day = c.get(Calendar.DAY_OF_MONTH);
             new DatePickerDialog(SearchBusActivity.this, datePickerListener, year, month, day).show();
         });
 
-        search_buses.setOnClickListener(view -> {
+        searchBuses.setEnabled(false);
+        searchBuses.setOnClickListener(view -> {
             String origin = (String) originSpinner.getSelectedItem();
             String destination = (String) destinationSpinner.getSelectedItem();
 
@@ -88,11 +102,16 @@ public class SearchBusActivity extends AppCompatActivity {
         });
     }
 
-    private void setProgressDialog() {
-        progressDialog = new ProgressDialog(this);
-        progressDialog.setCancelable(false);
-        progressDialog.setMessage("Please wait...");
-        progressDialog.show();
+    @Override
+    protected void onResume() {
+        super.onResume();
+        registerNetworkCallback();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        connectivityManager.unregisterNetworkCallback(networkCallback);
     }
 
     private void fetchSchedules() {
@@ -100,8 +119,12 @@ public class SearchBusActivity extends AppCompatActivity {
             if (returnedSchedules != null) {
                 schedules = returnedSchedules;
                 setSpinnerData();
+                searchBuses.setEnabled(true);
+            } else {
+                searchBuses.setEnabled(false);
             }
-            progressDialog.dismiss();
+            scrollView.setVisibility(View.VISIBLE);
+            progressBar.setVisibility(View.GONE);
         });
     }
 
@@ -134,5 +157,39 @@ public class SearchBusActivity extends AppCompatActivity {
 
             dateEditText.setText(selectedDate);
         }
+    }
+
+    private ConnectivityManager.NetworkCallback networkCallback = new ConnectivityManager.NetworkCallback() {
+        private Handler handler = new Handler();
+
+        @Override
+        public void onAvailable(Network network) {
+            handler.post(() -> {
+                scrollView.setVisibility(View.GONE);
+                progressBar.setVisibility(View.VISIBLE);
+                fetchSchedules();
+            });
+        }
+
+        @Override
+        public void onLost(Network network) {
+            handler.post(() -> {
+                Toast.makeText(
+                        SearchBusActivity.this,
+                        "Network connectivity lost",
+                        Toast.LENGTH_LONG).show();
+                searchBuses.setEnabled(false);
+            });
+        }
+    };
+
+    private void registerNetworkCallback() {
+        connectivityManager = (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        NetworkRequest networkRequest = new NetworkRequest.Builder()
+                .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+                .build();
+
+        connectivityManager.registerNetworkCallback(networkRequest, networkCallback);
     }
 }

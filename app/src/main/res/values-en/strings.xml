@@ -71,4 +71,5 @@
     <string name="bus_stop_image">Bus stop image</string>
     <string name="hey_traveller_greeting">Hey Traveller!</string>
     <string name="available_bus_call_to_action_text_view">Select your bus</string>
+    <string name="no_trips_found">No Trips Found with those values</string>
 </resources>

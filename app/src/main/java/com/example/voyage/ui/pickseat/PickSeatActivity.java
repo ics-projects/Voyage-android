@@ -8,10 +8,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 
 import com.example.voyage.R;
 import com.example.voyage.data.Constants;
@@ -34,7 +36,9 @@ public class PickSeatActivity extends AppCompatActivity implements PickSeatAdapt
     private int intentIntegerTripId;
     private int intentIntegerPickPoint;
     private int intentIntegerDropPoint;
-    private String intentStringDate;
+
+    private ProgressBar progressBar;
+    private RecyclerView recyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,11 +49,15 @@ public class PickSeatActivity extends AppCompatActivity implements PickSeatAdapt
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
-        setContentView(R.layout.activity_book);
+        setContentView(R.layout.activity_pick_seat);
+
+        // initiate the progress bar
+        progressBar = findViewById(R.id.search_activity_indeterminate_bar);
 
         // Recyclerview
-        RecyclerView recyclerView = findViewById(R.id.recyclerView_seats);
+        recyclerView = findViewById(R.id.recyclerView_seats);
         recyclerView.setHasFixedSize(true);
+        recyclerView.setVisibility(View.GONE);
 
         // LinearLayoutManager
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
@@ -64,7 +72,7 @@ public class PickSeatActivity extends AppCompatActivity implements PickSeatAdapt
         intentIntegerTripId = pickedSeatActivityIntent.getIntExtra(Constants.TRIP_ID_INTENT_EXTRA, 0);
         intentIntegerPickPoint = pickedSeatActivityIntent.getIntExtra(Constants.TRIP_PICK_POINT_INTENT_EXTRA, 0);
         intentIntegerDropPoint = pickedSeatActivityIntent.getIntExtra(Constants.TRIP_DROP_POINT_INTENT_EXTRA, 0);
-        intentStringDate = pickedSeatActivityIntent.getStringExtra(Constants.TRIP_DATE_INTENT_EXTRA);
+        String intentStringDate = pickedSeatActivityIntent.getStringExtra(Constants.TRIP_DATE_INTENT_EXTRA);
         int intentIntegerBusId = pickedSeatActivityIntent.getIntExtra(Constants.TRIP_BUS_ID_INTENT_EXTRA, 0);
 
         // Set up view model
@@ -117,8 +125,14 @@ public class PickSeatActivity extends AppCompatActivity implements PickSeatAdapt
     }
 
     private void fetchSeats() {
-        viewModel.getSeats().observe(this, seatRowCollection ->
-                seatAdapter.setSeatRowCollection(seatRowCollection));
+        viewModel.getSeats().observe(this, seatRowCollection -> {
+            if (seatRowCollection != null) {
+                seatAdapter.setSeatRowCollection(seatRowCollection);
+            }
+            recyclerView.setVisibility(View.VISIBLE);
+            progressBar.setVisibility(View.GONE);
+        });
+
     }
 
     @Override

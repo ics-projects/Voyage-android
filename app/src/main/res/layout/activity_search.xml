@@ -43,7 +43,14 @@
         android:layout_height="match_parent"
         android:layout_marginTop="-16dp">
 
+        <ProgressBar
+            android:id="@+id/search_activity_indeterminate_bar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true" />
+
         <ScrollView
+            android:id="@+id/screen_scroll_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
@@ -111,37 +118,36 @@
                             android:layout_height="match_parent"
                             android:text="@string/destination"
                             android:textAllCaps="true"
-                            android:textSize="12sp"
-                            android:textColor="@color/accent"/>
+                            android:textColor="@color/accent"
+                            android:textSize="12sp" />
 
 
                         <Spinner
                             android:id="@+id/destinationSpinner"
                             android:layout_width="fill_parent"
                             android:layout_height="wrap_content"
-                            android:spinnerMode="dialog"
+                            android:layout_margin="16dp"
                             android:dropDownWidth="match_parent"
                             android:gravity="center"
-                            android:layout_margin="16dp"
-                            />
+                            android:spinnerMode="dialog" />
 
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:text="@string/from"
                             android:textAllCaps="true"
-                            android:textSize="12sp"
-                            android:textColor="@color/accent"/>
+                            android:textColor="@color/accent"
+                            android:textSize="12sp" />
 
 
                         <Spinner
                             android:id="@+id/originSpinner"
                             android:layout_width="fill_parent"
                             android:layout_height="wrap_content"
-                            android:spinnerMode="dialog"
+                            android:layout_margin="16dp"
                             android:dropDownWidth="match_parent"
                             android:gravity="center"
-                            android:layout_margin="16dp"/>
+                            android:spinnerMode="dialog" />
 
 
                         <android.support.design.widget.TextInputLayout

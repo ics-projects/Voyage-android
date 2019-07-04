@@ -1,6 +1,6 @@
 package com.example.voyage.ui.pay;
 
-import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.os.Bundle;
@@ -15,6 +15,8 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.voyage.R;
@@ -36,14 +38,19 @@ public class PayActivity extends AppCompatActivity {
 
     private PayViewModel viewModel;
 
+    private String intentPayUrl;
+    private String intentTripName;
+    private String intentDepartureTime;
     private int intentIntegerTripId;
     private int intentIntegerPickPoint;
     private int intentIntegerDropPoint;
-    private String intentPayUrl;
+    private int intentTotalPrice;
 
     private ArrayList<Integer> intentSeatIds;
 
     private View.OnClickListener navigationOnClickListener = (view) -> cancelAlertDialog();
+    private ProgressBar progressBar;
+    private LinearLayout mainLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,8 +61,16 @@ public class PayActivity extends AppCompatActivity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
-        setContentView(R.layout.activity_mpesa);
+        setContentView(R.layout.activity_pay);
 
+        // initiate the progress bar
+        progressBar = findViewById(R.id.pay_activity_indeterminate_bar);
+        progressBar.setVisibility(View.GONE);
+
+        // main layout
+        mainLayout = findViewById(R.id.main_layout);
+
+        // initialise views
         ImageView backButton = findViewById(R.id.pay_page_back_button);
         Button cancelButton = findViewById(R.id.pay_page_cancel_button);
         TextView tripNameTextView = findViewById(R.id.trip_name_tv);
@@ -65,24 +80,18 @@ public class PayActivity extends AppCompatActivity {
         phoneNumberTextInput = findViewById(R.id.phone_number_text_input);
         phoneNumberEditText = findViewById(R.id.phone_number_edit_Text);
 
-        // retrieve PActivityIntent data
-        Intent payActivityIntent = getIntent();
-        intentIntegerTripId = payActivityIntent.getIntExtra(Constants.TRIP_ID_INTENT_EXTRA, 0);
-        intentIntegerPickPoint = payActivityIntent.getIntExtra(Constants.TRIP_PICK_POINT_INTENT_EXTRA, 0);
-        intentIntegerDropPoint = payActivityIntent.getIntExtra(Constants.TRIP_DROP_POINT_INTENT_EXTRA, 0);
-        intentSeatIds = payActivityIntent.getIntegerArrayListExtra(Seat.SEAT_SEAT_IDS_INTENT_EXTRA);
-        intentPayUrl = payActivityIntent.getStringExtra(Constants.PAY_URL_INTENT_EXTRA);
-        String intentTripName = payActivityIntent.getStringExtra(Constants.PAY_TRIP_NAME_INTENT_EXTRA);
-        String intentDepartureTime = payActivityIntent.getStringExtra(Constants.PAY_DEPARTURE_TIME_INTENT_EXTRA);
-        int intentTotalPrice = payActivityIntent.getIntExtra(Constants.PAY_TOTAL_PRICE_INTENT_EXTRA, 0);
+        // retrieve activityIntent data
+        retrieveIntentData();
 
+        // initialise view model
         viewModel = ViewModelProviders.of(this).get(PayViewModel.class);
-        viewModel.payRequestStatus().observe(this, payRequestObserver);
 
+        // set screen data
         tripNameTextView.setText(intentTripName);
         setDepartureTimeTextView(departureTimeTextView, intentDepartureTime);
         totalPriceTextView.setText(String.valueOf(intentTotalPrice));
 
+        // On click listeners
         backButton.setOnClickListener(navigationOnClickListener);
         cancelButton.setOnClickListener(navigationOnClickListener);
 
@@ -99,6 +108,18 @@ public class PayActivity extends AppCompatActivity {
                         intentIntegerPickPoint, intentIntegerDropPoint, intentSeatIds);
             }
         });
+    }
+
+    private void retrieveIntentData() {
+        Intent payActivityIntent = getIntent();
+        intentIntegerTripId = payActivityIntent.getIntExtra(Constants.TRIP_ID_INTENT_EXTRA, 0);
+        intentIntegerPickPoint = payActivityIntent.getIntExtra(Constants.TRIP_PICK_POINT_INTENT_EXTRA, 0);
+        intentIntegerDropPoint = payActivityIntent.getIntExtra(Constants.TRIP_DROP_POINT_INTENT_EXTRA, 0);
+        intentSeatIds = payActivityIntent.getIntegerArrayListExtra(Seat.SEAT_SEAT_IDS_INTENT_EXTRA);
+        intentPayUrl = payActivityIntent.getStringExtra(Constants.PAY_URL_INTENT_EXTRA);
+        intentTripName = payActivityIntent.getStringExtra(Constants.PAY_TRIP_NAME_INTENT_EXTRA);
+        intentDepartureTime = payActivityIntent.getStringExtra(Constants.PAY_DEPARTURE_TIME_INTENT_EXTRA);
+        intentTotalPrice = payActivityIntent.getIntExtra(Constants.PAY_TOTAL_PRICE_INTENT_EXTRA, 0);
     }
 
     @Override
@@ -130,17 +151,29 @@ public class PayActivity extends AppCompatActivity {
         }
     }
 
-    private Observer<Integer> payRequestObserver = status -> {
-        assert status != null;
-        if (status != -1) {
-            Intent intent = new Intent(getApplicationContext(), RecentBookingActivity.class);
-            startActivity(intent);
-        }
-    };
-
     private void paymentRequest(String url, String phoneNumber, int tripId,
                                 int pickPoint, int dropPoint, ArrayList<Integer> intentSeatIds) {
-        viewModel.pay(url, phoneNumber, tripId, pickPoint, dropPoint, intentSeatIds);
+
+        mainLayout.setVisibility(View.GONE);
+        progressBar.setVisibility(View.VISIBLE);
+
+        LiveData<Integer> status =
+                viewModel.pay(url, phoneNumber, tripId, pickPoint, dropPoint, intentSeatIds);
+        status.removeObservers(this);
+
+        status.observe(this, statusInteger -> {
+            if (statusInteger != null) {
+                if (statusInteger != -1) {
+                    Intent intent = new Intent(getApplicationContext(), RecentBookingActivity.class);
+                    startActivity(intent);
+                    finish();
+                    progressBar.setVisibility(View.GONE);
+                } else {
+                    mainLayout.setVisibility(View.VISIBLE);
+                    progressBar.setVisibility(View.GONE);
+                }
+            }
+        });
     }
 
     private boolean isValidForm(Editable phoneNumber) {
