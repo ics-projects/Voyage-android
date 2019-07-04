@@ -9,9 +9,12 @@ import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.example.voyage.R;
 import com.example.voyage.data.Constants;
@@ -25,10 +28,12 @@ public class TripsActivity extends AppCompatActivity implements TripsAdapter.Ite
     private String intentStringDestination;
     private String intentStringDate;
 
+    private RecyclerView recyclerView;
     private TripsAdapter busAdapter;
+    private TripsViewModel viewModel;
 
-
-    TripsViewModel viewModel;
+    private ProgressBar progressBar;
+    private TextView noTripsTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,11 +46,18 @@ public class TripsActivity extends AppCompatActivity implements TripsAdapter.Ite
 
         setContentView(R.layout.activity_available_bus);
 
+        // initiate the progress bar
+        progressBar = findViewById(R.id.trip_activity_indeterminateBar);
+
+        noTripsTextView = findViewById(R.id.no_trips_text_view);
+        noTripsTextView.setVisibility(View.GONE);
+
         ImageView backButton = findViewById(R.id.available_bus_back_button);
 
         // Recyclerview
-        RecyclerView recyclerView = findViewById(R.id.recyclerView_trips);
+        recyclerView = findViewById(R.id.recyclerView_trips);
         recyclerView.setHasFixedSize(true);
+        recyclerView.setVisibility(View.GONE);
 
         // LinearLayoutManager
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
@@ -57,6 +69,8 @@ public class TripsActivity extends AppCompatActivity implements TripsAdapter.Ite
         // Adapter
         busAdapter = new TripsAdapter(this, this);
         recyclerView.setAdapter(busAdapter);
+
+        // Intent extras
         getIntentData();
 
         // Set up view model
@@ -89,7 +103,19 @@ public class TripsActivity extends AppCompatActivity implements TripsAdapter.Ite
                 intentStringDate != null
         ) {
             viewModel.getTrips(intentStringOrigin, intentStringDestination, intentStringDate)
-                    .observe(this, trips -> busAdapter.setTrips(trips));
+                    .observe(this, trips -> {
+                        if (trips != null) {
+                            busAdapter.setTrips(trips);
+                            if (trips.size() == 0) {
+                                noTripsTextView.setVisibility(View.VISIBLE);
+                                recyclerView.setVisibility(View.GONE);
+                            } else {
+                                noTripsTextView.setVisibility(View.GONE);
+                                recyclerView.setVisibility(View.VISIBLE);
+                            }
+                        }
+                        progressBar.setVisibility(View.GONE);
+                    });
         }
     }
 

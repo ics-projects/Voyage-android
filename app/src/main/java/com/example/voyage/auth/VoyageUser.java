@@ -6,18 +6,24 @@ public class VoyageUser {
     private String token;
 
     @SerializedName("first_name")
-    private final String firstName;
+    private String firstName;
 
     @SerializedName("last_name")
-    private final String lastName;
+    private String lastName;
 
-    private final String email;
+    private String email;
+
+    private Throwable throwable;
 
     private VoyageUser(String token, String firstName, String lastName, String email) {
         this.token = token;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
+    }
+
+    public VoyageUser(Throwable throwable) {
+        this.throwable = throwable;
     }
 
     public String getToken() {
@@ -38,5 +44,9 @@ public class VoyageUser {
 
     public void setToken(String token) {
         this.token = token;
+    }
+
+    public Throwable getThrowable() {
+        return throwable;
     }
 }

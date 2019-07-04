@@ -91,14 +91,16 @@ public class VoyageAuth implements BaseAuth<VoyageUser> {
                 Disposable d = Single.fromObservable(voyageService.getUser(authHeader))
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe((response) -> {
+                        .onErrorResumeNext(throwable ->
+                                Single.just(Response.success(new VoyageUser(throwable))))
+                        .subscribe(response -> {
                             if (response.isSuccessful()) {
                                 assert response.body() != null;
                                 response.body().setToken(token);
                                 userSubject.onNext(response.body());
                                 userSubject.onComplete();
                             }
-                        }, Throwable::printStackTrace);
+                        }, throwable -> userSubject.onNext(new VoyageUser(throwable)));
 
                 return userSubject;
             } else return null;

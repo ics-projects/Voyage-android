@@ -70,4 +70,5 @@
     <string name="from">From</string>
     <string name="select_your_bus">chagua basi yako</string>
     <string name="available_bus_call_to_action_text_view">select your bus</string>
+    <string name="no_trips_found">No Trips Found with those values</string>
 </resources>
