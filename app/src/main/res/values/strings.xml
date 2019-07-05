@@ -44,8 +44,8 @@
     <string name="preference_file_key">com.example.voyage.PREFERENCE_FILE_KEY</string>
     <string name="user_token_key">USER_TOKEN</string>
     <string name="destination">Destination</string>
-    <string name="select_date">Select Date</string>
-    <string name="search_buses">Search Buses</string>
+    <string name="select_date" translatable="false">Select Date</string>
+    <string name="search_buses" translatable="false">Search Buses</string>
     <string name="available_seat_drawable">Available Seat drawable</string>
     <string name="booked_seat_drawable">Booked Seat drawable</string>
     <string name="proceed_to_payment">Proceed to Payment</string>
@@ -71,4 +71,7 @@
     <string name="select_your_bus">chagua basi yako</string>
     <string name="available_bus_call_to_action_text_view">select your bus</string>
     <string name="no_trips_found">No Trips Found with those values</string>
+    <string name="open_nav_drawer">open drawer</string>
+    <string name="close_nav_drawer">close drawer</string>
+    <string name="please_book_your_bus_now">Please, Book Your Bus Now!</string>
 </resources>

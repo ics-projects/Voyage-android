@@ -44,7 +44,7 @@
                     android:id="@+id/emailAddress_edit_text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:drawableStart="@drawable/ic_user"
+                    android:drawableStart="@drawable/ic_username"
                     android:inputType="text"
                     android:maxLines="1" />
             </android.support.design.widget.TextInputLayout>
@@ -60,7 +60,7 @@
                     android:id="@+id/password_edit_text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:drawableStart="@drawable/ic_password_lock"
+                    android:drawableStart="@drawable/password_img"
                     android:inputType="textPassword" />
             </android.support.design.widget.TextInputLayout>
 

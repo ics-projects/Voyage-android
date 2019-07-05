@@ -14,7 +14,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-
+        <activity android:name=".ui.extras.ContactActivity"></activity>
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -22,33 +22,25 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity android:name=".ui.authentication.LoginActivity" />
-
         <activity android:name=".ui.authentication.RegisterActivity" />
-
         <activity android:name=".ui.searchbus.SearchBusActivity" />
-
         <activity android:name=".ui.trips.TripsActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".ui.searchbus.SearchBusActivity" />
         </activity>
-
         <activity android:name=".ui.pickseat.PickSeatActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".ui.trips.TripsActivity" />
         </activity>
-
         <activity android:name=".ui.pay.PayActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".ui.searchbus.SearchBusActivity" />
         </activity>
-
         <activity android:name=".ui.bookings.RecentBookingActivity" />
-
     </application>
 
 </manifest>

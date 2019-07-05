@@ -10,21 +10,27 @@ import android.net.NetworkCapabilities;
 import android.net.NetworkRequest;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.design.widget.NavigationView;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.example.voyage.R;
 import com.example.voyage.data.Constants;
 import com.example.voyage.data.models.Schedule;
+import com.example.voyage.ui.bookings.RecentBookingActivity;
 import com.example.voyage.ui.trips.TripsActivity;
 
 import java.text.SimpleDateFormat;
@@ -46,9 +52,12 @@ public class SearchBusActivity extends AppCompatActivity {
     private Spinner originSpinner;
     private Spinner destinationSpinner;
     private ProgressBar progressBar;
-    private ScrollView scrollView;
+    private LinearLayout linearLayout;
     private Button searchBuses;
     private ConnectivityManager connectivityManager;
+    private DrawerLayout drawer;
+
+    private ActionBarDrawerToggle toggle = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,8 +73,8 @@ public class SearchBusActivity extends AppCompatActivity {
         // initiate the progress bar
         progressBar = findViewById(R.id.search_activity_indeterminate_bar);
 
-        scrollView = findViewById(R.id.screen_scroll_view);
-//        scrollView.setVisibility(View.GONE);
+        linearLayout = findViewById(R.id.screen_layout);
+//        linearLayout.setVisibility(View.GONE);
 
         searchBuses = findViewById(R.id.search_buses);
         originSpinner = findViewById(R.id.originSpinner);
@@ -100,6 +109,16 @@ public class SearchBusActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        //adding a navigation drawer
+
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        drawer = findViewById(R.id.drawer_layout);
+        toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.open_nav_drawer, R.string.close_nav_drawer);
+        drawer.addDrawerListener(toggle);
+        toggle.syncState();
+        initNavigationDrawer();
+
     }
 
     @Override
@@ -114,6 +133,33 @@ public class SearchBusActivity extends AppCompatActivity {
         connectivityManager.unregisterNetworkCallback(networkCallback);
     }
 
+    public void initNavigationDrawer() {
+
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(MenuItem menuItem) {
+
+                int id = menuItem.getItemId();
+
+                switch (id) {
+                    case R.id.home:
+                        Intent intentHome = new Intent(SearchBusActivity.this, SearchBusActivity.class);
+                        startActivity(intentHome);
+                        break;
+                    case R.id.trips:
+                        Intent intentTrip = new Intent(SearchBusActivity.this, RecentBookingActivity.class);
+                        startActivity(intentTrip);
+                        break;
+                    default:
+                        break;
+                }
+                return true;
+            }
+        });
+    }
+
+
     private void fetchSchedules() {
         viewModel.getSchedules().observe(this, returnedSchedules -> {
             if (returnedSchedules != null) {
@@ -123,7 +169,7 @@ public class SearchBusActivity extends AppCompatActivity {
             } else {
                 searchBuses.setEnabled(false);
             }
-            scrollView.setVisibility(View.VISIBLE);
+            linearLayout.setVisibility(View.VISIBLE);
             progressBar.setVisibility(View.GONE);
         });
     }
@@ -165,7 +211,7 @@ public class SearchBusActivity extends AppCompatActivity {
         @Override
         public void onAvailable(Network network) {
             handler.post(() -> {
-                scrollView.setVisibility(View.GONE);
+                linearLayout.setVisibility(View.GONE);
                 progressBar.setVisibility(View.VISIBLE);
                 fetchSchedules();
             });
