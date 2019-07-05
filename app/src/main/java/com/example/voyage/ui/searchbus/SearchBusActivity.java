@@ -9,11 +9,9 @@ import android.net.Network;
 import android.net.NetworkCapabilities;
 import android.net.NetworkRequest;
 import android.os.Bundle;
-<<<<<<< HEAD
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-=======
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -21,7 +19,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
->>>>>>> add navigation drawer
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ArrayAdapter;
@@ -34,7 +31,10 @@ import android.widget.Toast;
 
 import com.example.voyage.R;
 import com.example.voyage.data.Constants;
+import com.example.voyage.data.models.RecentBookings;
 import com.example.voyage.data.models.Schedule;
+import com.example.voyage.ui.bookings.RecentBookingActivity;
+
 import com.example.voyage.ui.trips.TripsActivity;
 
 import java.text.SimpleDateFormat;
@@ -62,7 +62,12 @@ public class SearchBusActivity extends AppCompatActivity {
     private ConnectivityManager connectivityManager;
 =======
     private DrawerLayout drawer;
+<<<<<<< HEAD
 >>>>>>> add navigation drawer
+=======
+    private ActionBarDrawerToggle toggle = null;
+
+>>>>>>> adding a navigation drawer
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -115,12 +120,14 @@ public class SearchBusActivity extends AppCompatActivity {
             }
         });
 
+        //adding a navigation drawer
+
         Toolbar toolbar = findViewById(R.id.toolbar);
         drawer=findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle=
-                new ActionBarDrawerToggle(this, drawer, toolbar ,R.string.open_nav_drawer, R.string.close_nav_drawer);
+        toggle=new ActionBarDrawerToggle(this, drawer, toolbar ,R.string.open_nav_drawer, R.string.close_nav_drawer);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
+        initNavigationDrawer();
 
     }
 
@@ -151,9 +158,8 @@ public class SearchBusActivity extends AppCompatActivity {
                         startActivity(intentHome);
                         break;
                     case R.id.trips:
-                        Intent intentTrip = new Intent(SearchBusActivity.this, TripsActivity.class);
+                        Intent intentTrip = new Intent(SearchBusActivity.this, RecentBookingActivity.class);
                         startActivity(intentTrip);
-
                         break;
                     default:
                         break;

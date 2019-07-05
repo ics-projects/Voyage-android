@@ -3,19 +3,24 @@
     xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
     android:layout_height="176dp"
     android:orientation="vertical"
-    android:background="@color/accent"
-    android:gravity="bottom"
-    android:padding="16dp"
+    android:background="@drawable/bus_image_3"
+    android:gravity="center"
+    android:paddingStart="30dp"
+    android:paddingEnd="30dp"
     >
-    
     <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="56dp"
-        android:src="@drawable/ic_username"/>
+        android:layout_width="88dp"
+        android:layout_height="88dp"
+        android:src="@drawable/ic_username"
+        android:layout_gravity="start"
+        />
     <TextView
-        android:layout_width="wrap_content"
+        android:id="@+id/nav_header_textView"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="This is the nav"
-        android:padding="8dp"/>
+        android:paddingTop="8dp"
+        android:textColor="@color/icons"
+        android:text="This is my Username"
+        android:textAllCaps="true" />
 
 </LinearLayout>
