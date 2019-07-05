@@ -52,7 +52,7 @@ public class PickSeatActivity extends AppCompatActivity implements PickSeatAdapt
         setContentView(R.layout.activity_pick_seat);
 
         // initiate the progress bar
-        progressBar = findViewById(R.id.search_activity_indeterminate_bar);
+        progressBar = findViewById(R.id.pick_seat_activity_indeterminate_bar);
 
         // Recyclerview
         recyclerView = findViewById(R.id.recyclerView_seats);
