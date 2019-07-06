@@ -1,12 +1,13 @@
 package com.example.voyage.ui.bookings;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.voyage.R;
 import com.example.voyage.data.models.RecentBookings;
@@ -59,7 +60,7 @@ public class RecentBookingAdapter extends RecyclerView.Adapter<RecentBookingAdap
             super(itemView);
             destination = itemView.findViewById(R.id.destination);
             origin = itemView.findViewById(R.id.origin);
-            booked= itemView.findViewById(R.id.booked);
+            booked = itemView.findViewById(R.id.booked);
             paid = itemView.findViewById(R.id.paid);
         }
     }

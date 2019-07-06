@@ -1,9 +1,10 @@
 package com.example.voyage.data.repositories;
 
-import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.MutableLiveData;
 import android.util.Log;
 import android.widget.Toast;
+
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 
 import com.example.voyage.auth.VoyageAuth;
 import com.example.voyage.auth.VoyageUser;

@@ -2,9 +2,10 @@ package com.example.voyage;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.view.Window;
 import android.view.WindowManager;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.voyage.auth.VoyageAuth;
 import com.example.voyage.ui.authentication.LoginActivity;
