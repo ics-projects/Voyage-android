@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "677154179605",
+    "firebase_url": "https://voyage-245912.firebaseio.com",
+    "project_id": "voyage-245912",
+    "storage_bucket": "voyage-245912.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:677154179605:android:0642f8fc2503ef96",
+        "android_client_info": {
+          "package_name": "com.example.voyage"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "677154179605-f5icmc3dqajfrtpihb3giidmljpfp72h.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDjhjoE2v9sAyw_l1OHXl5gvzMmjvrNCWU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "677154179605-f5icmc3dqajfrtpihb3giidmljpfp72h.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
