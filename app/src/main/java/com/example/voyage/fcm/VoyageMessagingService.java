@@ -1,7 +1,10 @@
 package com.example.voyage.fcm;
 
+import android.content.Context;
 import android.util.Log;
 
+import com.example.voyage.data.repositories.VoyageRepository;
+import com.example.voyage.util.PreferenceUtilities;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
@@ -14,7 +17,6 @@ public class VoyageMessagingService extends FirebaseMessagingService {
      * the previous token had been compromised. Note that this is called when the InstanceID token
      * is initially generated so this is where you would retrieve the token.
      */
-
     @Override
     public void onNewToken(String token) {
         Log.i(LOG_TAG, "Token: " + token);
@@ -22,6 +24,7 @@ public class VoyageMessagingService extends FirebaseMessagingService {
         // manage this apps subscriptions on the server side, send the
         // Instance ID token to your app server.
         sendRegistrationToServer(token);
+        PreferenceUtilities.saveFcmToken(getApplicationContext(), token);
     }
 
     @Override
@@ -55,6 +58,12 @@ public class VoyageMessagingService extends FirebaseMessagingService {
     }
 
     private void sendRegistrationToServer(String token) {
-        //
+        VoyageRepository voyageRepository = VoyageRepository.getInstance();
+
+        voyageRepository.sendFcmToken(token);
+    }
+
+    public static String getToken(Context context) {
+        return PreferenceUtilities.getPrefFcmToken(context);
     }
 }

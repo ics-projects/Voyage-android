@@ -51,4 +51,8 @@ public interface VoyageService {
     @POST
     Observable<Response<String>> pay(@Url String url, @Header("Authorization") String authToken,
                                      @Body PayRequestBody payRequestBody);
+
+    @POST("fcmToken")
+    Observable<Response<String>> sendFcmToken(@Header("Authorization") String authToken,
+                                              @Body JsonObject fcmToken);
 }

@@ -222,6 +222,33 @@ public class VoyageRepository {
         return payStatus;
     }
 
+    public void sendFcmToken(String fcmToken) {
+        JsonObject requestBody = new JsonObject();
+        requestBody.addProperty("FcmToken", fcmToken);
+
+        Disposable disposable = getUserResponseSingle(
+                getSingleSourceFunctionWithBody(voyageService::sendFcmToken, requestBody))
+                .subscribe(response -> {
+                    if (response.isSuccessful()) {
+                        if (response.code() == 200) {
+                            Log.d(LOG_TAG, "Token saved successfully");
+                        } else {
+                            if (response.code() == 401) {
+                                voyageService.logout(authToken.get());
+                            }
+                            try {
+                                assert response.errorBody() != null;
+                                Log.d(LOG_TAG, "Error: " +
+                                        response.errorBody().string());
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                }, this::handleError);
+
+    }
+
     private <T, U> Function<VoyageUser, SingleSource<? extends Response<T>>> getSingleSourceFunctionWithUrl
             (Function3<String, String, U, Observable<Response<T>>> observableFunction, String url,
              U requestBody) {
