@@ -13,4 +13,7 @@ public abstract class Constants {
     public static final String PAY_TRIP_NAME_INTENT_EXTRA = "PAY_TRIP_NAME";
     public static final String PAY_DEPARTURE_TIME_INTENT_EXTRA = "PAY_DEPARTURE_TIME";
     public static final String PAY_TOTAL_PRICE_INTENT_EXTRA = "PAY_TOTAL_PRICE";
+
+    // Notification constants
+    public static final String NEW_BOOKING_NOTIFICATION_CHANNEL_ID = "booking_notification_channel_id";
 }

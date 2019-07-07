@@ -8,6 +8,7 @@ import android.view.WindowManager;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.voyage.auth.VoyageAuth;
+import com.example.voyage.fcm.VoyageMessagingService;
 import com.example.voyage.ui.authentication.LoginActivity;
 import com.example.voyage.ui.searchbus.SearchBusActivity;
 
@@ -22,6 +23,9 @@ public class MainActivity extends AppCompatActivity {
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         VoyageAuth auth = VoyageAuth.getInstance();
+
+        // Create notification channel
+        VoyageMessagingService.createNotificationChannel();
 
         if (auth.currentUser() == null) {
             Intent intent = new Intent(this, LoginActivity.class);

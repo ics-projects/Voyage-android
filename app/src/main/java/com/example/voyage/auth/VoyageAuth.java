@@ -4,6 +4,8 @@ import android.util.Log;
 
 import com.example.voyage.data.network.retrofit.VoyageClient;
 import com.example.voyage.data.network.retrofit.VoyageService;
+import com.example.voyage.data.repositories.VoyageRepository;
+import com.example.voyage.fcm.VoyageMessagingService;
 import com.example.voyage.util.ApplicationContextProvider;
 import com.example.voyage.util.PreferenceUtilities;
 import com.google.gson.JsonObject;
@@ -130,6 +132,9 @@ public class VoyageAuth implements BaseAuth<VoyageUser> {
                         PreferenceUtilities.setUserToken(
                                 ApplicationContextProvider.getContext(),
                                 voyageUserResponse.body().getToken());
+
+                        sendFcmRegistrationToServer();
+
                         userSubject.onNext(voyageUserResponse.body());
                     } else {
                         try {
@@ -154,4 +159,13 @@ public class VoyageAuth implements BaseAuth<VoyageUser> {
                     e.printStackTrace();
                 }
             };
+
+    private void sendFcmRegistrationToServer() {
+        String fcmToken = VoyageMessagingService.getToken(ApplicationContextProvider.getContext());
+        if (fcmToken != null) {
+            VoyageRepository.getInstance().sendFcmToken(fcmToken);
+        } else {
+            Log.d(LOG_TAG, "Fcm token absent");
+        }
+    }
 }

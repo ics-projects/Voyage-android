@@ -8,6 +8,7 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.example.voyage.auth.VoyageAuth;
 import com.example.voyage.auth.VoyageUser;
+import com.example.voyage.data.models.Booking;
 import com.example.voyage.data.models.PayDetails;
 import com.example.voyage.data.models.PayRequestBody;
 import com.example.voyage.data.models.PickSeatBody;
@@ -43,19 +44,18 @@ public class VoyageRepository {
     private static VoyageRepository instance;
 
     private VoyageService voyageService;
-    private BehaviorSubject<VoyageUser> voyageUser;
 
     private MutableLiveData<List<Schedule>> schedules = new MutableLiveData<>();
     private MutableLiveData<List<Trip>> trips = new MutableLiveData<>();
     private MutableLiveData<SeatRowCollection> seats = new MutableLiveData<>();
     private MutableLiveData<PayDetails> payDetails = new MutableLiveData<>();
     private MutableLiveData<Integer> payStatus = new MutableLiveData<>();
+    private MutableLiveData<List<Booking>> bookings = new MutableLiveData<>();
 
     private AtomicReference<String> authToken = new AtomicReference<>("");
 
     private VoyageRepository() {
         voyageService = VoyageClient.getInstance().getVoyageService();
-        voyageUser = VoyageAuth.getInstance().currentUser();
     }
 
     public static VoyageRepository getInstance() {
@@ -222,6 +222,34 @@ public class VoyageRepository {
         return payStatus;
     }
 
+    public LiveData<List<Booking>> getBookings() {
+        Disposable disposable =
+                getUserResponseSingle(getSingleSourceFunction(voyageService::bookings))
+                        .subscribe(response -> {
+                            if (response.isSuccessful()) {
+                                if (response.code() == 200) {
+                                    bookings.setValue(response.body());
+                                }
+                            } else {
+                                if (response.code() == 401) {
+                                    voyageService.logout(authToken.get());
+                                }
+                                try {
+                                    assert response.errorBody() != null;
+                                    Log.d(LOG_TAG, "Error: " +
+                                            response.errorBody().string());
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        }, throwable -> {
+                            handleError(throwable);
+                            bookings.setValue(null);
+                        });
+
+        return bookings;
+    }
+
     public void sendFcmToken(String fcmToken) {
         JsonObject requestBody = new JsonObject();
         requestBody.addProperty("FcmToken", fcmToken);
@@ -231,7 +259,7 @@ public class VoyageRepository {
                 .subscribe(response -> {
                     if (response.isSuccessful()) {
                         if (response.code() == 200) {
-                            Log.d(LOG_TAG, "Token saved successfully");
+                            Log.d(LOG_TAG, "FCM sent successfully");
                         } else {
                             if (response.code() == 401) {
                                 voyageService.logout(authToken.get());
@@ -290,6 +318,11 @@ public class VoyageRepository {
 
     private <T> Single<Response<T>> getUserResponseSingle
             (Function<VoyageUser, SingleSource<? extends Response<T>>> voyageUserSingleSourceFunction) {
+
+        Observable<VoyageUser> currentUser = VoyageAuth.getInstance().currentUser();
+
+        assert currentUser != null;
+        Single<VoyageUser> voyageUser = Single.fromObservable(currentUser);
 
         return voyageUser.subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
