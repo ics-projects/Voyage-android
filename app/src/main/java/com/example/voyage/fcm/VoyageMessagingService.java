@@ -13,6 +13,7 @@ import androidx.core.app.NotificationManagerCompat;
 import androidx.core.app.TaskStackBuilder;
 
 import com.example.voyage.R;
+import com.example.voyage.auth.VoyageAuth;
 import com.example.voyage.data.Constants;
 import com.example.voyage.ui.bookings.RecentBookingActivity;
 import com.example.voyage.util.ApplicationContextProvider;
@@ -35,7 +36,8 @@ public class VoyageMessagingService extends FirebaseMessagingService {
         // If you want to send messages to this application instance or
         // manage this apps subscriptions on the server side, send the
         // Instance ID token to your app server.
-        PreferenceUtilities.saveFcmToken(getApplicationContext(), token);
+        PreferenceUtilities.saveFcmToken(ApplicationContextProvider.getContext(), token);
+        VoyageAuth.getInstance().sendFcmRegistrationToServer();
     }
 
     @Override
@@ -55,7 +57,7 @@ public class VoyageMessagingService extends FirebaseMessagingService {
     private void createNotification(RemoteMessage remoteMessage) {
         RemoteMessage.Notification notification = remoteMessage.getNotification();
 
-        String notificationId = remoteMessage.getMessageId();
+        int notificationId = 0;
         assert notification != null;
         String title = notification.getTitle();
         String content = notification.getBody();
@@ -72,9 +74,9 @@ public class VoyageMessagingService extends FirebaseMessagingService {
                 .setAutoCancel(true);
 
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
+
         // notificationId is a unique int for each notification that you must define
-        assert notificationId != null;
-        notificationManager.notify(Integer.valueOf(notificationId), builder.build());
+        notificationManager.notify(notificationId, builder.build());
 
     }
 

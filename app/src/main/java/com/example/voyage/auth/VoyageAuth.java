@@ -19,7 +19,7 @@ import io.reactivex.SingleObserver;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
-import io.reactivex.subjects.BehaviorSubject;
+import io.reactivex.subjects.AsyncSubject;
 import retrofit2.Response;
 
 public class VoyageAuth implements BaseAuth<VoyageUser> {
@@ -28,7 +28,7 @@ public class VoyageAuth implements BaseAuth<VoyageUser> {
 
     private VoyageService voyageService = VoyageClient.getInstance().getVoyageService();
 
-    private BehaviorSubject<VoyageUser> userSubject = BehaviorSubject.create();
+    private AsyncSubject<VoyageUser> userSubject = AsyncSubject.create();
 
     private VoyageAuth() {
     }
@@ -46,6 +46,9 @@ public class VoyageAuth implements BaseAuth<VoyageUser> {
         postParameters.addProperty("email", email);
         postParameters.addProperty("password", password);
 
+        if (userSubject == null) {
+            userSubject = AsyncSubject.create();
+        }
         Single.fromObservable(voyageService.login(postParameters))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -65,6 +68,9 @@ public class VoyageAuth implements BaseAuth<VoyageUser> {
         postParameters.addProperty("password", password);
         postParameters.addProperty("password_confirmation", passwordConfirm);
 
+        if (userSubject == null) {
+            userSubject = AsyncSubject.create();
+        }
         Single.fromObservable(voyageService.register(postParameters))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -81,41 +87,57 @@ public class VoyageAuth implements BaseAuth<VoyageUser> {
     @Override
     public void signOut() {
         String token = PreferenceUtilities.getUserToken(ApplicationContextProvider.getContext());
-        PreferenceUtilities.setUserToken(ApplicationContextProvider.getContext(), null);
         if (token != null) {
             String authHeader = "Bearer ".concat(token);
             Completable completable = Completable.fromObservable(voyageService.logout(authHeader));
             Disposable d = completable.subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(() -> {
+                        userSubject = null;
                         Log.d(LOG_TAG, "Logged out successfully");
-                        userSubject.onComplete();
                     }, Throwable::printStackTrace);
         }
+        PreferenceUtilities.setUserToken(ApplicationContextProvider.getContext(), null);
     }
 
-    public BehaviorSubject<VoyageUser> currentUser() {
-        if (userSubject.hasValue()) {
-            return userSubject;
-        } else {
-            String token = PreferenceUtilities.getUserToken(ApplicationContextProvider.getContext());
-            if (token != null) {
-                String authHeader = "Bearer ".concat(token);
-                Log.d(LOG_TAG, "Stored token: " + token);
-                Disposable d = Single.fromObservable(voyageService.getUser(authHeader))
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .onErrorResumeNext(throwable ->
-                                Single.just(Response.success(new VoyageUser(throwable))))
-                        .subscribe(response -> {
-                            if (response.isSuccessful()) {
-                                assert response.body() != null;
-                                response.body().setToken(token);
-                                userSubject.onNext(response.body());
-                                userSubject.onComplete();
-                            }
-                        }, throwable -> userSubject.onNext(new VoyageUser(throwable)));
+    public Observable<VoyageUser> currentUser() {
+        if (userSubject == null) {
+            return null;
+        }
 
+        if (userSubject.hasComplete()) {
+            return userSubject;
+        }
+
+        String token = PreferenceUtilities.getUserToken(ApplicationContextProvider.getContext());
+        if (token != null) {
+            String authHeader = "Bearer ".concat(token);
+            Log.d(LOG_TAG, "Stored token: " + token);
+            Disposable d = Single.fromObservable(voyageService.getUser(authHeader))
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .onErrorResumeNext(throwable ->
+                            Single.just(Response.success(new VoyageUser(throwable))))
+                    .subscribe(response -> {
+                        if (response.isSuccessful()) {
+                            assert response.body() != null;
+                            response.body().setToken(token);
+                            userSubject.onNext(response.body());
+                            userSubject.onComplete();
+                        }
+                    }, throwable -> userSubject.onNext(new VoyageUser(throwable)));
+            return userSubject;
+        }
+        return null;
+    }
+
+    public void sendFcmRegistrationToServer() {
+        String fcmToken = VoyageMessagingService.getToken(ApplicationContextProvider.getContext());
+        if (fcmToken != null) {
+            VoyageRepository.getInstance().sendFcmToken(fcmToken);
+        } else {
+            Log.d(LOG_TAG, "Fcm token absent");
+        }
     }
 
     private SingleObserver<Response<VoyageUser>> saveUserObserver =
@@ -136,6 +158,7 @@ public class VoyageAuth implements BaseAuth<VoyageUser> {
                         sendFcmRegistrationToServer();
 
                         userSubject.onNext(voyageUserResponse.body());
+                        userSubject.onComplete();
                     } else {
                         try {
                             assert voyageUserResponse.errorBody() != null;
@@ -159,13 +182,4 @@ public class VoyageAuth implements BaseAuth<VoyageUser> {
                     e.printStackTrace();
                 }
             };
-
-    private void sendFcmRegistrationToServer() {
-        String fcmToken = VoyageMessagingService.getToken(ApplicationContextProvider.getContext());
-        if (fcmToken != null) {
-            VoyageRepository.getInstance().sendFcmToken(fcmToken);
-        } else {
-            Log.d(LOG_TAG, "Fcm token absent");
-        }
-    }
 }

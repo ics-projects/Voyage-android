@@ -319,12 +319,10 @@ public class VoyageRepository {
     private <T> Single<Response<T>> getUserResponseSingle
             (Function<VoyageUser, SingleSource<? extends Response<T>>> voyageUserSingleSourceFunction) {
 
-        Observable<VoyageUser> currentUser = VoyageAuth.getInstance().currentUser();
+        Observable<VoyageUser> voyageUser = VoyageAuth.getInstance().currentUser();
 
-        assert currentUser != null;
-        Single<VoyageUser> voyageUser = Single.fromObservable(currentUser);
-
-        return voyageUser.subscribeOn(Schedulers.io())
+        return Single.fromObservable(voyageUser)
+                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .flatMap(voyageUserSingleSourceFunction);
     }
@@ -349,6 +347,13 @@ public class VoyageRepository {
                     "Host unreachable. Check your internet connection",
                     Toast.LENGTH_LONG)
                     .show();
+            Log.d(LOG_TAG, throwable.getMessage());
+        } else {
+            Toast.makeText(ApplicationContextProvider.getContext(),
+                    "Fatal error of unknown type. Contact app developers",
+                    Toast.LENGTH_LONG)
+                    .show();
+            throwable.printStackTrace();
             Log.d(LOG_TAG, throwable.getMessage());
         }
     }

@@ -11,6 +11,8 @@ import com.example.voyage.auth.VoyageAuth;
 import com.example.voyage.fcm.VoyageMessagingService;
 import com.example.voyage.ui.authentication.LoginActivity;
 import com.example.voyage.ui.searchbus.SearchBusActivity;
+import com.example.voyage.util.ApplicationContextProvider;
+import com.example.voyage.util.PreferenceUtilities;
 
 public class MainActivity extends AppCompatActivity {
     public static final String TAG = MainActivity.class.getSimpleName();
@@ -27,7 +29,9 @@ public class MainActivity extends AppCompatActivity {
         // Create notification channel
         VoyageMessagingService.createNotificationChannel();
 
-        if (auth.currentUser() == null) {
+        // user token
+        String token = PreferenceUtilities.getUserToken(ApplicationContextProvider.getContext());
+        if (token == null) {
             Intent intent = new Intent(this, LoginActivity.class);
             startActivity(intent);
         } else {

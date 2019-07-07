@@ -29,8 +29,8 @@ import androidx.lifecycle.ViewModelProviders;
 import com.example.voyage.R;
 import com.example.voyage.data.Constants;
 import com.example.voyage.data.models.Schedule;
-import com.example.voyage.ui.bookings.RecentBookingActivity;
 import com.example.voyage.ui.authentication.LoginActivity;
+import com.example.voyage.ui.bookings.RecentBookingActivity;
 import com.example.voyage.ui.trips.TripsActivity;
 import com.google.android.material.navigation.NavigationView;
 
@@ -78,14 +78,13 @@ public class SearchBusActivity extends AppCompatActivity {
         originSpinner = findViewById(R.id.originSpinner);
         destinationSpinner = findViewById(R.id.destinationSpinner);
         dateEditText = findViewById(R.id.select_date);
-        userNameTextView = findViewById(R.id.user_name_tv);
+//        userNameTextView = findViewById(R.id.user_name_tv);
 
         viewModel = ViewModelProviders.of(this).get(SearchBusActivityViewModel.class);
 
         fetchSchedules();
-        observeUser();
 
-        signOutIcon.setOnClickListener(view -> viewModel.signOut());
+        observeUser();
 
         dateEditText.setOnClickListener(view -> {
             int year = c.get(Calendar.YEAR);
@@ -124,6 +123,16 @@ public class SearchBusActivity extends AppCompatActivity {
 
     }
 
+    private void observeUser() {
+        viewModel.getUser().observe(this, voyageUser -> {
+            if (voyageUser == null) {
+                Intent intent = new Intent(SearchBusActivity.this, LoginActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        });
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -154,6 +163,8 @@ public class SearchBusActivity extends AppCompatActivity {
                             RecentBookingActivity.class);
                     startActivity(intentTrip);
                     break;
+                case R.id.logout:
+                    viewModel.signOut();
                 default:
                     break;
             }
