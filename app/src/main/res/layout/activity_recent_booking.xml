@@ -71,6 +71,22 @@
                 android:layout_below="@id/bus"
                 android:scrollbars="vertical" />
 
+            <ProgressBar
+                android:id="@+id/bookings_activity_indeterminate_bar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true" />
+
+            <TextView
+                android:id="@+id/no_bookings_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/bus"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="16dp"
+                android:text="@string/no_bookings_found"
+                android:textAppearance="?android:textAppearanceMedium" />
+
         </RelativeLayout>
 
 

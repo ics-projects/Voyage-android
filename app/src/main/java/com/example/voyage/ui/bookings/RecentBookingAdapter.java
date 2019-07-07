@@ -10,16 +10,15 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.voyage.R;
-import com.example.voyage.data.models.RecentBookings;
+import com.example.voyage.data.models.Booking;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public class RecentBookingAdapter extends RecyclerView.Adapter<RecentBookingAdapter.ItemViewHolder> {
-    private ArrayList<RecentBookings> myData;
+    private List<Booking> bookings;
     private Context context;
 
-    public RecentBookingAdapter(ArrayList<RecentBookings> myDataset, Context context) {
-        this.myData = myDataset;
+    public RecentBookingAdapter(Context context) {
         this.context = context;
     }
 
@@ -34,20 +33,25 @@ public class RecentBookingAdapter extends RecyclerView.Adapter<RecentBookingAdap
 
     @Override
     public void onBindViewHolder(@NonNull ItemViewHolder itemViewHolder, int i) {
-        RecentBookings data = myData.get(i);
+        Booking data = bookings.get(i);
 
         itemViewHolder.destination.setText(data.getDestination());
         itemViewHolder.origin.setText(data.getOrigin());
         itemViewHolder.booked.setText(data.getDateBooked());
-        itemViewHolder.paid.setText(data.getSeatPrice());
+        itemViewHolder.paid.setText(data.getAmount());
     }
 
     @Override
     public int getItemCount() {
-        if (myData == null) {
+        if (bookings == null) {
             return 0;
         }
-        return myData.size();
+        return bookings.size();
+    }
+
+    public void setData(List<Booking> bookings) {
+        this.bookings = bookings;
+        notifyDataSetChanged();
     }
 
     public class ItemViewHolder extends RecyclerView.ViewHolder {

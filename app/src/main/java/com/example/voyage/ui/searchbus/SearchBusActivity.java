@@ -9,7 +9,6 @@ import android.net.NetworkCapabilities;
 import android.net.NetworkRequest;
 import android.os.Bundle;
 import android.os.Handler;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -57,9 +56,6 @@ public class SearchBusActivity extends AppCompatActivity {
     private LinearLayout linearLayout;
     private Button searchBuses;
     private ConnectivityManager connectivityManager;
-    private DrawerLayout drawer;
-
-    private ActionBarDrawerToggle toggle = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -119,8 +115,9 @@ public class SearchBusActivity extends AppCompatActivity {
         //adding a navigation drawer
 
         Toolbar toolbar = findViewById(R.id.toolbar);
-        drawer = findViewById(R.id.drawer_layout);
-        toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.open_nav_drawer, R.string.close_nav_drawer);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar,
+                R.string.open_nav_drawer, R.string.close_nav_drawer);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
         initNavigationDrawer();
@@ -141,27 +138,26 @@ public class SearchBusActivity extends AppCompatActivity {
 
     public void initNavigationDrawer() {
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(MenuItem menuItem) {
+        NavigationView navigationView = findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(menuItem -> {
 
-                int id = menuItem.getItemId();
+            int id = menuItem.getItemId();
 
-                switch (id) {
-                    case R.id.home:
-                        Intent intentHome = new Intent(SearchBusActivity.this, SearchBusActivity.class);
-                        startActivity(intentHome);
-                        break;
-                    case R.id.trips:
-                        Intent intentTrip = new Intent(SearchBusActivity.this, RecentBookingActivity.class);
-                        startActivity(intentTrip);
-                        break;
-                    default:
-                        break;
-                }
-                return true;
+            switch (id) {
+                case R.id.home:
+                    Intent intentHome = new Intent(SearchBusActivity.this,
+                            SearchBusActivity.class);
+                    startActivity(intentHome);
+                    break;
+                case R.id.trips:
+                    Intent intentTrip = new Intent(SearchBusActivity.this,
+                            RecentBookingActivity.class);
+                    startActivity(intentTrip);
+                    break;
+                default:
+                    break;
             }
+            return true;
         });
     }
 

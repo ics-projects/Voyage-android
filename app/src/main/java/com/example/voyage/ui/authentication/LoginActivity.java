@@ -3,6 +3,7 @@ package com.example.voyage.ui.authentication;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.Toast;
 
@@ -16,8 +17,11 @@ import com.example.voyage.ui.searchbus.SearchBusActivity;
 import com.example.voyage.util.FormValidators;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.iid.FirebaseInstanceId;
 
 public class LoginActivity extends AppCompatActivity {
+
+    private static final String LOG_TAG = LoginActivity.class.getSimpleName();
 
     private TextInputEditText emailEditText;
     private TextInputLayout emailTextInput;
@@ -105,7 +109,23 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
+    private void generateFcmToken() {
+        FirebaseInstanceId.getInstance().getInstanceId().addOnCompleteListener(task -> {
+            if (!task.isSuccessful()) {
+                Log.w(LOG_TAG, "getInstanceId failed", task.getException());
+                return;
+            }
+
+            // Get new Instance ID token
+            String token = task.getResult().getToken();
+//            PreferenceUtilities.saveFcmToken(this, token);
+            Log.d(LOG_TAG, "token: " + token);
+        });
+    }
+
     private Observer<VoyageUser> userObserver = voyageUser -> {
+//        generateFcmToken();
+
         Toast.makeText(LoginActivity.this, "Login Successful",
                 Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(getApplicationContext(), SearchBusActivity.class);

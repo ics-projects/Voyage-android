@@ -3,13 +3,6 @@ package com.example.voyage.ui.pay;
 
 import android.content.Intent;
 import android.os.Bundle;
-
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.NavUtils;
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.ViewModelProviders;
-
 import android.text.Editable;
 import android.view.View;
 import android.view.Window;
@@ -19,6 +12,12 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NavUtils;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.ViewModelProviders;
 
 import com.example.voyage.R;
 import com.example.voyage.data.Constants;
@@ -52,6 +51,7 @@ public class PayActivity extends AppCompatActivity {
     private ArrayList<Integer> intentSeatIds;
 
     private View.OnClickListener navigationOnClickListener = (view) -> cancelAlertDialog();
+
     private ProgressBar progressBar;
     private LinearLayout mainLayout;
 
