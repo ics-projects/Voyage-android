@@ -1,8 +1,8 @@
 package com.example.voyage.ui.pickseat;
 
-import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.MutableLiveData;
-import android.arch.lifecycle.ViewModel;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.ViewModel;
 
 import com.example.voyage.data.models.PayDetails;
 import com.example.voyage.data.repositories.VoyageRepository;

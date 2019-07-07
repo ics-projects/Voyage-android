@@ -77,4 +77,7 @@
     <string name="sign_out_button_content_description">sign out button</string>
     <string name="person_outline_image_content_description">person outline image</string>
     <string name="greeting">Hello, %1s!</string>
+    <string name="no_bookings_found">No bookings made yet</string>
+    <string name="voyage_channel_name">Voyage bookings</string>
+    <string name="voyage_channel_description">Voyage new bookings notifications</string>
 </resources>

@@ -1,20 +1,21 @@
 package com.example.voyage.ui.trips;
 
 import android.app.Activity;
-import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.app.NavUtils;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NavUtils;
+import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.voyage.R;
 import com.example.voyage.data.Constants;
@@ -52,8 +53,6 @@ public class TripsActivity extends AppCompatActivity implements TripsAdapter.Ite
         noTripsTextView = findViewById(R.id.no_trips_text_view);
         noTripsTextView.setVisibility(View.GONE);
 
-        ImageView backButton = findViewById(R.id.available_bus_back_button);
-
         // Recyclerview
         recyclerView = findViewById(R.id.recyclerView_trips);
         recyclerView.setHasFixedSize(true);
@@ -64,6 +63,7 @@ public class TripsActivity extends AppCompatActivity implements TripsAdapter.Ite
         recyclerView.setLayoutManager(layoutManager);
 
         // back navigation
+        ImageView backButton = findViewById(R.id.available_bus_back_button);
         backButton.setOnClickListener(view -> NavUtils.navigateUpFromSameTask(this));
 
         // Adapter

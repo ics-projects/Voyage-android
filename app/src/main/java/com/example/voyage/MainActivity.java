@@ -2,15 +2,20 @@ package com.example.voyage;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.view.Window;
 import android.view.WindowManager;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.example.voyage.auth.VoyageAuth;
+import com.example.voyage.fcm.VoyageMessagingService;
 import com.example.voyage.ui.authentication.LoginActivity;
 import com.example.voyage.ui.searchbus.SearchBusActivity;
+import com.example.voyage.util.ApplicationContextProvider;
+import com.example.voyage.util.PreferenceUtilities;
 
 public class MainActivity extends AppCompatActivity {
+    public static final String TAG = MainActivity.class.getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,7 +26,12 @@ public class MainActivity extends AppCompatActivity {
 
         VoyageAuth auth = VoyageAuth.getInstance();
 
-        if (auth.currentUser() == null) {
+        // Create notification channel
+        VoyageMessagingService.createNotificationChannel();
+
+        // user token
+        String token = PreferenceUtilities.getUserToken(ApplicationContextProvider.getContext());
+        if (token == null) {
             Intent intent = new Intent(this, LoginActivity.class);
             startActivity(intent);
         } else {

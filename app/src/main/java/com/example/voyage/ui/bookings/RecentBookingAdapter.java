@@ -1,24 +1,24 @@
 package com.example.voyage.ui.bookings;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.example.voyage.R;
-import com.example.voyage.data.models.RecentBookings;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 
-import java.util.ArrayList;
+import com.example.voyage.R;
+import com.example.voyage.data.models.Booking;
+
+import java.util.List;
 
 public class RecentBookingAdapter extends RecyclerView.Adapter<RecentBookingAdapter.ItemViewHolder> {
-    private ArrayList<RecentBookings> myData;
+    private List<Booking> bookings;
     private Context context;
 
-    public RecentBookingAdapter(ArrayList<RecentBookings> myDataset, Context context) {
-        this.myData = myDataset;
+    public RecentBookingAdapter(Context context) {
         this.context = context;
     }
 
@@ -33,20 +33,25 @@ public class RecentBookingAdapter extends RecyclerView.Adapter<RecentBookingAdap
 
     @Override
     public void onBindViewHolder(@NonNull ItemViewHolder itemViewHolder, int i) {
-        RecentBookings data = myData.get(i);
+        Booking data = bookings.get(i);
 
         itemViewHolder.destination.setText(data.getDestination());
         itemViewHolder.origin.setText(data.getOrigin());
         itemViewHolder.booked.setText(data.getDateBooked());
-        itemViewHolder.paid.setText(data.getSeatPrice());
+        itemViewHolder.paid.setText(data.getAmount());
     }
 
     @Override
     public int getItemCount() {
-        if (myData == null) {
+        if (bookings == null) {
             return 0;
         }
-        return myData.size();
+        return bookings.size();
+    }
+
+    public void setData(List<Booking> bookings) {
+        this.bookings = bookings;
+        notifyDataSetChanged();
     }
 
     public class ItemViewHolder extends RecyclerView.ViewHolder {
@@ -59,7 +64,7 @@ public class RecentBookingAdapter extends RecyclerView.Adapter<RecentBookingAdap
             super(itemView);
             destination = itemView.findViewById(R.id.destination);
             origin = itemView.findViewById(R.id.origin);
-            booked= itemView.findViewById(R.id.booked);
+            booked = itemView.findViewById(R.id.booked);
             paid = itemView.findViewById(R.id.paid);
         }
     }

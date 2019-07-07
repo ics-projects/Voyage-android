@@ -1,7 +1,6 @@
 package com.example.voyage.ui.searchbus;
 
 import android.app.DatePickerDialog;
-import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
@@ -10,12 +9,6 @@ import android.net.NetworkCapabilities;
 import android.net.NetworkRequest;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.design.widget.NavigationView;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -27,12 +20,19 @@ import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.lifecycle.ViewModelProviders;
+
 import com.example.voyage.R;
 import com.example.voyage.data.Constants;
 import com.example.voyage.data.models.Schedule;
-import com.example.voyage.ui.bookings.RecentBookingActivity;
 import com.example.voyage.ui.authentication.LoginActivity;
+import com.example.voyage.ui.bookings.RecentBookingActivity;
 import com.example.voyage.ui.trips.TripsActivity;
+import com.google.android.material.navigation.NavigationView;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -56,9 +56,6 @@ public class SearchBusActivity extends AppCompatActivity {
     private LinearLayout linearLayout;
     private Button searchBuses;
     private ConnectivityManager connectivityManager;
-    private DrawerLayout drawer;
-
-    private ActionBarDrawerToggle toggle = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,14 +78,13 @@ public class SearchBusActivity extends AppCompatActivity {
         originSpinner = findViewById(R.id.originSpinner);
         destinationSpinner = findViewById(R.id.destinationSpinner);
         dateEditText = findViewById(R.id.select_date);
-        userNameTextView = findViewById(R.id.user_name_tv);
+//        userNameTextView = findViewById(R.id.user_name_tv);
 
         viewModel = ViewModelProviders.of(this).get(SearchBusActivityViewModel.class);
 
         fetchSchedules();
-        observeUser();
 
-        signOutIcon.setOnClickListener(view -> viewModel.signOut());
+        observeUser();
 
         dateEditText.setOnClickListener(view -> {
             int year = c.get(Calendar.YEAR);
@@ -118,12 +114,23 @@ public class SearchBusActivity extends AppCompatActivity {
         //adding a navigation drawer
 
         Toolbar toolbar = findViewById(R.id.toolbar);
-        drawer = findViewById(R.id.drawer_layout);
-        toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.open_nav_drawer, R.string.close_nav_drawer);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar,
+                R.string.open_nav_drawer, R.string.close_nav_drawer);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
         initNavigationDrawer();
 
+    }
+
+    private void observeUser() {
+        viewModel.getUser().observe(this, voyageUser -> {
+            if (voyageUser == null) {
+                Intent intent = new Intent(SearchBusActivity.this, LoginActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        });
     }
 
     @Override
@@ -140,27 +147,28 @@ public class SearchBusActivity extends AppCompatActivity {
 
     public void initNavigationDrawer() {
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(MenuItem menuItem) {
+        NavigationView navigationView = findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(menuItem -> {
 
-                int id = menuItem.getItemId();
+            int id = menuItem.getItemId();
 
-                switch (id) {
-                    case R.id.home:
-                        Intent intentHome = new Intent(SearchBusActivity.this, SearchBusActivity.class);
-                        startActivity(intentHome);
-                        break;
-                    case R.id.trips:
-                        Intent intentTrip = new Intent(SearchBusActivity.this, RecentBookingActivity.class);
-                        startActivity(intentTrip);
-                        break;
-                    default:
-                        break;
-                }
-                return true;
+            switch (id) {
+                case R.id.home:
+                    Intent intentHome = new Intent(SearchBusActivity.this,
+                            SearchBusActivity.class);
+                    startActivity(intentHome);
+                    break;
+                case R.id.trips:
+                    Intent intentTrip = new Intent(SearchBusActivity.this,
+                            RecentBookingActivity.class);
+                    startActivity(intentTrip);
+                    break;
+                case R.id.logout:
+                    viewModel.signOut();
+                default:
+                    break;
             }
+            return true;
         });
     }
 

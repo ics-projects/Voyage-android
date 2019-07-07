@@ -1,14 +1,8 @@
 package com.example.voyage.ui.pay;
 
-import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.ViewModelProviders;
+
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.TextInputEditText;
-import android.support.design.widget.TextInputLayout;
-import android.support.v4.app.NavUtils;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.view.View;
 import android.view.Window;
@@ -19,11 +13,19 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NavUtils;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.ViewModelProviders;
+
 import com.example.voyage.R;
 import com.example.voyage.data.Constants;
 import com.example.voyage.data.models.Seat;
 import com.example.voyage.ui.bookings.RecentBookingActivity;
 import com.example.voyage.util.FormValidators;
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -49,6 +51,7 @@ public class PayActivity extends AppCompatActivity {
     private ArrayList<Integer> intentSeatIds;
 
     private View.OnClickListener navigationOnClickListener = (view) -> cancelAlertDialog();
+
     private ProgressBar progressBar;
     private LinearLayout mainLayout;
 

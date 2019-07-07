@@ -1,7 +1,7 @@
 package com.example.voyage.ui.pay;
 
-import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.ViewModel;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.ViewModel;
 
 import com.example.voyage.data.repositories.VoyageRepository;
 

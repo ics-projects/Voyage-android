@@ -1,12 +1,14 @@
 package com.example.voyage.data.repositories;
 
-import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.MutableLiveData;
 import android.util.Log;
 import android.widget.Toast;
 
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
+
 import com.example.voyage.auth.VoyageAuth;
 import com.example.voyage.auth.VoyageUser;
+import com.example.voyage.data.models.Booking;
 import com.example.voyage.data.models.PayDetails;
 import com.example.voyage.data.models.PayRequestBody;
 import com.example.voyage.data.models.PickSeatBody;
@@ -42,19 +44,18 @@ public class VoyageRepository {
     private static VoyageRepository instance;
 
     private VoyageService voyageService;
-    private BehaviorSubject<VoyageUser> voyageUser;
 
     private MutableLiveData<List<Schedule>> schedules = new MutableLiveData<>();
     private MutableLiveData<List<Trip>> trips = new MutableLiveData<>();
     private MutableLiveData<SeatRowCollection> seats = new MutableLiveData<>();
     private MutableLiveData<PayDetails> payDetails = new MutableLiveData<>();
     private MutableLiveData<Integer> payStatus = new MutableLiveData<>();
+    private MutableLiveData<List<Booking>> bookings = new MutableLiveData<>();
 
     private AtomicReference<String> authToken = new AtomicReference<>("");
 
     private VoyageRepository() {
         voyageService = VoyageClient.getInstance().getVoyageService();
-        voyageUser = VoyageAuth.getInstance().currentUser();
     }
 
     public static VoyageRepository getInstance() {
@@ -221,6 +222,61 @@ public class VoyageRepository {
         return payStatus;
     }
 
+    public LiveData<List<Booking>> getBookings() {
+        Disposable disposable =
+                getUserResponseSingle(getSingleSourceFunction(voyageService::bookings))
+                        .subscribe(response -> {
+                            if (response.isSuccessful()) {
+                                if (response.code() == 200) {
+                                    bookings.setValue(response.body());
+                                }
+                            } else {
+                                if (response.code() == 401) {
+                                    voyageService.logout(authToken.get());
+                                }
+                                try {
+                                    assert response.errorBody() != null;
+                                    Log.d(LOG_TAG, "Error: " +
+                                            response.errorBody().string());
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        }, throwable -> {
+                            handleError(throwable);
+                            bookings.setValue(null);
+                        });
+
+        return bookings;
+    }
+
+    public void sendFcmToken(String fcmToken) {
+        JsonObject requestBody = new JsonObject();
+        requestBody.addProperty("FcmToken", fcmToken);
+
+        Disposable disposable = getUserResponseSingle(
+                getSingleSourceFunctionWithBody(voyageService::sendFcmToken, requestBody))
+                .subscribe(response -> {
+                    if (response.isSuccessful()) {
+                        if (response.code() == 200) {
+                            Log.d(LOG_TAG, "FCM sent successfully");
+                        } else {
+                            if (response.code() == 401) {
+                                voyageService.logout(authToken.get());
+                            }
+                            try {
+                                assert response.errorBody() != null;
+                                Log.d(LOG_TAG, "Error: " +
+                                        response.errorBody().string());
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                }, this::handleError);
+
+    }
+
     private <T, U> Function<VoyageUser, SingleSource<? extends Response<T>>> getSingleSourceFunctionWithUrl
             (Function3<String, String, U, Observable<Response<T>>> observableFunction, String url,
              U requestBody) {
@@ -263,7 +319,10 @@ public class VoyageRepository {
     private <T> Single<Response<T>> getUserResponseSingle
             (Function<VoyageUser, SingleSource<? extends Response<T>>> voyageUserSingleSourceFunction) {
 
-        return voyageUser.subscribeOn(Schedulers.io())
+        Observable<VoyageUser> voyageUser = VoyageAuth.getInstance().currentUser();
+
+        return Single.fromObservable(voyageUser)
+                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .flatMap(voyageUserSingleSourceFunction);
     }
@@ -288,6 +347,13 @@ public class VoyageRepository {
                     "Host unreachable. Check your internet connection",
                     Toast.LENGTH_LONG)
                     .show();
+            Log.d(LOG_TAG, throwable.getMessage());
+        } else {
+            Toast.makeText(ApplicationContextProvider.getContext(),
+                    "Fatal error of unknown type. Contact app developers",
+                    Toast.LENGTH_LONG)
+                    .show();
+            throwable.printStackTrace();
             Log.d(LOG_TAG, throwable.getMessage());
         }
     }
