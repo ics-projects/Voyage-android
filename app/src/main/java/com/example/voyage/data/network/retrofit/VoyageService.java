@@ -25,7 +25,7 @@ public interface VoyageService {
     Observable<Response<VoyageUser>> login(@Body JsonObject object);
 
     @GET("logout")
-    Observable<Response<VoyageUser>> logout(@Header("Authorization") String authorization);
+    Observable<Response<Void>> logout(@Header("Authorization") String authorization);
 
     @POST("register")
     Observable<Response<VoyageUser>> register(@Body JsonObject object);

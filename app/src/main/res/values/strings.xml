@@ -66,7 +66,7 @@
     <string name="hey_traveller">Hey Traveller!</string>
     <string name="booked">Booked</string>
     <string name="hey_traveller_greeting">Hey Traveller!</string>
-    <string name="where_you_want_to_go">Where you want to go.</string>
+    <string name="where_you_want_to_go">Where do you want to go ?</string>
     <string name="from">From</string>
     <string name="select_your_bus">chagua basi yako</string>
     <string name="available_bus_call_to_action_text_view">select your bus</string>
@@ -74,4 +74,7 @@
     <string name="open_nav_drawer">open drawer</string>
     <string name="close_nav_drawer">close drawer</string>
     <string name="please_book_your_bus_now">Please, Book Your Bus Now!</string>
+    <string name="sign_out_button_content_description">sign out button</string>
+    <string name="person_outline_image_content_description">person outline image</string>
+    <string name="greeting">Hello, %1s!</string>
 </resources>

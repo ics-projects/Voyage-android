@@ -13,5 +13,5 @@ public interface BaseAuth<T> {
 
 //    Observable<T> currentUser();
 
-    Observable<Response<T>> signOut();
+    void signOut();
 }
