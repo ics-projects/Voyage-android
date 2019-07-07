@@ -53,8 +53,6 @@ public class TripsActivity extends AppCompatActivity implements TripsAdapter.Ite
         noTripsTextView = findViewById(R.id.no_trips_text_view);
         noTripsTextView.setVisibility(View.GONE);
 
-        ImageView backButton = findViewById(R.id.available_bus_back_button);
-
         // Recyclerview
         recyclerView = findViewById(R.id.recyclerView_trips);
         recyclerView.setHasFixedSize(true);
@@ -65,6 +63,7 @@ public class TripsActivity extends AppCompatActivity implements TripsAdapter.Ite
         recyclerView.setLayoutManager(layoutManager);
 
         // back navigation
+        ImageView backButton = findViewById(R.id.available_bus_back_button);
         backButton.setOnClickListener(view -> NavUtils.navigateUpFromSameTask(this));
 
         // Adapter
