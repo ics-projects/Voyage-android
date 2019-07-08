@@ -45,17 +45,17 @@
                     android:layout_marginTop="4dp"
                     android:layout_marginBottom="4dp"
                     android:fontFamily="@font/calibri"
-                    android:text="Expo bus service"
+                    tools:text="Expo bus service"
                     android:textColor="#4b4b4b"
                     android:textStyle="bold" />
 
-                <TextView
-                    android:id="@+id/seat_type"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/calibri"
-                    android:text="A/C Sleeper (2+2)"
-                    android:textColor="#8a8a8a" />
+                <!--<TextView-->
+                    <!--android:id="@+id/seat_type"-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:fontFamily="@font/calibri"-->
+                    <!--android:text="A/C Sleeper (2+2)"-->
+                    <!--android:textColor="#8a8a8a" />-->
 
             </LinearLayout>
 
@@ -77,15 +77,15 @@
                     android:textStyle="bold"
                     tools:text="$600.00" />
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:layout_marginBottom="4dp"
-                    android:fontFamily="@font/calibri"
-                    android:text="3.30 Hour"
-                    android:textAlignment="textEnd"
-                    android:textColor="#b3b3b3" />
+                <!--<TextView-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_marginTop="4dp"-->
+                    <!--android:layout_marginBottom="4dp"-->
+                    <!--android:fontFamily="@font/calibri"-->
+                    <!--android:text="3.30 Hour"-->
+                    <!--android:textAlignment="textEnd"-->
+                    <!--android:textColor="#b3b3b3" />-->
             </LinearLayout>
         </LinearLayout>
 
