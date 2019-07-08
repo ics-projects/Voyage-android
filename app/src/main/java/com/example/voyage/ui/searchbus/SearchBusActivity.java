@@ -39,6 +39,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 
 
 public class SearchBusActivity extends AppCompatActivity {
@@ -56,6 +57,7 @@ public class SearchBusActivity extends AppCompatActivity {
     private LinearLayout linearLayout;
     private Button searchBuses;
     private ConnectivityManager connectivityManager;
+    Toolbar mToolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,6 +69,11 @@ public class SearchBusActivity extends AppCompatActivity {
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         setContentView(R.layout.activity_search);
+
+        //
+        mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(mToolbar);
+        Objects.requireNonNull(getSupportActionBar()).setTitle("Home");
 
         // initiate the progress bar
         progressBar = findViewById(R.id.search_activity_indeterminate_bar);
@@ -113,9 +120,8 @@ public class SearchBusActivity extends AppCompatActivity {
 
         //adding a navigation drawer
 
-        Toolbar toolbar = findViewById(R.id.toolbar);
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar,
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, mToolbar,
                 R.string.open_nav_drawer, R.string.close_nav_drawer);
         drawer.addDrawerListener(toggle);
         toggle.syncState();

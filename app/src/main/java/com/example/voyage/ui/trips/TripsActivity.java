@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.NavUtils;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -20,6 +21,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.voyage.R;
 import com.example.voyage.data.Constants;
 import com.example.voyage.ui.pickseat.PickSeatActivity;
+
+import java.util.Objects;
 
 public class TripsActivity extends AppCompatActivity implements TripsAdapter.ItemClickListener {
 
@@ -35,6 +38,7 @@ public class TripsActivity extends AppCompatActivity implements TripsAdapter.Ite
 
     private ProgressBar progressBar;
     private TextView noTripsTextView;
+    Toolbar mToolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +50,15 @@ public class TripsActivity extends AppCompatActivity implements TripsAdapter.Ite
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         setContentView(R.layout.activity_available_bus);
+
+        //add tool bar
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        TextView mTitle = (TextView) toolbar.findViewById(R.id.toolbar_title);
+
+        setSupportActionBar(toolbar);
+        mTitle.setText("Trips");
+
+        Objects.requireNonNull(getSupportActionBar()).setDisplayShowTitleEnabled(false);
 
         // initiate the progress bar
         progressBar = findViewById(R.id.trip_activity_indeterminateBar);
