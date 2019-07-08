@@ -67,14 +67,16 @@
     <string name="cancel_payment_dialog_title">Futa Malipo</string>
     <string name="cancel_payment_confirmation_dialog">Je, una uhakika unataka kufuta malipo?</string>
     <string name="bus_stop_image">Picha ya kuacha basi</string>
-    <string name="hey_traveller_greeting">Hey Traveller!</string>
+    <string name="hey_traveller_greeting">Hey Msafiri!</string>
     <string name="available_bus_call_to_action_text_view">Chagua basi yako</string>
-    <string name="no_trips_found">No Trips Found with those values</string>
+    <string name="no_trips_found">Hakuna Safari Kupatikana na maadili hayo</string>
     <string name="open_nav_drawer">open drawer</string>
     <string name="close_nav_drawer">close drawer</string>
     <string name="please_book_your_bus_now">Tafadhali, Hifadhi Bus yako Sasa!</string>
     <string name="sign_out_button_content_description">sign out button</string>
     <string name="person_outline_image_content_description">person outline image</string>
     <string name="greeting">Hello, %1s!</string>
-    <string name="no_bookings_found">No bookings made yet</string>
+    <string name="no_bookings_found">Hakuna maandishi yaliyofanywa bado</string>
+    <string name="voyage_channel_name">Voyage bookings</string>
+    <string name="voyage_channel_description">Voyage new bookings notifications</string>
 </resources>

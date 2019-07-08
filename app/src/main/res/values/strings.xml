@@ -80,4 +80,5 @@
     <string name="no_bookings_found">No bookings made yet</string>
     <string name="voyage_channel_name">Voyage bookings</string>
     <string name="voyage_channel_description">Voyage new bookings notifications</string>
+
 </resources>
