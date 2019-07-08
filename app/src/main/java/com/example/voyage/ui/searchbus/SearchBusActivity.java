@@ -59,8 +59,10 @@ public class SearchBusActivity extends AppCompatActivity {
     private Button searchBuses;
     private ConnectivityManager connectivityManager;
     Toolbar mToolbar;
-    private TextView userNameTextView;
+    private TextView userFirstNameTextView;
+    private TextView userLastNameTextView;
     private TextView greetingTextView;
+    private TextView emailTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -137,7 +139,9 @@ public class SearchBusActivity extends AppCompatActivity {
                 startActivity(intent);
                 finish();
             } else {
-                userNameTextView.setText(voyageUser.getFirstName());
+                userFirstNameTextView.setText(voyageUser.getFirstName());
+                userLastNameTextView.setText(voyageUser.getLastName());
+                emailTextView.setText(voyageUser.getEmail());
                 greetingTextView.setText(getString(R.string.greeting, voyageUser.getFirstName()));
             }
         });
@@ -182,7 +186,9 @@ public class SearchBusActivity extends AppCompatActivity {
         });
 
         View header = navigationView.getHeaderView(0);
-        userNameTextView = header.findViewById(R.id.nav_header_username_textView);
+        userFirstNameTextView = header.findViewById(R.id.nav_header_firstname_textView);
+        userLastNameTextView = header.findViewById(R.id.nav_header_lastname_textView);
+        emailTextView = header.findViewById(R.id.nav_header_email_textView);
         observeUser();
     }
 
