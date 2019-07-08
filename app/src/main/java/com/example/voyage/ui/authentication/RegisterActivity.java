@@ -86,7 +86,7 @@ public class RegisterActivity extends AppCompatActivity {
 
         cancelButton.setOnClickListener(v -> finish());
 
-        addOnKeyListeners();
+//        addOnKeyListeners();
     }
 
     private void registerUser(String firstName, String lastName, String email, String password,

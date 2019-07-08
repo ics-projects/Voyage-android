@@ -17,7 +17,6 @@ import com.example.voyage.ui.searchbus.SearchBusActivity;
 import com.example.voyage.util.FormValidators;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
-import com.google.firebase.iid.FirebaseInstanceId;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -67,7 +66,7 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-        addOnKeyListeners();
+//        addOnKeyListeners();
     }
 
     private void loginUser(String email, String password) {
@@ -94,32 +93,18 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void addOnKeyListeners() {
-        emailEditText.setOnKeyListener((v, keyCode, event) -> {
+        emailEditText.setOnKeyListener((view, keyCode, event) -> {
             if (FormValidators.isEmailValid(emailEditText.getText())) {
                 emailTextInput.setError(null);
             }
             return false;
         });
 
-        passwordEditText.setOnKeyListener((v, keyCode, event) -> {
+        passwordEditText.setOnKeyListener((view, keyCode, event) -> {
             if (FormValidators.isPasswordValid(passwordEditText.getText())) {
                 passwordTextInput.setError(null);
             }
             return false;
-        });
-    }
-
-    private void generateFcmToken() {
-        FirebaseInstanceId.getInstance().getInstanceId().addOnCompleteListener(task -> {
-            if (!task.isSuccessful()) {
-                Log.w(LOG_TAG, "getInstanceId failed", task.getException());
-                return;
-            }
-
-            // Get new Instance ID token
-            String token = task.getResult().getToken();
-//            PreferenceUtilities.saveFcmToken(this, token);
-            Log.d(LOG_TAG, "token: " + token);
         });
     }
 
