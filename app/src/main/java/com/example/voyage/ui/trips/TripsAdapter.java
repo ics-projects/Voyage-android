@@ -68,7 +68,7 @@ class TripsAdapter extends RecyclerView.Adapter<TripsAdapter.ItemViewHolder> {
             e.printStackTrace();
         }
 
-        String price = String.valueOf(trip.getFirstClassPrice());
+        String price = String.valueOf(trip.getFirstClassPrice()).concat(" KES");
 
         viewHolder.timeTextView.setText(durationString);
         viewHolder.priceTextView.setText(price);

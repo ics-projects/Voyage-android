@@ -31,9 +31,9 @@
 
             <TextView
                 android:id="@+id/toolbar_title"
+                style="@style/TextAppearance.AppCompat.Widget.ActionBar.Title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                style="@style/TextAppearance.AppCompat.Widget.ActionBar.Title"
                 android:layout_gravity="center" />
 
 
@@ -84,14 +84,15 @@
                     android:weightSum="100">
 
                     <TextView
+                        android:id="@+id/header_origin_label"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="45"
                         android:fontFamily="@font/gotham"
-                        android:text="Pune"
                         android:textAlignment="center"
                         android:textColor="#FFFFFF"
-                        android:textSize="18sp" />
+                        android:textSize="18sp"
+                        tools:text="Pune" />
 
                     <ImageView
                         android:layout_width="0dp"
@@ -101,29 +102,31 @@
                         android:src="@drawable/ic_swap_horiz_white_24dp" />
 
                     <TextView
+                        android:id="@+id/header_destination_label"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="45"
                         android:fontFamily="@font/gotham"
-                        android:text="Mumbai"
                         android:textAlignment="center"
                         android:textColor="#FFFFFF"
-                        android:textSize="18sp" />
+                        android:textSize="18sp"
+                        tools:tools="Mumbai" />
 
                 </LinearLayout>
 
 
                 <TextView
-                    android:id="@+id/textView3"
+                    android:id="@+id/header_date_label"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/linearLayout"
                     android:layout_marginTop="8dp"
                     android:fontFamily="@font/print_clearly"
-                    android:text="12th - Feb - 2019 | Tuesday"
                     android:textAlignment="center"
                     android:textColor="#FFFFFF"
-                    android:textSize="18sp" />
+                    android:textSize="18sp"
+                    tools:text="12th - Feb - 2019" />
+
             </RelativeLayout>
 
             <ProgressBar

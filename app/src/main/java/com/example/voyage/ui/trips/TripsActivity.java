@@ -22,6 +22,10 @@ import com.example.voyage.R;
 import com.example.voyage.data.Constants;
 import com.example.voyage.ui.pickseat.PickSeatActivity;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 import java.util.Objects;
 
 public class TripsActivity extends AppCompatActivity implements TripsAdapter.ItemClickListener {
@@ -108,6 +112,24 @@ public class TripsActivity extends AppCompatActivity implements TripsAdapter.Ite
         intentStringOrigin = intent.getStringExtra(Constants.TRIP_PICK_POINT_INTENT_EXTRA);
         intentStringDestination = intent.getStringExtra(Constants.TRIP_DROP_POINT_INTENT_EXTRA);
         intentStringDate = intent.getStringExtra(Constants.TRIP_DATE_INTENT_EXTRA);
+
+        TextView originLabel = findViewById(R.id.header_origin_label);
+        TextView destinationLabel = findViewById(R.id.header_destination_label);
+        TextView dateLabel = findViewById(R.id.header_date_label);
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
+        SimpleDateFormat viewFormat = new SimpleDateFormat("dd - MMM - yyyy", Locale.ENGLISH);
+
+        try {
+            Date actualDate = dateFormat.parse(intentStringDate);
+            String finalDate = viewFormat.format(actualDate);
+            dateLabel.setText(finalDate);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        originLabel.setText(intentStringOrigin);
+        destinationLabel.setText(intentStringDestination);
     }
 
     private void fetchTrips() {
