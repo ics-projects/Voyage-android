@@ -64,14 +64,14 @@
                             android:src="@drawable/bus_image_2" />
 
                         <TextView
-                            android:id="@+id/textView"
+                            android:id="@+id/greeting_textView"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_alignParentTop="true"
                             android:layout_centerHorizontal="true"
                             android:layout_marginTop="16dp"
                             android:fontFamily="@font/print_clearly"
-                            android:text="@string/hey_traveller_greeting"
+                            tools:text="@string/hey_traveller_greeting"
                             android:textAlignment="center"
                             android:textColor="#FFFFFF"
                             android:textSize="32sp" />
@@ -80,7 +80,7 @@
                             android:id="@+id/textView2"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_below="@+id/textView"
+                            android:layout_below="@+id/greeting_textView"
                             android:layout_marginTop="8dp"
                             android:fontFamily="@font/gotham"
                             android:text="@string/please_book_your_bus_now"

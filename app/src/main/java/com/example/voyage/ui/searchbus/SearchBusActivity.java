@@ -60,6 +60,7 @@ public class SearchBusActivity extends AppCompatActivity {
     private ConnectivityManager connectivityManager;
     Toolbar mToolbar;
     private TextView userNameTextView;
+    private TextView greetingTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,6 +88,7 @@ public class SearchBusActivity extends AppCompatActivity {
         originSpinner = findViewById(R.id.originSpinner);
         destinationSpinner = findViewById(R.id.destinationSpinner);
         dateEditText = findViewById(R.id.select_date);
+        greetingTextView = findViewById(R.id.greeting_textView);
 
         viewModel = ViewModelProviders.of(this).get(SearchBusActivityViewModel.class);
 
@@ -136,6 +138,7 @@ public class SearchBusActivity extends AppCompatActivity {
                 finish();
             } else {
                 userNameTextView.setText(voyageUser.getFirstName());
+                greetingTextView.setText(getString(R.string.greeting, voyageUser.getFirstName()));
             }
         });
     }
