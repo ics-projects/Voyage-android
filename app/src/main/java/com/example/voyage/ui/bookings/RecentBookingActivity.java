@@ -2,11 +2,14 @@ package com.example.voyage.ui.bookings;
 
 import android.os.Bundle;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.NavUtils;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
@@ -17,6 +20,7 @@ import com.example.voyage.R;
 import com.example.voyage.data.models.Booking;
 
 import java.util.List;
+import java.util.Objects;
 
 public class RecentBookingActivity extends AppCompatActivity {
     RecyclerView recyclerView;
@@ -27,7 +31,22 @@ public class RecentBookingActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_recent_booking);
+
+
+        //add tool bar
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        TextView mTitle = (TextView) toolbar.findViewById(R.id.toolbar_title);
+
+        setSupportActionBar(toolbar);
+        mTitle.setText("Recent Trips");
+
+        Objects.requireNonNull(getSupportActionBar()).setDisplayShowTitleEnabled(false);
 
         // initiate the progress bar
         progressBar = findViewById(R.id.bookings_activity_indeterminate_bar);

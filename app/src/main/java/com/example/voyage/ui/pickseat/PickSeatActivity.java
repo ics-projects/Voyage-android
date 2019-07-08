@@ -10,8 +10,10 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -24,6 +26,7 @@ import com.example.voyage.ui.trips.TripsActivity;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Objects;
 
 public class PickSeatActivity extends AppCompatActivity implements PickSeatAdapter.ItemClickListener {
 
@@ -51,6 +54,14 @@ public class PickSeatActivity extends AppCompatActivity implements PickSeatAdapt
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         setContentView(R.layout.activity_pick_seat);
+
+        //add tool bar
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        TextView mTitle = (TextView) toolbar.findViewById(R.id.toolbar_title);
+        setSupportActionBar(toolbar);
+        mTitle.setText("Bus Seats");
+        Objects.requireNonNull(getSupportActionBar()).setDisplayShowTitleEnabled(false);
+
 
         // initiate the progress bar
         progressBar = findViewById(R.id.pick_seat_activity_indeterminate_bar);
