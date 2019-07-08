@@ -1,7 +1,6 @@
 package com.example.voyage.data.repositories;
 
 import android.util.Log;
-import android.widget.Toast;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -18,11 +17,10 @@ import com.example.voyage.data.models.Trip;
 import com.example.voyage.data.network.retrofit.VoyageClient;
 import com.example.voyage.data.network.retrofit.VoyageService;
 import com.example.voyage.ui.pickseat.SeatRowCollection;
-import com.example.voyage.util.ApplicationContextProvider;
+import com.example.voyage.util.NetworkUtils;
 import com.google.gson.JsonObject;
 
 import java.io.IOException;
-import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
@@ -36,7 +34,6 @@ import io.reactivex.functions.BiFunction;
 import io.reactivex.functions.Function;
 import io.reactivex.functions.Function3;
 import io.reactivex.schedulers.Schedulers;
-import retrofit2.HttpException;
 import retrofit2.Response;
 
 public class VoyageRepository {
@@ -85,7 +82,7 @@ public class VoyageRepository {
                         }
                     }
                 }, throwable -> {
-                    handleError(throwable);
+                    NetworkUtils.handleError(throwable);
                     schedules.setValue(null);
                 });
 
@@ -116,7 +113,7 @@ public class VoyageRepository {
                         }
                     }
                 }, throwable -> {
-                    handleError(throwable);
+                    NetworkUtils.handleError(throwable);
                     trips.setValue(null);
                 });
 
@@ -153,7 +150,7 @@ public class VoyageRepository {
                         }
                     }
                 }, throwable -> {
-                    handleError(throwable);
+                    NetworkUtils.handleError(throwable);
                     seats.setValue(null);
                 });
 
@@ -182,7 +179,7 @@ public class VoyageRepository {
                         }
                     }
                 }, throwable -> {
-                    handleError(throwable);
+                    NetworkUtils.handleError(throwable);
                     payDetails.setValue(null);
                 });
 
@@ -215,7 +212,7 @@ public class VoyageRepository {
                         }
                     }
                 }, throwable -> {
-                    handleError(throwable);
+                    NetworkUtils.handleError(throwable);
                     payStatus.setValue(null);
                 });
 
@@ -243,7 +240,7 @@ public class VoyageRepository {
                                 }
                             }
                         }, throwable -> {
-                            handleError(throwable);
+                            NetworkUtils.handleError(throwable);
                             bookings.setValue(null);
                         });
 
@@ -273,7 +270,7 @@ public class VoyageRepository {
                             }
                         }
                     }
-                }, this::handleError);
+                }, NetworkUtils::handleError);
 
     }
 
@@ -327,34 +324,5 @@ public class VoyageRepository {
                 .flatMap(voyageUserSingleSourceFunction);
     }
 
-    private void handleError(Throwable throwable) {
-        if (throwable instanceof HttpException) {
-            HttpException httpException = (HttpException) throwable;
-            int statusCode = httpException.code();
-            Toast.makeText(ApplicationContextProvider.getContext(),
-                    "Http error. Status code: " + statusCode,
-                    Toast.LENGTH_LONG)
-                    .show();
-            Log.d(LOG_TAG, "Http error. Status code: " + statusCode);
-        } else if (throwable instanceof SocketTimeoutException) {
-            Toast.makeText(ApplicationContextProvider.getContext(),
-                    "Connection timed out. Please try again",
-                    Toast.LENGTH_LONG)
-                    .show();
-            Log.d(LOG_TAG, throwable.getMessage());
-        } else if (throwable instanceof IOException) {
-            Toast.makeText(ApplicationContextProvider.getContext(),
-                    "Host unreachable. Check your internet connection",
-                    Toast.LENGTH_LONG)
-                    .show();
-            Log.d(LOG_TAG, throwable.getMessage());
-        } else {
-            Toast.makeText(ApplicationContextProvider.getContext(),
-                    "Fatal error of unknown type. Contact app developers",
-                    Toast.LENGTH_LONG)
-                    .show();
-            throwable.printStackTrace();
-            Log.d(LOG_TAG, throwable.getMessage());
-        }
-    }
+
 }

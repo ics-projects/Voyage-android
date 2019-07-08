@@ -7,6 +7,8 @@ import android.util.Log;
 import com.example.voyage.R;
 
 public class PreferenceUtilities {
+    private static final String LOG_TAG = PreferenceUtilities.class.getSimpleName();
+
     private static final String PREF_USER_TOKEN = "VOYAGE_USER_TOKEN";
     private static final String PREF_FCM_TOKEN = "FCM_USER_TOKEN";
 
@@ -29,7 +31,7 @@ public class PreferenceUtilities {
 
         SharedPreferences.Editor editor = sharedPref.edit();
         if (token == null) {
-            Log.d("TAG", "DELETING TOKEN");
+            Log.d(LOG_TAG, "DELETING TOKEN");
             editor.remove(PREF_USER_TOKEN);
         } else {
             editor.putString(PREF_USER_TOKEN, token);

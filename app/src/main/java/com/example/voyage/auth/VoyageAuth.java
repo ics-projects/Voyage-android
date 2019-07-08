@@ -1,12 +1,14 @@
 package com.example.voyage.auth;
 
 import android.util.Log;
+import android.widget.Toast;
 
 import com.example.voyage.data.network.retrofit.VoyageClient;
 import com.example.voyage.data.network.retrofit.VoyageService;
 import com.example.voyage.data.repositories.VoyageRepository;
 import com.example.voyage.fcm.VoyageMessagingService;
 import com.example.voyage.util.ApplicationContextProvider;
+import com.example.voyage.util.NetworkUtils;
 import com.example.voyage.util.PreferenceUtilities;
 import com.google.gson.JsonObject;
 
@@ -132,11 +134,15 @@ public class VoyageAuth implements BaseAuth<VoyageUser> {
     }
 
     public void sendFcmRegistrationToServer() {
-        String fcmToken = VoyageMessagingService.getToken(ApplicationContextProvider.getContext());
-        if (fcmToken != null) {
-            VoyageRepository.getInstance().sendFcmToken(fcmToken);
+        if (currentUser() != null) {
+            String fcmToken = VoyageMessagingService.getToken(ApplicationContextProvider.getContext());
+            if (fcmToken != null) {
+                VoyageRepository.getInstance().sendFcmToken(fcmToken);
+            } else {
+                Log.d(LOG_TAG, "Fcm token absent");
+            }
         } else {
-            Log.d(LOG_TAG, "Fcm token absent");
+            Log.d(LOG_TAG, "User not logged in");
         }
     }
 
@@ -167,6 +173,10 @@ public class VoyageAuth implements BaseAuth<VoyageUser> {
                                     + " Status Code: " + voyageUserResponse.code()
                             );
                             if (voyageUserResponse.code() == 401) {
+                                Toast.makeText(ApplicationContextProvider.getContext(),
+                                        "Invalid credentials",
+                                        Toast.LENGTH_LONG)
+                                        .show();
                                 Log.d(LOG_TAG, "Token expired. Logging out user");
                                 signOut();
                             }
@@ -179,6 +189,7 @@ public class VoyageAuth implements BaseAuth<VoyageUser> {
                 @Override
                 public void onError(Throwable e) {
                     Log.e(LOG_TAG, "Error: ", e);
+                    NetworkUtils.handleError(e);
                     e.printStackTrace();
                 }
             };

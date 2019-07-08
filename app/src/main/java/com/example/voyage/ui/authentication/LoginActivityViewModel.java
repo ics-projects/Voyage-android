@@ -41,10 +41,12 @@ class LoginActivityViewModel extends ViewModel {
                 auth.signInWithEmailAndPassword(email, password)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe((voyageUser) -> {
+                        .subscribe(voyageUser -> {
                             if (voyageUser != null) {
                                 Log.d(LOG_TAG, "User token: ".concat(voyageUser.getToken()));
                                 user.setValue(voyageUser);
+                            } else {
+                                user.setValue(null);
                             }
                         }, Throwable::printStackTrace)
         );

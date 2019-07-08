@@ -18,6 +18,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -58,6 +59,8 @@ public class SearchBusActivity extends AppCompatActivity {
     private Button searchBuses;
     private ConnectivityManager connectivityManager;
     Toolbar mToolbar;
+    private TextView userNameTextView;
+    private TextView greetingTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,13 +88,11 @@ public class SearchBusActivity extends AppCompatActivity {
         originSpinner = findViewById(R.id.originSpinner);
         destinationSpinner = findViewById(R.id.destinationSpinner);
         dateEditText = findViewById(R.id.select_date);
-//        userNameTextView = findViewById(R.id.user_name_tv);
+        greetingTextView = findViewById(R.id.greeting_textView);
 
         viewModel = ViewModelProviders.of(this).get(SearchBusActivityViewModel.class);
 
         fetchSchedules();
-
-        observeUser();
 
         dateEditText.setOnClickListener(view -> {
             int year = c.get(Calendar.YEAR);
@@ -135,6 +136,9 @@ public class SearchBusActivity extends AppCompatActivity {
                 Intent intent = new Intent(SearchBusActivity.this, LoginActivity.class);
                 startActivity(intent);
                 finish();
+            } else {
+                userNameTextView.setText(voyageUser.getFirstName());
+                greetingTextView.setText(getString(R.string.greeting, voyageUser.getFirstName()));
             }
         });
     }
@@ -176,6 +180,10 @@ public class SearchBusActivity extends AppCompatActivity {
             }
             return true;
         });
+
+        View header = navigationView.getHeaderView(0);
+        userNameTextView = header.findViewById(R.id.nav_header_username_textView);
+        observeUser();
     }
 
 
