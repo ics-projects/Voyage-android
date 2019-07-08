@@ -11,7 +11,9 @@ import com.example.voyage.data.repositories.VoyageRepository;
 
 import java.util.List;
 
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.schedulers.Schedulers;
 
 public class SearchBusActivityViewModel extends ViewModel {
 
@@ -37,6 +39,13 @@ public class SearchBusActivityViewModel extends ViewModel {
     }
 
     LiveData<VoyageUser> getUser() {
+        compositeDisposable.add(
+                auth.currentUser()
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(voyageUser -> user.setValue(voyageUser),
+                                Throwable::printStackTrace)
+        );
         return user;
     }
 
